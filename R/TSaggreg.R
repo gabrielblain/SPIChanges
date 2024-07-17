@@ -1,4 +1,4 @@
-#' Aggregates Daily Rainfall Totals At quasi-week time scales
+#' Aggregates daily rainfall totals at quasi-week time scales
 #'
 #' @param daily.rain
 #' Vector, 1-column matrix or data frame with daily rainfall totals
@@ -14,21 +14,20 @@
 #' @examples
 #'
 #' daily.rain <- CampinasRain[,2]
-#' start.date = "1990-01-01"
-#' test <- TSaggreg(daily.rain=daily.rain,start.date="1991-01-01",TS=4)
+#' rainTS4 <- TSaggreg(daily.rain=daily.rain,start.date="1991-01-01",TS=4)
 #' @importFrom lubridate year month day parse_date_time
 #' @importFrom zoo rollsum
-#' @importFrom stats na.omit 
-
-
-TSajust <- function(daily.rain,start.date="1990-01-01",TS=4){
+#' @importFrom stats na.omit
+TSaggreg <- function(daily.rain,start.date="1990-01-01",TS=4){
   daily.rain=as.matrix(daily.rain)
   if (!is.numeric(daily.rain) || any(is.na(daily.rain)) ||
       length(daily.rain[daily.rain < 0]) != 0 || ncol(daily.rain) != 1) {
     stop("Physically impossible or missing rain values")
   }
+  if (!is.numeric(TS) || length(TS) != 1 ||
+      TS < 1 || TS> 96) {stop("TS must be an interger single number between 1 and 96")}
   n <- length(daily.rain)
-  if (n<3650){stop("Less than 10 years of rainfall records. We cannot procede")} 
+  if (n<3650){stop("Less than 10 years of rainfall records. We cannot procede")}
   if (n<10950){warning("Less than 30 years of rainfall records. Longer periods are highly recommended.")}
   start.date <- .check_date(start.date)
   start.cycle <- as.Date(start.date)
@@ -52,23 +51,23 @@ TSajust <- function(daily.rain,start.date="1990-01-01",TS=4){
   year <- start.year
   while (year <= final.year || month <= final.month) {
     data.week1 <- sum(rain[which(rain[,1] ==
-                                        year &
-                                        rain[,2] == month &
-                                        rain[,3] <= 7),4])
+                                   year &
+                                   rain[,2] == month &
+                                   rain[,3] <= 7),4])
     data.week2 <- sum(rain[which(rain[,1] ==
-                                        year &
-                                        rain[,2] == month &
-                                        rain[,3] > 7 &
-                                        rain[,3] <= 14), 4])
+                                   year &
+                                   rain[,2] == month &
+                                   rain[,3] > 7 &
+                                   rain[,3] <= 14), 4])
     data.week3 <- sum(rain[which(rain[,1] ==
-                                        year &
-                                        rain[,2] == month &
-                                        rain[,3] > 14 &
-                                        rain[,3] <= 21), 4])
+                                   year &
+                                   rain[,2] == month &
+                                   rain[,3] > 14 &
+                                   rain[,3] <= 21), 4])
     data.week4 <- sum(rain[which(rain[,1] ==
-                                        year &
-                                        rain[,2] == month &
-                                        rain[,3] > 21),4])
+                                   year &
+                                   rain[,2] == month &
+                                   rain[,3] > 21),4])
     data.week[a,1:4] <- c(year, month, 1,data.week1)
     data.week[b,1:4] <- c(year, month, 2,data.week2)
     data.week[c,1:4] <- c(year, month, 3,data.week3)
@@ -87,10 +86,10 @@ TSajust <- function(daily.rain,start.date="1990-01-01",TS=4){
     d <- d + 4
   }
   if (TS > 1){
-  data.at.TS <- na.omit(zoo::rollsum(data.week[,4],TS))
-  n.TS <- length(data.at.TS)
-  data.week[TS:(n.TS+(TS-1)),5]<- data.at.TS
-  data.week <- data.week[-c((n.TS+(TS)):n),]  
+    data.at.TS <- na.omit(zoo::rollsum(data.week[,4],TS))
+    n.TS <- length(data.at.TS)
+    data.week[TS:(n.TS+(TS-1)),5]<- data.at.TS
+    data.week <- data.week[-c((n.TS+(TS)):n),]
   } else{
     data.week[,5] <- data.week[,4]
   }
@@ -98,7 +97,7 @@ TSajust <- function(daily.rain,start.date="1990-01-01",TS=4){
   data.week <- na.omit(data.week)
   colnames(data.week) <- c("Year","Month","quasiWeek",paste0("rain.at.TS",TS))
   message("Done. Just ensure the last quasi-week is complete.
-  The last day of your series is ", paste(days[n]))
+  The last day of your series is ", paste(days[n]), " and TS is ", paste(TS))
   return(data.week)
 }
 
