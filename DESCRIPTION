@@ -1,12 +1,40 @@
 Package: SPIChanges
-Title: What the Package Does (One Line, Title Case)
+Title: Improves The Interpretation Of The Standardized Precipitation Index Under Changing Climate Conditions
 Version: 0.0.0.9000
-Authors@R: 
-    person("First", "Last", , "first.last@example.com", role = c("aut", "cre"),
-           comment = c(ORCID = "YOUR-ORCID-ID"))
-Description: What the package does (one paragraph).
-License: `use_mit_license()`, `use_gpl3_license()` or friends to pick a
-    license
+Authors@R: c(
+  person(
+    given = "Gabriel Constantino",
+    family = "Blain",
+    role = c("aut", "cre"),
+    email = "gabriel.blain@sp.gov.br",
+    comment = c(ORCID = "0000-0001-8832-7734")),
+  person(
+    given = "Graciela R.",
+    family = "Sobierajski",
+    role = "aut",
+    comment = c(ORCID = "0000-0002-7211-9268")))
+Description: The package improves the interpretation of the 
+   Standardized Precipitation Index (SPI) under changing climate conditions. 
+   It is based on the nonstationary approach pprposed in Blain et al. (2022) 
+   <doi:10.1002/joc.7550> to detect trends in rainfall quantities and to quantify 
+   the effect of such trends on the probability of a SPI value occurring. 
+License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.3.1
+RoxygenNote: 7.3.2
+Depends: 
+    R (>= 2.10)
+Imports:
+    lubridate,
+    zoo,
+    gamlss,
+    gamlss.dist,
+    splines,
+    stats,
+    spsUtil
+LazyData: true
+Suggests: 
+    testthat (>= 3.0.0)
+Config/testthat/edition: 3
+URL: https://github.com/gabrielblain/SPIChanges
+BugReports: https://github.com/gabrielblain/SPIChanges/issues
