@@ -93,7 +93,7 @@ if (only.linear == "yes"){
                                       AIC(t.gam.ns10, k=2, c=TRUE),
                                       AIC(t.gam.ns01, k=2, c=TRUE),
                                       AIC(t.gam.ns11, k=2, c=TRUE)))
-} else { #if (only.linear == "no") {
+} else {
   t.gam.ns10 <- spsUtil::quiet(gamlss::gamlss(rain.week.nozeros~poly(time.nonzero,1),family=GA,
                                mu.link = "identity", sigma.link ="log"))
   t.gam.ns01 <- spsUtil::quiet(gamlss::gamlss(rain.week.nozeros~1, sigma.formula=~poly(time.nonzero,1),
@@ -124,12 +124,10 @@ if (only.linear == "yes"){
 quasiprob <- (probzero+(1-probzero)*pGA(rain.week,mu = t.gam$mu.fv[1], sigma = t.gam$sigma.fv[1],lower.tail = TRUE, log.p=FALSE))
 quasiprob[which(rain.week==0)] <- (nz+1)/(2*n.week)
 data.week[initial.row:last.row,6] <- quasiprob
-#data.week[initial.row:last.row,6] <- calc.probzero(probzero, rain.week)
 stat.rain.drought.mod <- qGA(0.159, mu = t.gam$mu.fv[1], sigma = t.gam$sigma.fv[1])
 stat.rain.drought.sev <- qGA(0.067, mu = t.gam$mu.fv[1], sigma = t.gam$sigma.fv[1])
 stat.rain.drought.extr <- qGA(0.023, mu = t.gam$mu.fv[1], sigma = t.gam$sigma.fv[1])
 if (model.selection[a,1]==1){
-  #idzeros=which(rain.week==0)
   quasiprob.ns <- as.matrix(data.week[initial.row:last.row,6])
   Changes.Freq.Drought [a,] <- 0
 }
