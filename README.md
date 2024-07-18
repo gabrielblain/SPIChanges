@@ -1,6 +1,4 @@
 
-<!-- README.md is generated from README.Rmd. Please edit that file -->
-
 # SPIChanges
 
 <!-- badges: start -->
@@ -85,8 +83,12 @@ corresponds to monthly data.
 library(SPIChanges)
 daily.rain <- CampinasRain[,2]
 rainTS4 <- TSaggreg(daily.rain=daily.rain,start.date="1991-01-01",TS=4)
-#> Done. Just ensure the last quasi-week is complete.
-#>   The last day of your series is 31 and TS is 4
+```
+
+    ## Done. Just ensure the last quasi-week is complete.
+    ##   The last day of your series is 31 and TS is 4
+
+``` r
 View(rainTS4)
 ```
 
@@ -103,8 +105,12 @@ used for such estimations.
 library(SPIChanges)
 daily.rain <- CampinasRain[,2]
 rainTS4 <- TSaggreg(daily.rain=daily.rain,start.date="1991-01-01",TS=4)
-#> Done. Just ensure the last quasi-week is complete.
-#>   The last day of your series is 31 and TS is 4
+```
+
+    ## Done. Just ensure the last quasi-week is complete.
+    ##   The last day of your series is 31 and TS is 4
+
+``` r
 Changes.in.the.SPI <- SPIChanges(rain.at.TS=rainTS4, only.linear = "Yes")
 View(Changes.in.the.SPI$data.week)
 View(Changes.in.the.SPI$data.week)
@@ -125,8 +131,12 @@ used for such estimations.
 library(SPIChanges)
 daily.rain <- CampinasRain[,2]
 rainTS4 <- TSaggreg(daily.rain=daily.rain,start.date="1991-01-01",TS=4)
-#> Done. Just ensure the last quasi-week is complete.
-#>   The last day of your series is 31 and TS is 4
+```
+
+    ## Done. Just ensure the last quasi-week is complete.
+    ##   The last day of your series is 31 and TS is 4
+
+``` r
 Changes.in.the.SPI <- SPIChanges(rain.at.TS=rainTS4, only.linear = "No")
 View(Changes.in.the.SPI$data.week)
 View(Changes.in.the.SPI$data.week)
