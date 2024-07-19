@@ -1,10 +1,11 @@
-#' Detect trends and quantify their Effect on the probability of SPI values occurring
+#' Detect trends and quantify their effect on the probability of SPI values occurring
 #'
 #' @param rain.at.TS
 #' Vector, 1-column matrix or data frame with rainfall totals accumulated at a time scale.
 #' @param only.linear
 #' A character variable (\code{Yes} or \code{No}) defining if the function must
-#'   calculate confidence intervals.  Default is \dQuote{No}.
+#' consider only linear models (\code{Yes}) or linear and non-linear models (\code{No}).
+#' Default is Yes.
 #' @return
 #' A \code{list} object with:
 #' \describe{

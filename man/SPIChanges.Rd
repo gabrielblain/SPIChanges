@@ -2,7 +2,7 @@
 % Please edit documentation in R/SPIChanges.R
 \name{SPIChanges}
 \alias{SPIChanges}
-\title{Detect trends and quantify their Effect on the probability of SPI values occurring}
+\title{Detect trends and quantify their effect on the probability of SPI values occurring}
 \usage{
 SPIChanges(rain.at.TS, only.linear = "Yes")
 }
@@ -10,7 +10,8 @@ SPIChanges(rain.at.TS, only.linear = "Yes")
 \item{rain.at.TS}{Vector, 1-column matrix or data frame with rainfall totals accumulated at a time scale.}
 
 \item{only.linear}{A character variable (\code{Yes} or \code{No}) defining if the function must
-calculate confidence intervals.  Default is \dQuote{No}.}
+consider only linear models (\code{Yes}) or linear and non-linear models (\code{No}).
+Default is Yes.}
 }
 \value{
 A \code{list} object with:
@@ -24,7 +25,7 @@ as definied by the SPI classification system, caused by the changes in rainfall 
 }
 }
 \description{
-Detect trends and quantify their Effect on the probability of SPI values occurring
+Detect trends and quantify their effect on the probability of SPI values occurring
 }
 \examples{
 
