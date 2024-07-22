@@ -29,7 +29,7 @@ Imports:
     zoo,
     gamlss,
     gamlss.dist,
-    splines,
+    splines2,
     stats,
     spsUtil
 LazyData: true
