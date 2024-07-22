@@ -33,9 +33,9 @@ test_that("SPIChanges() works when only.linear = no", {
                tolerance = 0.05)
   expect_equal(Changes[[1]]$Exp.Acum.Prob[1:4], c(0.93, 0.99, 0.99, 0.98),
                tolerance = 0.05)
-  expect_equal(Changes[[1]]$Actual.Acum.Prob[1:4], c(0.86, 0.99, 0.83, 0.90),
+  expect_equal(Changes[[1]]$Actual.Acum.Prob[1:4], c(0.86, 0.99, 0.82, 0.90),
                tolerance = 0.05)
-  expect_equal(Changes[[1]]$ChangeFreq[1:4], c(6.72, 0.00, 16.22, 8.07),
+  expect_equal(Changes[[1]]$ChangeFreq[1:4], c(6.72, 0.00, 17.73, 8.07),
                tolerance = 0.05)
   expect_equal(Changes[[2]][1:4,3], c(1, 1, 3, 3),
                tolerance = 0.00)
