@@ -2,6 +2,8 @@
 # SPIChanges
 
 <!-- badges: start -->
+
+[![R-CMD-check](https://github.com/gabrielblain/SPIChanges/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/gabrielblain/SPIChanges/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
 A package designed to improve the interpretation of the Standardized
