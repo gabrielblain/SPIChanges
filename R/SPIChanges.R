@@ -24,7 +24,7 @@
 #' Changes.in.the.SPI <- SPIChanges(rain.at.TS=rainTS4, only.linear = "yes")
 #' @importFrom gamlss gamlss
 #' @importFrom gamlss.dist GA pGA qGA
-#' @importFrom splines ns
+#' @importFrom splines2 nsp
 #' @importFrom stats qnorm AIC
 #' @importFrom spsUtil quiet
  SPIChanges <- function(rain.at.TS, only.linear = "Yes"){
@@ -101,15 +101,15 @@ if (only.linear == "yes"){
                                family=GA, mu.link = "identity",sigma.link ="log"))
   t.gam.ns11 <- spsUtil::quiet(gamlss::gamlss(rain.week.nozeros~poly(time.nonzero,1), sigma.formula=~poly(time.nonzero,1),
                                family=GA, mu.link = "identity", sigma.link ="log"))
-  t.gam.ns20 <- spsUtil::quiet(gamlss::gamlss(rain.week.nozeros~ns(time.nonzero, df = 2),family=GA, mu.link = "identity",
+  t.gam.ns20 <- spsUtil::quiet(gamlss::gamlss(rain.week.nozeros~nsp(time.nonzero, df = 2),family=GA, mu.link = "identity",
                                sigma.link ="log"))
-  t.gam.ns02 <- spsUtil::quiet(gamlss::gamlss(rain.week.nozeros~1,sigma.formula=~ns(time.nonzero, df = 2), family=GA, mu.link = "identity",
+  t.gam.ns02 <- spsUtil::quiet(gamlss::gamlss(rain.week.nozeros~1,sigma.formula=~nsp(time.nonzero, df = 2), family=GA, mu.link = "identity",
                                sigma.link ="log"))
-  t.gam.ns22 <- spsUtil::quiet(gamlss::gamlss(rain.week.nozeros~ns(time.nonzero, df = 2), sigma.formula=~ns(time.nonzero, df = 2),family=GA,
+  t.gam.ns22 <- spsUtil::quiet(gamlss::gamlss(rain.week.nozeros~nsp(time.nonzero, df = 2), sigma.formula=~nsp(time.nonzero, df = 2),family=GA,
                                mu.link = "identity", sigma.link ="log"))
-  t.gam.ns21 <- spsUtil::quiet(gamlss::gamlss(rain.week.nozeros~ns(time.nonzero, df = 2), sigma.formula=~ns(time.nonzero, df = 1),family=GA,
+  t.gam.ns21 <- spsUtil::quiet(gamlss::gamlss(rain.week.nozeros~nsp(time.nonzero, df = 2), sigma.formula=~poly(time.nonzero,1),family=GA,
                                mu.link = "identity", sigma.link ="log"))
-  t.gam.ns12 <- spsUtil::quiet(gamlss::gamlss(rain.week.nozeros~ns(time.nonzero, df = 1), sigma.formula=~ns(time.nonzero, df = 2),family=GA,
+  t.gam.ns12 <- spsUtil::quiet(gamlss::gamlss(rain.week.nozeros~poly(time.nonzero,1), sigma.formula=~nsp(time.nonzero, df = 2),family=GA,
                                mu.link = "identity", sigma.link ="log"))
   ############
   model.selection[a,1] <- which.min(c(AIC(t.gam, k=2, c=TRUE),
@@ -243,16 +243,16 @@ while (a <=47) {
                                  mu.link = "identity",sigma.link ="log"))
     t.gam.ns11 <- spsUtil::quiet(gamlss::gamlss(rain.week.nozeros~poly(time.nonzero,1), sigma.formula=~poly(time.nonzero,1),
                                  family=GA, mu.link = "identity", sigma.link ="log"))
-    t.gam.ns20 <- spsUtil::quiet(gamlss::gamlss(rain.week.nozeros~ns(time.nonzero, df = 2),family=GA, mu.link = "identity",
+    t.gam.ns20 <- spsUtil::quiet(gamlss::gamlss(rain.week.nozeros~nsp(time.nonzero, df = 2),family=GA, mu.link = "identity",
                                  sigma.link ="log"))
-    t.gam.ns02 <- spsUtil::quiet(gamlss::gamlss(rain.week.nozeros~1, sigma.formula=~ns(time.nonzero, df = 2),
+    t.gam.ns02 <- spsUtil::quiet(gamlss::gamlss(rain.week.nozeros~1, sigma.formula=~nsp(time.nonzero, df = 2),
                                  family=GA, mu.link = "identity", sigma.link ="log"))
-    t.gam.ns22 <- spsUtil::quiet(gamlss::gamlss(rain.week.nozeros~ns(time.nonzero, df = 2),
-                                 sigma.formula=~ns(time.nonzero, df = 2),family=GA, mu.link = "identity",
+    t.gam.ns22 <- spsUtil::quiet(gamlss::gamlss(rain.week.nozeros~nsp(time.nonzero, df = 2),
+                                 sigma.formula=~nsp(time.nonzero, df = 2),family=GA, mu.link = "identity",
                                  sigma.link ="log"))
-    t.gam.ns21 <- spsUtil::quiet(gamlss::gamlss(rain.week.nozeros~ns(time.nonzero, df = 2), sigma.formula=~ns(time.nonzero, df = 1),family=GA,
+    t.gam.ns21 <- spsUtil::quiet(gamlss::gamlss(rain.week.nozeros~nsp(time.nonzero, df = 2), sigma.formula=~poly(time.nonzero,1),family=GA,
                                  mu.link = "identity", sigma.link ="log"))
-    t.gam.ns12 <- spsUtil::quiet(gamlss::gamlss(rain.week.nozeros~ns(time.nonzero, df = 1), sigma.formula=~ns(time.nonzero, df = 2),family=GA,
+    t.gam.ns12 <- spsUtil::quiet(gamlss::gamlss(rain.week.nozeros~poly(time.nonzero,1), sigma.formula=~nsp(time.nonzero, df = 2),family=GA,
                                  mu.link = "identity", sigma.link ="log"))
     ############
     model.selection[a,1] <- which.min(c(AIC(t.gam, k=2, c=TRUE),
