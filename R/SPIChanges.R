@@ -254,7 +254,6 @@ while (a <=47) {
                                  mu.link = "identity", sigma.link ="log"))
     t.gam.ns12 <- spsUtil::quiet(gamlss::gamlss(rain.week.nozeros~poly(time.nonzero,1), sigma.formula=~nsp(time.nonzero, df = 2),family=GA,
                                  mu.link = "identity", sigma.link ="log"))
-    ############
     model.selection[a,1] <- which.min(c(AIC(t.gam, k=2, c=TRUE),
                                         AIC(t.gam.ns10, k=2, c=TRUE),
                                         AIC(t.gam.ns01, k=2, c=TRUE),
@@ -264,7 +263,6 @@ while (a <=47) {
                                         AIC(t.gam.ns21, k=2, c=TRUE),
                                         AIC(t.gam.ns12, k=2, c=TRUE),
                                         AIC(t.gam.ns22, k=2, c=TRUE)))}
-  #data.week[initial.row:last.row,6] <- (probzero+(1-probzero)*pGA(rain.week,mu = t.gam$mu.fv[1], sigma = t.gam$sigma.fv[1],lower.tail = TRUE, log.p=FALSE))
   quasiprob <- (probzero+(1-probzero)*pGA(rain.week,mu = t.gam$mu.fv[1], sigma = t.gam$sigma.fv[1],lower.tail = TRUE, log.p=FALSE))
   quasiprob[which(rain.week==0)] <- (nz+1)/(2*n.week)
   data.week[initial.row:last.row,6] <- quasiprob
