@@ -23,9 +23,9 @@
 #' rainTS4 <- TSaggreg(daily.rain=daily.rain,start.date="1991-01-01",TS=4)
 #' Changes.in.the.SPI <- SPIChanges(rain.at.TS=rainTS4, only.linear = "yes")
 #' @importFrom gamlss gamlss
-#' @importFrom gamlss.dist GA pGA qGA
+#' @importFrom gamlss.dist GA pGA qGA BI
 #' @importFrom splines2 nsp
-#' @importFrom stats qnorm AIC glm binomial predict
+#' @importFrom stats qnorm AIC fitted
 #' @importFrom spsUtil quiet
  SPIChanges <- function(rain.at.TS, only.linear = "Yes"){
    rain.at.TS <- as.matrix(rain.at.TS)
@@ -67,14 +67,18 @@
    data.week <- data.week[order(data.week[,2],data.week[,3]),]
    month <- 1
    week <- 1
-   a <- 1
    model.selection <- matrix(NA,48,1)
    Changes.Freq.Drought <- matrix(NA,48,3)
+   for (a in 1:48){
    rain.week <- (data.week[which(data.week[,2]==month & data.week[,3]==week),4])
    n.week <- length(rain.week)
    rain.week.nozeros <- (rain.week[rain.week>0])
-   initial.row <- 1
-   last.row <- n.week
+   if (a > 1){
+     initial.row <- last.row+1
+     last.row <- initial.row+n.week-1} else{
+       initial.row <- 1
+       last.row <- n.week
+     }
    nz <- n.week - length(rain.week.nozeros)
    time=as.matrix(seq(1:n.week))
    probzero <- calc.probzero(rain.week, time)
@@ -123,7 +127,7 @@
                                          AIC(t.gam.ns12, k=2, c=TRUE),
                                          AIC(t.gam.ns22, k=2, c=TRUE)))}
 
-   quasiprob <- (probzero.st+(1-probzero)*pGA(rain.week,mu = t.gam$mu.fv[1], sigma = t.gam$sigma.fv[1],lower.tail = TRUE, log.p=FALSE))
+   quasiprob <- (probzero.st+(1-probzero.st)*pGA(rain.week,mu = t.gam$mu.fv[1], sigma = t.gam$sigma.fv[1],lower.tail = TRUE, log.p=FALSE))
    quasiprob[which(rain.week==0)] <- (nz+1)/(2*n.week)
    data.week[initial.row:last.row,6] <- quasiprob
    stat.rain.drought.mod <- qGA(0.159, mu = t.gam$mu.fv[1], sigma = t.gam$sigma.fv[1])
@@ -206,149 +210,12 @@
                                            pGA(stat.rain.drought.extr,mu = t.gam.ns22$mu.fv[(n.week-nz)], sigma = t.gam.ns22$sigma.fv[(n.week-nz)]))-0.023)
    }
    data.week[initial.row:last.row,7] <- quasiprob.ns
+   week <- week+1
+   if (week==5)
+   {month <- month+1
+   week <- 1}
 
-   while (a <=47) {
-     week <- week+1
-     a <- a+1
-     if (week==5)
-     {month <- month+1
-     week <- 1}
-     rain.week <- (data.week[which(data.week[,2]==month & data.week[,3]==week),4])
-     n.week <- length(rain.week)
-     rain.week.nozeros <- (rain.week[rain.week>0])
-     initial.row <- last.row+1
-     last.row <- initial.row+n.week-1
-     nz <- n.week - length(rain.week.nozeros)
-     time=as.matrix(seq(1:n.week))
-     probzero <- calc.probzero(rain.week, time)
-     probzero[probzero < 0.0001] <- 0
-     probzero.st <- calc.probzero.st(nz, n.week)
-     id=which(rain.week>0)
-     time.nonzero=as.vector(time[id])
-     t.gam <- spsUtil::quiet(gamlss::gamlss(rain.week.nozeros~1,family=GA, mu.link = "identity",
-                                            sigma.link ="log"))
-     if (only.linear == "yes"){
-       t.gam.ns10 <- spsUtil::quiet(gamlss::gamlss(rain.week.nozeros~poly(time.nonzero,1),family=GA,
-                                                   mu.link = "identity", sigma.link ="log"))
-       t.gam.ns01 <- spsUtil::quiet(gamlss::gamlss(rain.week.nozeros~1, sigma.formula=~poly(time.nonzero,1),
-                                                   family=GA, mu.link = "identity",sigma.link ="log"))
-       t.gam.ns11 <- spsUtil::quiet(gamlss::gamlss(rain.week.nozeros~poly(time.nonzero,1), sigma.formula=~poly(time.nonzero,1),
-                                                   family=GA, mu.link = "identity", sigma.link ="log"))
-       model.selection[a,1] <- which.min(c(AIC(t.gam, k=2, c=TRUE),
-                                           AIC(t.gam.ns10, k=2, c=TRUE),
-                                           AIC(t.gam.ns01, k=2, c=TRUE),
-                                           AIC(t.gam.ns11, k=2, c=TRUE)))
-     } else if (only.linear == "no") {
-       t.gam.ns10 <- spsUtil::quiet(gamlss::gamlss(rain.week.nozeros~poly(time.nonzero,1),family=GA, mu.link = "identity",
-                                                   sigma.link ="log"))
-       t.gam.ns01 <- spsUtil::quiet(gamlss::gamlss(rain.week.nozeros~1, sigma.formula=~poly(time.nonzero,1), family=GA,
-                                                   mu.link = "identity",sigma.link ="log"))
-       t.gam.ns11 <- spsUtil::quiet(gamlss::gamlss(rain.week.nozeros~poly(time.nonzero,1), sigma.formula=~poly(time.nonzero,1),
-                                                   family=GA, mu.link = "identity", sigma.link ="log"))
-       t.gam.ns20 <- spsUtil::quiet(gamlss::gamlss(rain.week.nozeros~nsp(time.nonzero, df = 2),family=GA, mu.link = "identity",
-                                                   sigma.link ="log"))
-       t.gam.ns02 <- spsUtil::quiet(gamlss::gamlss(rain.week.nozeros~1, sigma.formula=~nsp(time.nonzero, df = 2),
-                                                   family=GA, mu.link = "identity", sigma.link ="log"))
-       t.gam.ns22 <- spsUtil::quiet(gamlss::gamlss(rain.week.nozeros~nsp(time.nonzero, df = 2),
-                                                   sigma.formula=~nsp(time.nonzero, df = 2),family=GA, mu.link = "identity",
-                                                   sigma.link ="log"))
-       t.gam.ns21 <- spsUtil::quiet(gamlss::gamlss(rain.week.nozeros~nsp(time.nonzero, df = 2), sigma.formula=~poly(time.nonzero,1),family=GA,
-                                                   mu.link = "identity", sigma.link ="log"))
-       t.gam.ns12 <- spsUtil::quiet(gamlss::gamlss(rain.week.nozeros~poly(time.nonzero,1), sigma.formula=~nsp(time.nonzero, df = 2),family=GA,
-                                                   mu.link = "identity", sigma.link ="log"))
-       model.selection[a,1] <- which.min(c(AIC(t.gam, k=2, c=TRUE),
-                                           AIC(t.gam.ns10, k=2, c=TRUE),
-                                           AIC(t.gam.ns01, k=2, c=TRUE),
-                                           AIC(t.gam.ns11, k=2, c=TRUE),
-                                           AIC(t.gam.ns20, k=2, c=TRUE),
-                                           AIC(t.gam.ns02, k=2, c=TRUE),
-                                           AIC(t.gam.ns21, k=2, c=TRUE),
-                                           AIC(t.gam.ns12, k=2, c=TRUE),
-                                           AIC(t.gam.ns22, k=2, c=TRUE)))}
-     quasiprob <- (probzero.st+(1-probzero.st)*pGA(rain.week,mu = t.gam$mu.fv[1], sigma = t.gam$sigma.fv[1],lower.tail = TRUE, log.p=FALSE))
-     quasiprob[which(rain.week==0)] <- (nz+1)/(2*n.week)
-     data.week[initial.row:last.row,6] <- quasiprob
-     stat.rain.drought.mod <- qGA(0.159, mu = t.gam$mu.fv[1], sigma = t.gam$sigma.fv[1])
-     stat.rain.drought.sev <- qGA(0.067, mu = t.gam$mu.fv[1], sigma = t.gam$sigma.fv[1])
-     stat.rain.drought.extr <- qGA(0.023, mu = t.gam$mu.fv[1], sigma = t.gam$sigma.fv[1])
-     if (model.selection[a,1]==1){
-       quasiprob.ns <- as.matrix(data.week[initial.row:last.row,6])
-       Changes.Freq.Drought [a,] <- 0
-     }
-     if (model.selection[a,1]==2){
-       quasiprob.ns <- as.matrix(probzero+(1-probzero)*pGA(rain.week,mu = t.gam.ns10$mu.fv, sigma = t.gam.ns10$sigma.fv))
-       Changes.Freq.Drought [a,1] <- 100*((probzero[(n.week)]+(1-probzero[(n.week)])*
-                                             pGA(stat.rain.drought.mod,mu = t.gam.ns10$mu.fv[(n.week-nz)], sigma = t.gam.ns10$sigma.fv[(n.week-nz)]))-0.159)
-       Changes.Freq.Drought [a,2] <- 100*((probzero[(n.week)]+(1-probzero[(n.week)])*
-                                             pGA(stat.rain.drought.sev,mu = t.gam.ns10$mu.fv[(n.week-nz)], sigma = t.gam.ns10$sigma.fv[(n.week-nz)]))-0.067)
-       Changes.Freq.Drought [a,3] <- 100*((probzero[(n.week)]+(1-probzero[(n.week)])*
-                                             pGA(stat.rain.drought.extr,mu = t.gam.ns10$mu.fv[(n.week-nz)], sigma = t.gam.ns10$sigma.fv[(n.week-nz)]))-0.023)
-     }
-     if (model.selection[a,1]==3){
-       quasiprob.ns <- as.matrix(probzero+(1-probzero)*pGA(rain.week,mu = t.gam.ns01$mu.fv, sigma = t.gam.ns01$sigma.fv))
-       Changes.Freq.Drought [a,1] <- 100*((probzero[(n.week)]+(1-probzero[(n.week)])*
-                                             pGA(stat.rain.drought.mod,mu = t.gam.ns01$mu.fv[(n.week-nz)], sigma = t.gam.ns01$sigma.fv[(n.week-nz)]))-0.159)
-       Changes.Freq.Drought [a,2] <- 100*((probzero[(n.week)]+(1-probzero[(n.week)])*
-                                             pGA(stat.rain.drought.sev,mu = t.gam.ns01$mu.fv[(n.week-nz)], sigma = t.gam.ns01$sigma.fv[(n.week-nz)]))-0.067)
-       Changes.Freq.Drought [a,3] <- 100*((probzero[(n.week)]+(1-probzero[(n.week)])*
-                                             pGA(stat.rain.drought.extr,mu = t.gam.ns01$mu.fv[(n.week-nz)], sigma = t.gam.ns01$sigma.fv[(n.week-nz)]))-0.023)
-     }
-     if (model.selection[a,1]==4){
-       quasiprob.ns <- as.matrix(probzero+(1-probzero)*pGA(rain.week,mu = t.gam.ns11$mu.fv, sigma = t.gam.ns11$sigma.fv))
-       Changes.Freq.Drought [a,1] <- 100*((probzero[(n.week)]+(1-probzero[(n.week)])*
-                                             pGA(stat.rain.drought.mod,mu = t.gam.ns11$mu.fv[(n.week-nz)], sigma = t.gam.ns11$sigma.fv[(n.week-nz)]))-0.159)
-       Changes.Freq.Drought [a,2] <- 100*((probzero[(n.week)]+(1-probzero[(n.week)])*
-                                             pGA(stat.rain.drought.sev,mu = t.gam.ns11$mu.fv[(n.week-nz)], sigma = t.gam.ns11$sigma.fv[(n.week-nz)]))-0.067)
-       Changes.Freq.Drought [a,3] <- 100*((probzero[(n.week)]+(1-probzero[(n.week)])*
-                                             pGA(stat.rain.drought.extr,mu = t.gam.ns11$mu.fv[(n.week-nz)], sigma = t.gam.ns11$sigma.fv[(n.week-nz)]))-0.023)
-     }
-     if (model.selection[a,1]==5){
-       quasiprob.ns <- as.matrix(probzero+(1-probzero)*pGA(rain.week,mu = t.gam.ns20$mu.fv, sigma = t.gam.ns20$sigma.fv))
-       Changes.Freq.Drought [a,1] <- 100*((probzero[(n.week)]+(1-probzero[(n.week)])*
-                                             pGA(stat.rain.drought.mod,mu = t.gam.ns20$mu.fv[(n.week-nz)], sigma = t.gam.ns20$sigma.fv[(n.week-nz)]))-0.159)
-       Changes.Freq.Drought [a,2] <- 100*((probzero[(n.week)]+(1-probzero[(n.week)])*
-                                             pGA(stat.rain.drought.sev,mu = t.gam.ns20$mu.fv[(n.week-nz)], sigma = t.gam.ns20$sigma.fv[(n.week-nz)]))-0.067)
-       Changes.Freq.Drought [a,3] <- 100*((probzero[(n.week)]+(1-probzero[(n.week)])*
-                                             pGA(stat.rain.drought.extr,mu = t.gam.ns20$mu.fv[(n.week-nz)], sigma = t.gam.ns20$sigma.fv[(n.week-nz)]))-0.023)
-     }
-     if (model.selection[a,1]==6){
-       quasiprob.ns <- as.matrix(probzero+(1-probzero)*pGA(rain.week,mu = t.gam.ns02$mu.fv, sigma = t.gam.ns02$sigma.fv))
-       Changes.Freq.Drought [a,1] <- 100*((probzero[(n.week)]+(1-probzero[(n.week)])*
-                                             pGA(stat.rain.drought.mod,mu = t.gam.ns02$mu.fv[(n.week-nz)], sigma = t.gam.ns02$sigma.fv[(n.week-nz)]))-0.159)
-       Changes.Freq.Drought [a,2] <- 100*((probzero[(n.week)]+(1-probzero[(n.week)])*
-                                             pGA(stat.rain.drought.sev,mu = t.gam.ns02$mu.fv[(n.week-nz)], sigma = t.gam.ns02$sigma.fv[(n.week-nz)]))-0.067)
-       Changes.Freq.Drought [a,3] <- 100*((probzero[(n.week)]+(1-probzero[(n.week)])*
-                                             pGA(stat.rain.drought.extr,mu = t.gam.ns02$mu.fv[(n.week-nz)], sigma = t.gam.ns02$sigma.fv[(n.week-nz)]))-0.023)
-     }
-     if (model.selection[a,1]==7){
-       quasiprob.ns <- as.matrix(probzero+(1-probzero)*pGA(rain.week,mu = t.gam.ns21$mu.fv, sigma = t.gam.ns21$sigma.fv))
-       Changes.Freq.Drought [a,1] <- 100*((probzero[(n.week)]+(1-probzero[(n.week)])*
-                                             pGA(stat.rain.drought.mod,mu = t.gam.ns21$mu.fv[(n.week-nz)], sigma = t.gam.ns21$sigma.fv[(n.week-nz)]))-0.159)
-       Changes.Freq.Drought [a,2] <- 100*((probzero[(n.week)]+(1-probzero[(n.week)])*
-                                             pGA(stat.rain.drought.sev,mu = t.gam.ns21$mu.fv[(n.week-nz)], sigma = t.gam.ns21$sigma.fv[(n.week-nz)]))-0.067)
-       Changes.Freq.Drought [a,3] <- 100*((probzero[(n.week)]+(1-probzero[(n.week)])*
-                                             pGA(stat.rain.drought.extr,mu = t.gam.ns21$mu.fv[(n.week-nz)], sigma = t.gam.ns21$sigma.fv[(n.week-nz)]))-0.023)
-     }
-     if (model.selection[a,1]==8){
-       quasiprob.ns <- as.matrix(probzero+(1-probzero)*pGA(rain.week,mu = t.gam.ns12$mu.fv, sigma = t.gam.ns12$sigma.fv))
-       Changes.Freq.Drought [a,1] <- 100*((probzero[(n.week)]+(1-probzero[(n.week)])*
-                                             pGA(stat.rain.drought.mod,mu = t.gam.ns12$mu.fv[(n.week-nz)], sigma = t.gam.ns12$sigma.fv[(n.week-nz)]))-0.159)
-       Changes.Freq.Drought [a,2] <- 100*((probzero[(n.week)]+(1-probzero[(n.week)])*
-                                             pGA(stat.rain.drought.sev,mu = t.gam.ns12$mu.fv[(n.week-nz)], sigma = t.gam.ns12$sigma.fv[(n.week-nz)]))-0.067)
-       Changes.Freq.Drought [a,3] <- 100*((probzero[(n.week)]+(1-probzero[(n.week)])*
-                                             pGA(stat.rain.drought.extr,mu = t.gam.ns12$mu.fv[(n.week-nz)], sigma = t.gam.ns12$sigma.fv[(n.week-nz)]))-0.023)
-     }
-     if (model.selection[a,1]==9){
-       quasiprob.ns <- as.matrix(probzero+(1-probzero)*pGA(rain.week,mu = t.gam.ns22$mu.fv, sigma = t.gam.ns22$sigma.fv))
-       Changes.Freq.Drought [a,1] <- 100*((probzero[(n.week)]+(1-probzero[(n.week)])*
-                                             pGA(stat.rain.drought.mod,mu = t.gam.ns22$mu.fv[(n.week-nz)], sigma = t.gam.ns22$sigma.fv[(n.week-nz)]))-0.159)
-       Changes.Freq.Drought [a,2] <- 100*((probzero[(n.week)]+(1-probzero[(n.week)])*
-                                             pGA(stat.rain.drought.sev,mu = t.gam.ns22$mu.fv[(n.week-nz)], sigma = t.gam.ns22$sigma.fv[(n.week-nz)]))-0.067)
-       Changes.Freq.Drought [a,3] <- 100*((probzero[(n.week)]+(1-probzero[(n.week)])*
-                                             pGA(stat.rain.drought.extr,mu = t.gam.ns22$mu.fv[(n.week-nz)], sigma = t.gam.ns22$sigma.fv[(n.week-nz)]))-0.023)
-     }
-     data.week[initial.row:last.row,7] <- quasiprob.ns
-   }
+}
    data.week[,5] <- c(qnorm(data.week[,6], mean = 0, sd = 1))
    dry.values <- which(data.week[,5] <= 0)
    wet.values <- which(data.week[,5] > 0)
@@ -382,8 +249,8 @@
 
  calc.probzero <- function(rain.week,time) {
    zero_rain <- ifelse(rain.week == 0, 1, 0)
-   logit_model <- glm(zero_rain ~ time, family = binomial)
-   prob_zero_rain <- predict(logit_model,  type = "response")
+   modelo <- spsUtil::quiet(gamlss(zero_rain~poly(time,1), family = BI))
+   prob_zero_rain <- fitted(modelo, "mu")
    return(prob_zero_rain)
  }
 
