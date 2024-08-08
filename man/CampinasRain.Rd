@@ -7,7 +7,7 @@
 \format{
 \subsection{\code{CampinasRain}}{
 
-A data frame with 2 columns and 11688 rows:
+A dataframe with 2 columns and 11688 rows:
 \describe{
 \item{Date}{Date}
 \item{Rain}{Daily rainfall amounts recorded in millimetre in Campinas state of Sao Paulo, Brazil}
@@ -16,7 +16,7 @@ A data frame with 2 columns and 11688 rows:
 }
 }
 \source{
-\url{https://http://www.ciiagro.org.br}
+\url{https://www.iac.sp.gov.br/}
 }
 \usage{
 CampinasRain
