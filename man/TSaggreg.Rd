@@ -4,7 +4,7 @@
 \alias{TSaggreg}
 \title{Aggregates daily rainfall totals at quasi-week time scales}
 \usage{
-TSaggreg(daily.rain, start.date = "1990-01-01", TS = 4)
+TSaggreg(daily.rain, start.date, TS = 4)
 }
 \arguments{
 \item{daily.rain}{Vector, 1-column matrix or data frame with daily rainfall totals}
