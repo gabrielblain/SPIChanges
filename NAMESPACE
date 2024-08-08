@@ -2,6 +2,7 @@
 
 export(SPIChanges)
 export(TSaggreg)
+importFrom(dplyr,bind_rows)
 importFrom(gamlss,gamlss)
 importFrom(gamlss.dist,BI)
 importFrom(gamlss.dist,GA)
