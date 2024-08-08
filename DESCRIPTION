@@ -31,7 +31,8 @@ Imports:
     gamlss.dist,
     splines2,
     stats,
-    spsUtil
+    spsUtil,
+    dplyr
 LazyData: true
 Suggests: 
     testthat (>= 3.0.0)
