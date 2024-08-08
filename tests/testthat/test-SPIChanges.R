@@ -1,11 +1,11 @@
-daily.rain <- CampinasRain[,2]
+daily.rain <-CampinasRain$Rain
 rainTS4 <- TSaggreg(daily.rain=daily.rain,start.date="1991-01-01",TS=4)
 
 test_that("SPIChanges() works as expected in example", {
   Changes <- SPIChanges(rain.at.TS=rainTS4, only.linear = "yes")
   expect_type(Changes, "list")
-  expect_length(Changes, 3)
-  expect_named(Changes, c("data.week", "model.selection", "Changes.Freq.Drought"))
+  expect_length(Changes, 4)
+  expect_named(Changes, c("data.week", "model.selection", "Changes.Freq.Drought","Model.Drought"))
   expect_equal(Changes[[1]]$SPI[1:4], c(1.48, 2.42, 2.44, 2.01),
                tolerance = 0.05)
   expect_equal(Changes[[1]]$Exp.Acum.Prob[1:4], c(0.93, 0.99, 0.99, 0.98),
@@ -22,13 +22,21 @@ test_that("SPIChanges() works as expected in example", {
                tolerance = 0.05)
   expect_equal(Changes[[3]][1:4,5], c(0.00, 0.00, -2.29, -2.29),
                tolerance = 0.05)
+  expect_equal(Changes[[4]][1:4,1], c(1, 1, 1, 1))
+  expect_equal(Changes[[4]][1:4,2], c(1, 1, 1, 1))
+  expect_equal(Changes[[4]][1:4,3], c(15.9, 15.9, 15.9, 15.9),
+               tolerance = 0.05)
+  expect_equal(Changes[[4]][1:4,4], c(6.7, 6.7, 6.7, 6.7),
+               tolerance = 0.05)
+  expect_equal(Changes[[4]][1:4,5], c(2.3, 2.3, 2.3, 2.3),
+               tolerance = 0.05)
 })
 
 test_that("SPIChanges() works when only.linear = no", {
   Changes <- SPIChanges(rain.at.TS=rainTS4, only.linear = "no")
   expect_type(Changes, "list")
-  expect_length(Changes, 3)
-  expect_named(Changes, c("data.week", "model.selection", "Changes.Freq.Drought"))
+  expect_length(Changes, 4)
+  expect_named(Changes, c("data.week", "model.selection", "Changes.Freq.Drought","Model.Drought"))
   expect_equal(Changes[[1]]$SPI[1:4], c(1.48, 2.42, 2.44, 2.01),
                tolerance = 0.05)
   expect_equal(Changes[[1]]$Exp.Acum.Prob[1:4], c(0.93, 0.99, 0.99, 0.98),
@@ -45,9 +53,17 @@ test_that("SPIChanges() works when only.linear = no", {
                tolerance = 0.05)
   expect_equal(Changes[[3]][1:4,5], c(0.00, 0.00, -2.29, -2.29),
                tolerance = 0.05)
+  expect_equal(Changes[[4]][1:4,1], c(1, 1, 1, 1))
+  expect_equal(Changes[[4]][1:4,2], c(1, 1, 1, 1))
+  expect_equal(Changes[[4]][1:4,3], c(15.9, 15.9, 15.9, 15.9),
+               tolerance = 0.05)
+  expect_equal(Changes[[4]][1:4,4], c(6.7, 6.7, 6.7, 6.7),
+               tolerance = 0.05)
+  expect_equal(Changes[[4]][1:4,5], c(2.3, 2.3, 2.3, 2.3),
+               tolerance = 0.05)
 })
 
-daily.rain <- CampinasRain[,2]
+daily.rain <-CampinasRain$Rain
 rainTS4 <- TSaggreg(daily.rain=daily.rain,start.date="1991-01-01",TS=4)
 test_that("SPIChanges() works as expected in example", {
   rainTS4.warming <- rainTS4[1:1439,]
@@ -55,8 +71,8 @@ test_that("SPIChanges() works as expected in example", {
   Changes <- SPIChanges(rain.at.TS=rainTS4.warming, only.linear = "yes"),
   "Less than 30 years of rainfall records. Longer periods are highly recommended.")
   expect_type(Changes, "list")
-  expect_length(Changes, 3)
-  expect_named(Changes, c("data.week", "model.selection", "Changes.Freq.Drought"))
+  expect_length(Changes, 4)
+  expect_named(Changes, c("data.week", "model.selection", "Changes.Freq.Drought","Model.Drought"))
   expect_equal(Changes[[1]]$SPI[1:4], c(1.45, 2.40, 2.39, 1.95),
                tolerance = 0.05)
   expect_equal(Changes[[1]]$Exp.Acum.Prob[1:4], c(0.93, 0.99, 0.99, 0.97),
@@ -72,6 +88,14 @@ test_that("SPIChanges() works as expected in example", {
   expect_equal(Changes[[3]][1:4,4], c(0.00, 0.00, -5.99, -5.93),
                tolerance = 0.05)
   expect_equal(Changes[[3]][1:4,5], c(0.00, 0.00, -2.24, -2.24),
+               tolerance = 0.05)
+  expect_equal(Changes[[4]][1:4,1], c(1, 1, 1, 1))
+  expect_equal(Changes[[4]][1:4,2], c(1, 1, 1, 1))
+  expect_equal(Changes[[4]][1:4,3], c(15.9, 15.9, 15.9, 15.9),
+               tolerance = 0.05)
+  expect_equal(Changes[[4]][1:4,4], c(6.7, 6.7, 6.7, 6.7),
+               tolerance = 0.05)
+  expect_equal(Changes[[4]][1:4,5], c(2.3, 2.3, 2.3, 2.3),
                tolerance = 0.05)
 })
 
