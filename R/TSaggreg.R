@@ -18,7 +18,7 @@
 #' @importFrom lubridate year month day parse_date_time
 #' @importFrom zoo rollsum
 #' @importFrom stats na.omit
-TSaggreg <- function(daily.rain,start.date="1990-01-01",TS=4){
+TSaggreg <- function(daily.rain,start.date,TS=4){
   daily.rain=as.matrix(daily.rain)
   if (!is.numeric(daily.rain) || any(is.na(daily.rain)) ||
       length(daily.rain[daily.rain < 0]) != 0 || ncol(daily.rain) != 1) {
@@ -122,7 +122,7 @@ TSaggreg <- function(daily.rain,start.date="1990-01-01",TS=4){
                                       "bdY",
                                       "bdy"
                                     ),
-                                    tz = Sys.timezone()),
+                                    tz = "UTC"),
     warning = function(c) {
       stop(
         call. = FALSE,
