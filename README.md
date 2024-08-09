@@ -4,6 +4,7 @@
 <!-- badges: start -->
 
 [![R-CMD-check](https://github.com/gabrielblain/SPIChanges/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/gabrielblain/SPIChanges/actions/workflows/R-CMD-check.yaml)
+
 <!-- badges: end -->
 
 A package designed to improve the interpretation of the Standardized
@@ -15,8 +16,12 @@ The `SPIChanges` was created to detect changes in rainfall patterns and
 quantify how they affect the probability of a drought event, quantified
 by the SPI (Mckee et al. 1993), occurring. The package applies a
 non-stationary approach proposed by Blain et al. (2022), designed to
-isolate the effect of such changes on the central tendency and the
+isolate the effect of such changes on the central tendency and
 dispersion of the SPI frequency distributions.
+
+The package depends on R (\>= 2.10) and imports the following packages:
+dplyr, gamlss, gamlss.dist, lubridate, splines2, spsUtil, stats, and
+zoo.
 
 ## Installation
 
@@ -39,10 +44,10 @@ of this drought index (NSPI) has become an important step to adjust for
 possible changing rainfall patterns (Park et al. 2019). Previous
 studies, however, have shown that interpreting NSPI estimates is not
 straightforward, as time-varying parametric distributions remove the
-effect of rainfall trends on the NSPI (Shiau, 2020). Consequently, in
-the presence of decreasing (or increasing) rainfall trends, the NSPI may
-underestimate (or overestimate) drought occurrence (Park et al., 2019;
-Shiau, 2020).
+effect of rainfall trends on NSPI estimates (Shiau, 2020). Consequently,
+in the presence of decreasing (or increasing) rainfall trends, the NSPI
+may underestimate (or overestimate) drought occurrence (Park et al.,
+2019; Shiau, 2020).
 
 This package, based on the study of Blain et al. (2022), demonstrates
 that the challenge of interpreting SPI estimates under changing climatic
@@ -52,9 +57,9 @@ to detect trends in rainfall patterns and quantify their effect on the
 occurrence of specific SPI values. In other words, the `SPIChanges`
 package leverages the non-stationary approach of the NSPI algorithm to
 detect trends in rainfall series and enhance the understanding of how
-changes in rainfall variability affect the expected frequency of
-specific SPI values. With this background, the key function of this
-package - `SPIChanges()` - is based on the following steps:
+changes in rainfall patterns affect the expected frequency of drought
+occurrence. With this background, the key function of this package -
+`SPIChanges()` - is based on the following steps:
 
 1.  Given a rainfall series with data accumulated at a particular time
     scale, the package uses the stationary version of the two-parameter
@@ -70,10 +75,9 @@ package - `SPIChanges()` - is based on the following steps:
     cumulative probability of each rainfall amount occurring under
     changing climate conditions.
 
-4.  The package compares the probabilities estimated in steps 1 and 3.
-    This comparison may indicate whether the frequency of a particular
-    drought event, quantified by the SPI, has increased or decreased
-    over time.
+4.  The package compares the probabilities estimated in steps 1 and 3 to
+    indicate whether the frequency of drought or wet events, quantified
+    by the SPI, has increased or decreased over time.
 
 ## Basic Instructions
 
@@ -160,6 +164,9 @@ Changes.Freq.Drought: changes in the frequency of moderate, severe and
 extreme drought events, as definied by the SPI classification system,
 caused by the changes in rainfall patterns.
 
+Model.Drought: Year to year changes in the expected frequency of
+moderate, severe and extreme drought events.
+
 ## Example 2
 
 Using only linear non-stationary parametric models to assess the
@@ -169,7 +176,6 @@ maximum likelihood method. The packages `gamlss` and `gamlss.dist` are
 used for such estimations.
 
 ``` r
-#
 library(SPIChanges)
 daily.rain <- CampinasRain[,2]
 rainTS4 <- TSaggreg(daily.rain=daily.rain,start.date="1991-01-01",TS=4)
@@ -183,39 +189,39 @@ Changes.in.the.SPI <- SPIChanges(rain.at.TS=rainTS4, only.linear = "Yes")
 head(Changes.in.the.SPI$data.week)
 ```
 
-    ##   Year Month quasiWeek rain.at.TS  SPI Exp.Acum.Prob Actual.Acum.Prob
-    ## 1 1991     1         4      406.3 1.48          0.93             0.86
-    ## 2 1991     2         1      517.7 2.42          0.99             0.99
-    ## 3 1991     2         2      530.5 2.44          0.99             0.92
-    ## 4 1991     2         3      455.5 2.01          0.98             0.90
-    ## 5 1991     2         4      242.5 0.75          0.77             0.55
-    ## 6 1991     3         1      202.5 0.49          0.69             0.69
+    ##   Year Month quasiWeek rain.at.TS   SPI Exp.Acum.Prob Actual.Acum.Prob
+    ## 1 1991     1         4      406.3 1.483         0.931            0.864
+    ## 2 1991     2         1      517.7 2.417         0.992            0.992
+    ## 3 1991     2         2      530.5 2.437         0.993            0.918
+    ## 4 1991     2         3      455.5 2.007         0.978            0.897
+    ## 5 1991     2         4      242.5 0.746         0.772            0.551
+    ## 6 1991     3         1      202.5 0.488         0.687            0.687
     ##   ChangeFreq
-    ## 1       6.72
-    ## 2       0.00
-    ## 3       7.45
-    ## 4       8.07
-    ## 5      22.10
-    ## 6       0.00
+    ## 1      6.716
+    ## 2      0.000
+    ## 3      7.448
+    ## 4      8.071
+    ## 5     22.097
+    ## 6      0.000
 
 ``` r
 head(Changes.in.the.SPI$data.week)
 ```
 
-    ##   Year Month quasiWeek rain.at.TS  SPI Exp.Acum.Prob Actual.Acum.Prob
-    ## 1 1991     1         4      406.3 1.48          0.93             0.86
-    ## 2 1991     2         1      517.7 2.42          0.99             0.99
-    ## 3 1991     2         2      530.5 2.44          0.99             0.92
-    ## 4 1991     2         3      455.5 2.01          0.98             0.90
-    ## 5 1991     2         4      242.5 0.75          0.77             0.55
-    ## 6 1991     3         1      202.5 0.49          0.69             0.69
+    ##   Year Month quasiWeek rain.at.TS   SPI Exp.Acum.Prob Actual.Acum.Prob
+    ## 1 1991     1         4      406.3 1.483         0.931            0.864
+    ## 2 1991     2         1      517.7 2.417         0.992            0.992
+    ## 3 1991     2         2      530.5 2.437         0.993            0.918
+    ## 4 1991     2         3      455.5 2.007         0.978            0.897
+    ## 5 1991     2         4      242.5 0.746         0.772            0.551
+    ## 6 1991     3         1      202.5 0.488         0.687            0.687
     ##   ChangeFreq
-    ## 1       6.72
-    ## 2       0.00
-    ## 3       7.45
-    ## 4       8.07
-    ## 5      22.10
-    ## 6       0.00
+    ## 1      6.716
+    ## 2      0.000
+    ## 3      7.448
+    ## 4      8.071
+    ## 5     22.097
+    ## 6      0.000
 
 ``` r
 head(Changes.in.the.SPI$model.selection)
@@ -234,12 +240,12 @@ head(Changes.in.the.SPI$Changes.Freq.Drought)
 ```
 
     ##      Month quasiWeek Moderate Severe Extreme
-    ## [1,]     1         1     0.00   0.00    0.00
-    ## [2,]     1         2     0.00   0.00    0.00
-    ## [3,]     1         3   -12.98  -6.43   -2.29
-    ## [4,]     1         4   -12.83  -6.43   -2.29
-    ## [5,]     2         1     0.00   0.00    0.00
-    ## [6,]     2         2     2.33  -3.41   -2.01
+    ## [1,]     1         1    0.000  0.000   0.000
+    ## [2,]     1         2    0.000  0.000   0.000
+    ## [3,]     1         3  -12.976 -6.431  -2.288
+    ## [4,]     1         4  -12.833 -6.433  -2.289
+    ## [5,]     2         1    0.000  0.000   0.000
+    ## [6,]     2         2    2.330 -3.405  -2.013
 
 ## Example 3
 
@@ -250,7 +256,6 @@ maximum likelihood method. The packages `gamlss` and `gamlss.dist` are
 used for such estimations.
 
 ``` r
-#
 library(SPIChanges)
 daily.rain <- CampinasRain[,2]
 rainTS4 <- TSaggreg(daily.rain=daily.rain,start.date="1991-01-01",TS=4)
@@ -264,39 +269,39 @@ Changes.in.the.SPI <- SPIChanges(rain.at.TS=rainTS4, only.linear = "No")
 head(Changes.in.the.SPI$data.week)
 ```
 
-    ##   Year Month quasiWeek rain.at.TS  SPI Exp.Acum.Prob Actual.Acum.Prob
-    ## 1 1991     1         4      406.3 1.48          0.93             0.86
-    ## 2 1991     2         1      517.7 2.42          0.99             0.99
-    ## 3 1991     2         2      530.5 2.44          0.99             0.82
-    ## 4 1991     2         3      455.5 2.01          0.98             0.90
-    ## 5 1991     2         4      242.5 0.75          0.77             0.55
-    ## 6 1991     3         1      202.5 0.49          0.69             0.69
+    ##   Year Month quasiWeek rain.at.TS   SPI Exp.Acum.Prob Actual.Acum.Prob
+    ## 1 1991     1         4      406.3 1.483         0.931            0.864
+    ## 2 1991     2         1      517.7 2.417         0.992            0.992
+    ## 3 1991     2         2      530.5 2.437         0.993            0.815
+    ## 4 1991     2         3      455.5 2.007         0.978            0.897
+    ## 5 1991     2         4      242.5 0.746         0.772            0.551
+    ## 6 1991     3         1      202.5 0.488         0.687            0.687
     ##   ChangeFreq
-    ## 1       6.72
-    ## 2       0.00
-    ## 3      17.73
-    ## 4       8.07
-    ## 5      22.10
-    ## 6       0.00
+    ## 1      6.716
+    ## 2      0.000
+    ## 3     17.733
+    ## 4      8.071
+    ## 5     22.097
+    ## 6      0.000
 
 ``` r
 head(Changes.in.the.SPI$data.week)
 ```
 
-    ##   Year Month quasiWeek rain.at.TS  SPI Exp.Acum.Prob Actual.Acum.Prob
-    ## 1 1991     1         4      406.3 1.48          0.93             0.86
-    ## 2 1991     2         1      517.7 2.42          0.99             0.99
-    ## 3 1991     2         2      530.5 2.44          0.99             0.82
-    ## 4 1991     2         3      455.5 2.01          0.98             0.90
-    ## 5 1991     2         4      242.5 0.75          0.77             0.55
-    ## 6 1991     3         1      202.5 0.49          0.69             0.69
+    ##   Year Month quasiWeek rain.at.TS   SPI Exp.Acum.Prob Actual.Acum.Prob
+    ## 1 1991     1         4      406.3 1.483         0.931            0.864
+    ## 2 1991     2         1      517.7 2.417         0.992            0.992
+    ## 3 1991     2         2      530.5 2.437         0.993            0.815
+    ## 4 1991     2         3      455.5 2.007         0.978            0.897
+    ## 5 1991     2         4      242.5 0.746         0.772            0.551
+    ## 6 1991     3         1      202.5 0.488         0.687            0.687
     ##   ChangeFreq
-    ## 1       6.72
-    ## 2       0.00
-    ## 3      17.73
-    ## 4       8.07
-    ## 5      22.10
-    ## 6       0.00
+    ## 1      6.716
+    ## 2      0.000
+    ## 3     17.733
+    ## 4      8.071
+    ## 5     22.097
+    ## 6      0.000
 
 ``` r
 head(Changes.in.the.SPI$model.selection)
@@ -315,12 +320,12 @@ head(Changes.in.the.SPI$Changes.Freq.Drought)
 ```
 
     ##      Month quasiWeek Moderate Severe Extreme
-    ## [1,]     1         1     0.00   0.00    0.00
-    ## [2,]     1         2     0.00   0.00    0.00
-    ## [3,]     1         3   -12.98  -6.43   -2.29
-    ## [4,]     1         4   -12.83  -6.43   -2.29
-    ## [5,]     2         1     0.00   0.00    0.00
-    ## [6,]     2         2    22.49  13.20    5.94
+    ## [1,]     1         1    0.000  0.000   0.000
+    ## [2,]     1         2    0.000  0.000   0.000
+    ## [3,]     1         3  -12.976 -6.431  -2.288
+    ## [4,]     1         4  -12.833 -6.433  -2.289
+    ## [5,]     2         1    0.000  0.000   0.000
+    ## [6,]     2         2   22.490 13.201   5.940
 
 # Details
 
@@ -366,6 +371,40 @@ freedom.
 The gamma distribution has two parameters: the shape and scale. Their
 relationships with the mean and dispersion are given in several studies
 including Blain et al (2022).
+
+Precipitation frequency distributions are zero-bounded, thus a mixed
+function that combines the empirical probabilities of no rainfall events
+(q) and the probability given by the parametric distribution
+G(x\>0,mu,sigma) must be employed to calculate the SPI (equation 1).
+
+$$
+H(x) = q + (1-q)G(x > 0, \mu, \sigma)      \tag{1}
+$$
+
+In cases where model 1 has been selected (stationary process), q is
+calculated by the system of equations 2.1 and 2.2 , as suggested in
+Stagge et al. (2015, 2022).
+
+$$
+q = \frac{nz}{n +1}             \tag{if x > 0,    2.1}
+$$
+
+$$
+q = \frac{\frac{nz}{n +1}}{2} \tag{if x = 0,    2.2} 
+$$ where n is the sample size and nz is the number of zero precipitation
+records in the sample.
+
+In cases where one of the non-stationary models has been selected, a
+non-stationary binomial distribution, is used to calculate q. The
+parameter of this distribution is allowed to vary on time linearly. The
+binomial distribution is also fitted using GAMLSS models (packages
+`gamlss` and `gamlss.dist`), in which zero rain is successes and
+positive rain values are failures (equation 3).
+
+$$
+gamlss(SuccFail~poly(time,1), family = BI) \tag{3}
+$$ where SuccFail represents the counts of successes(1) and failures
+(0).
 
 ## BugReports:
 
@@ -419,3 +458,5 @@ location, scale and shape. Appl Stat 54(3):507–554
 Shiau, J-T. 2020. Effects of Gamma-Distribution Variations on SPI-Based
 Stationary and non-stationary Drought Analyses. Water Resources
 Management, 34:2081-2095. <https://doi.org/10.1007/s11269-020-02548-x>
+
+ToDO: ADD other references
