@@ -105,7 +105,7 @@ TSaggreg <- function(daily.rain,start.date,TS=4){
 #'
 #' @param x User entered date value
 #' @return Validated date string as a `POSIXct` object.
-#' @note This was taken from \CRANpkg{nasapower}.
+#' @note This was taken from \CRANpkg{nasapower}, but tz changed to UTC.
 #' @example .check_date(x)
 #' @author Adam H. Sparks \email{adamhsparks@@gmail.com}
 #' @keywords Internal
