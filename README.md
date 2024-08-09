@@ -459,4 +459,13 @@ Shiau, J-T. 2020. Effects of Gamma-Distribution Variations on SPI-Based
 Stationary and non-stationary Drought Analyses. Water Resources
 Management, 34:2081-2095. <https://doi.org/10.1007/s11269-020-02548-x>
 
+Stagge J H, Tallaksen L M, Gudmundsson L, Van Loon A F, Stahl K 2015
+Candidate distribution for climatological drought indices (SPI and
+SPEI). International Journal of Climatology, 35,4027–4040.
+<https://doi.org/10.1002/joc.4267>
+
+Stagge J H and Sung K 2022 A Nonstationary Standardized Precipitation
+Index (NSPI) using Bayesian splines. Journal of Applied Meteorology and
+Climatology, 61, 761-779. <https://doi.org/10.1175/JAMC-D-21-0244.1>
+
 ToDO: ADD other references
