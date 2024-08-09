@@ -15,7 +15,7 @@
 #'   \item{model.selection}{The generalized additive model that best fits the rainfall series}
 #'   \item{Changes.Freq.Drought}{changes in the frequency of moderate, severe and extreme drought events,
 #'   as definied by the SPI classification system, caused by the changes in rainfall patterns.}
-#'   \item{Model.Drought}{Year to year changes in the expected frequency of moderate,severe and extreme drought events.}
+#'   \item{Model.Drought}{Year to year changes in the expected frequency of moderate, severe and extreme drought events.}
 #'  }
 #' @export
 #' @examples
@@ -132,7 +132,6 @@
                                          AIC(t.gam.ns22, k=2, c=TRUE)))}
 
    quasiprob <- (probzero.st+(1-probzero.st)*pGA(rain.week,mu = t.gam$mu.fv[1], sigma = t.gam$sigma.fv[1],lower.tail = TRUE, log.p=FALSE))
-   quasiprob[which(rain.week==0)] <- (nz+1)/(2*n.week)
    quasiprob[quasiprob < 0.001351] <- 0.001351
    quasiprob[quasiprob > 0.998649] <- 0.998649
    data.week[initial.row:last.row,6] <- quasiprob
@@ -298,5 +297,5 @@
  #' @keywords Internal
 
  calc.probzero.st <- function(nz, n.week) {
-   ifelse(nz == 0, 0, nz /(n.week+1))
+   ifelse(nz == 0, (nz /(n.week+1))/2, nz /(n.week+1))
  }
