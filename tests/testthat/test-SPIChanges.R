@@ -1,26 +1,26 @@
 daily.rain <-CampinasRain$Rain
-rainTS4 <- TSaggreg(daily.rain=daily.rain,start.date="1991-01-01",TS=4)
+rainTS4 <- TSaggreg(daily.rain=daily.rain,start.date="1980-01-01",TS=4)
 
 test_that("SPIChanges() works as expected in example", {
   Changes <- SPIChanges(rain.at.TS=rainTS4, only.linear = "yes")
   expect_type(Changes, "list")
   expect_length(Changes, 4)
   expect_named(Changes, c("data.week", "model.selection", "Changes.Freq.Drought","Model.Drought"))
-  expect_equal(Changes[[1]]$SPI[1:4], c(1.48, 2.42, 2.44, 2.01),
+  expect_equal(Changes[[1]]$SPI[1:4], c(-0.203, -0.035,  0.031,  0.122),
                tolerance = 0.05)
-  expect_equal(Changes[[1]]$Exp.Acum.Prob[1:4], c(0.93, 0.99, 0.99, 0.98),
+  expect_equal(Changes[[1]]$Exp.Acum.Prob[1:4], c(0.420, 0.486, 0.513, 0.549),
                tolerance = 0.05)
-  expect_equal(Changes[[1]]$Actual.Acum.Prob[1:4], c(0.86, 0.99, 0.92, 0.90),
+  expect_equal(Changes[[1]]$Actual.Acum.Prob[1:4], c(0.337, 0.486, 0.513, 0.356),
                tolerance = 0.05)
-  expect_equal(Changes[[1]]$ChangeFreq[1:4], c(6.72, 0.00, 7.45, 8.07),
+  expect_equal(Changes[[1]]$ChangeFreq[1:4], c(-0.082,  0.000,  0.000, 19.305),
                tolerance = 0.05)
-  expect_equal(Changes[[2]][1:4,3], c(1, 1, 3, 3),
+  expect_equal(Changes[[2]][1:4,3], c(1, 3, 1, 3),
                tolerance = 0.00)
-  expect_equal(Changes[[3]][1:4,3], c(0.00, 0.00, -12.98, -12.83),
+  expect_equal(Changes[[3]][1:4,3], c(0.000, 7.548, 0.000, 9.939),
                tolerance = 0.05)
-  expect_equal(Changes[[3]][1:4,4], c(0.00, 0.00, -6.43, -6.43),
+  expect_equal(Changes[[3]][1:4,4], c(0.000, 6.888, 0.000, 9.083),
                tolerance = 0.05)
-  expect_equal(Changes[[3]][1:4,5], c(0.00, 0.00, -2.29, -2.29),
+  expect_equal(Changes[[3]][1:4,5], c(0.000, 4.756, 0.000, 6.448),
                tolerance = 0.05)
   expect_equal(Changes[[4]][1:4,1], c(1, 1, 1, 1))
   expect_equal(Changes[[4]][1:4,2], c(1, 1, 1, 1))
@@ -37,34 +37,34 @@ test_that("SPIChanges() works when only.linear = no", {
   expect_type(Changes, "list")
   expect_length(Changes, 4)
   expect_named(Changes, c("data.week", "model.selection", "Changes.Freq.Drought","Model.Drought"))
-  expect_equal(Changes[[1]]$SPI[1:4], c(1.48, 2.42, 2.44, 2.01),
+  expect_equal(Changes[[1]]$SPI[1:4], c(-0.203, -0.035,  0.031,  0.122),
                tolerance = 0.05)
-  expect_equal(Changes[[1]]$Exp.Acum.Prob[1:4], c(0.93, 0.99, 0.99, 0.98),
+  expect_equal(Changes[[1]]$Exp.Acum.Prob[1:4], c(0.420, 0.486, 0.513, 0.549),
                tolerance = 0.05)
-  expect_equal(Changes[[1]]$Actual.Acum.Prob[1:4], c(0.86, 0.99, 0.82, 0.90),
+  expect_equal(Changes[[1]]$Actual.Acum.Prob[1:4], c(0.259, 0.486, 0.513, 0.598),
                tolerance = 0.05)
-  expect_equal(Changes[[1]]$ChangeFreq[1:4], c(6.72, 0.00, 17.73, 8.07),
+  expect_equal(Changes[[1]]$ChangeFreq[1:4], c(-0.161,  0.000,  0.000, -4.950),
                tolerance = 0.05)
-  expect_equal(Changes[[2]][1:4,3], c(1, 1, 3, 3),
+  expect_equal(Changes[[2]][1:4,3], c(5, 5, 1, 6),
                tolerance = 0.00)
-  expect_equal(Changes[[3]][1:4,3], c(0.00, 0.00, -12.98, -12.83),
+  expect_equal(Changes[[3]][1:4,3], c(37.445, 35.874,  0.000, -4.923),
                tolerance = 0.05)
-  expect_equal(Changes[[3]][1:4,4], c(0.00, 0.00, -6.43, -6.43),
+  expect_equal(Changes[[3]][1:4,4], c(23.130, 22.113,  0.000, -3.619),
                tolerance = 0.05)
-  expect_equal(Changes[[3]][1:4,5], c(0.00, 0.00, -2.29, -2.29),
+  expect_equal(Changes[[3]][1:4,5], c(10.493, 10.075,  0.000, -1.690),
                tolerance = 0.05)
   expect_equal(Changes[[4]][1:4,1], c(1, 1, 1, 1))
   expect_equal(Changes[[4]][1:4,2], c(1, 1, 1, 1))
-  expect_equal(Changes[[4]][1:4,3], c(15.9, 15.9, 15.9, 15.9),
+  expect_equal(Changes[[4]][1:4,3], c(23.610, 20.397, 17.751, 15.582),
                tolerance = 0.05)
-  expect_equal(Changes[[4]][1:4,4], c(6.7, 6.7, 6.7, 6.7),
+  expect_equal(Changes[[4]][1:4,4], c(9.946, 8.272, 6.960, 5.930),
                tolerance = 0.05)
-  expect_equal(Changes[[4]][1:4,5], c(2.3, 2.3, 2.3, 2.3),
+  expect_equal(Changes[[4]][1:4,5], c(3.244, 2.604, 2.124, 1.760),
                tolerance = 0.05)
 })
 
 daily.rain <-CampinasRain$Rain
-rainTS4 <- TSaggreg(daily.rain=daily.rain,start.date="1991-01-01",TS=4)
+rainTS4 <- TSaggreg(daily.rain=daily.rain,start.date="1980-01-01",TS=4)
 test_that("SPIChanges() works as expected in example", {
   rainTS4.warming <- rainTS4[1:1439,]
   expect_warning(
@@ -73,21 +73,21 @@ test_that("SPIChanges() works as expected in example", {
   expect_type(Changes, "list")
   expect_length(Changes, 4)
   expect_named(Changes, c("data.week", "model.selection", "Changes.Freq.Drought","Model.Drought"))
-  expect_equal(Changes[[1]]$SPI[1:4], c(1.45, 2.40, 2.39, 1.95),
+  expect_equal(Changes[[1]]$SPI[1:4], c(-0.438, -0.204, -0.275, -0.206),
                tolerance = 0.05)
-  expect_equal(Changes[[1]]$Exp.Acum.Prob[1:4], c(0.93, 0.99, 0.99, 0.97),
+  expect_equal(Changes[[1]]$Exp.Acum.Prob[1:4], c(0.331, 0.419, 0.392, 0.418),
                tolerance = 0.05)
-  expect_equal(Changes[[1]]$Actual.Acum.Prob[1:4], c(0.87, 0.97, 0.84, 0.87),
+  expect_equal(Changes[[1]]$Actual.Acum.Prob[1:4], c(0.522, 0.419, 0.452, 0.418),
                tolerance = 0.05)
-  expect_equal(Changes[[1]]$ChangeFreq[1:4], c(5.30,  2.47, 14.87, 10.16),
+  expect_equal(Changes[[1]]$ChangeFreq[1:4], c(0.191, 0.000, 0.061, 0.000),
                tolerance = 0.05)
-  expect_equal(Changes[[2]][1:4,3], c(1, 1, 3, 3),
+  expect_equal(Changes[[2]][1:4,3], c(1, 1, 1, 2),
                tolerance = 0.00)
-  expect_equal(Changes[[3]][1:4,3], c(0.00, 0.00, -11.21, -10.68),
+  expect_equal(Changes[[3]][1:4,3], c(0.000,  0.000,  0.000, -9.303),
                tolerance = 0.05)
-  expect_equal(Changes[[3]][1:4,4], c(0.00, 0.00, -5.99, -5.93),
+  expect_equal(Changes[[3]][1:4,4], c(0.000,  0.000,  0.000, -4.475),
                tolerance = 0.05)
-  expect_equal(Changes[[3]][1:4,5], c(0.00, 0.00, -2.24, -2.24),
+  expect_equal(Changes[[3]][1:4,5], c(0.000,  0.000,  0.000, -1.696),
                tolerance = 0.05)
   expect_equal(Changes[[4]][1:4,1], c(1, 1, 1, 1))
   expect_equal(Changes[[4]][1:4,2], c(1, 1, 1, 1))
