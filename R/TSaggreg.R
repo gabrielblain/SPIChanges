@@ -14,7 +14,7 @@
 #' @examples
 #'
 #' daily.rain <- CampinasRain[,2]
-#' rainTS4 <- TSaggreg(daily.rain=daily.rain,start.date="1991-01-01",TS=4)
+#' rainTS4 <- TSaggreg(daily.rain=daily.rain,start.date="1980-01-01",TS=4)
 #' @importFrom lubridate year month day parse_date_time
 #' @importFrom zoo rollsum
 #' @importFrom stats na.omit
