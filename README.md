@@ -114,19 +114,19 @@ corresponds to monthly data.
 ``` r
 library(SPIChanges)
 daily.rain <- CampinasRain[,2]
-head(TSaggreg(daily.rain=daily.rain,start.date="1991-01-01",TS=4))
+head(TSaggreg(daily.rain=daily.rain,start.date="1980-01-01",TS=4))
 ```
 
     ## Done. Just ensure the last quasi-week is complete.
     ##   The last day of your series is 31 and TS is 4
 
     ##   Year Month quasiWeek rain.at.TS4
-    ## 4 1991     1         4       406.3
-    ## 5 1991     2         1       517.7
-    ## 6 1991     2         2       530.5
-    ## 7 1991     2         3       455.5
-    ## 8 1991     2         4       242.5
-    ## 9 1991     3         1       202.5
+    ## 4 1980     1         4    223.1143
+    ## 5 1980     2         1    217.4197
+    ## 6 1980     2         2    207.0196
+    ## 7 1980     2         3    203.8757
+    ## 8 1980     2         4    183.2537
+    ## 9 1980     3         1    177.9945
 
 ## Function `SPIChanges()`
 
@@ -178,7 +178,7 @@ used for such estimations.
 ``` r
 library(SPIChanges)
 daily.rain <- CampinasRain[,2]
-rainTS4 <- TSaggreg(daily.rain=daily.rain,start.date="1991-01-01",TS=4)
+rainTS4 <- TSaggreg(daily.rain=daily.rain,start.date="1980-01-01",TS=4)
 ```
 
     ## Done. Just ensure the last quasi-week is complete.
@@ -189,38 +189,38 @@ Changes.in.the.SPI <- SPIChanges(rain.at.TS=rainTS4, only.linear = "Yes")
 head(Changes.in.the.SPI$data.week)
 ```
 
-    ##   Year Month quasiWeek rain.at.TS   SPI Exp.Acum.Prob Actual.Acum.Prob
-    ## 1 1991     1         4      406.3 1.483         0.931            0.864
-    ## 2 1991     2         1      517.7 2.417         0.992            0.992
-    ## 3 1991     2         2      530.5 2.437         0.993            0.918
-    ## 4 1991     2         3      455.5 2.007         0.978            0.897
-    ## 5 1991     2         4      242.5 0.746         0.772            0.551
-    ## 6 1991     3         1      202.5 0.488         0.687            0.687
+    ##   Year Month quasiWeek rain.at.TS    SPI Exp.Acum.Prob Actual.Acum.Prob
+    ## 1 1980     1         4    223.114 -0.203         0.420            0.337
+    ## 2 1980     2         1    217.420 -0.035         0.486            0.486
+    ## 3 1980     2         2    207.020  0.031         0.513            0.513
+    ## 4 1980     2         3    203.876  0.122         0.549            0.356
+    ## 5 1980     2         4    183.254  0.317         0.624            0.624
+    ## 6 1980     3         1    177.995  0.413         0.660            0.660
     ##   ChangeFreq
-    ## 1      6.716
+    ## 1     -0.082
     ## 2      0.000
-    ## 3      7.448
-    ## 4      8.071
-    ## 5     22.097
+    ## 3      0.000
+    ## 4     19.305
+    ## 5      0.000
     ## 6      0.000
 
 ``` r
 head(Changes.in.the.SPI$data.week)
 ```
 
-    ##   Year Month quasiWeek rain.at.TS   SPI Exp.Acum.Prob Actual.Acum.Prob
-    ## 1 1991     1         4      406.3 1.483         0.931            0.864
-    ## 2 1991     2         1      517.7 2.417         0.992            0.992
-    ## 3 1991     2         2      530.5 2.437         0.993            0.918
-    ## 4 1991     2         3      455.5 2.007         0.978            0.897
-    ## 5 1991     2         4      242.5 0.746         0.772            0.551
-    ## 6 1991     3         1      202.5 0.488         0.687            0.687
+    ##   Year Month quasiWeek rain.at.TS    SPI Exp.Acum.Prob Actual.Acum.Prob
+    ## 1 1980     1         4    223.114 -0.203         0.420            0.337
+    ## 2 1980     2         1    217.420 -0.035         0.486            0.486
+    ## 3 1980     2         2    207.020  0.031         0.513            0.513
+    ## 4 1980     2         3    203.876  0.122         0.549            0.356
+    ## 5 1980     2         4    183.254  0.317         0.624            0.624
+    ## 6 1980     3         1    177.995  0.413         0.660            0.660
     ##   ChangeFreq
-    ## 1      6.716
+    ## 1     -0.082
     ## 2      0.000
-    ## 3      7.448
-    ## 4      8.071
-    ## 5     22.097
+    ## 3      0.000
+    ## 4     19.305
+    ## 5      0.000
     ## 6      0.000
 
 ``` r
@@ -229,11 +229,11 @@ head(Changes.in.the.SPI$model.selection)
 
     ##      Month quasiWeek model
     ## [1,]     1         1     1
-    ## [2,]     1         2     1
-    ## [3,]     1         3     3
+    ## [2,]     1         2     3
+    ## [3,]     1         3     1
     ## [4,]     1         4     3
     ## [5,]     2         1     1
-    ## [6,]     2         2     4
+    ## [6,]     2         2     1
 
 ``` r
 head(Changes.in.the.SPI$Changes.Freq.Drought)
@@ -241,11 +241,11 @@ head(Changes.in.the.SPI$Changes.Freq.Drought)
 
     ##      Month quasiWeek Moderate Severe Extreme
     ## [1,]     1         1    0.000  0.000   0.000
-    ## [2,]     1         2    0.000  0.000   0.000
-    ## [3,]     1         3  -12.976 -6.431  -2.288
-    ## [4,]     1         4  -12.833 -6.433  -2.289
+    ## [2,]     1         2    7.548  6.888   4.756
+    ## [3,]     1         3    0.000  0.000   0.000
+    ## [4,]     1         4    9.939  9.083   6.448
     ## [5,]     2         1    0.000  0.000   0.000
-    ## [6,]     2         2    2.330 -3.405  -2.013
+    ## [6,]     2         2    0.000  0.000   0.000
 
 ## Example 3
 
@@ -258,7 +258,7 @@ used for such estimations.
 ``` r
 library(SPIChanges)
 daily.rain <- CampinasRain[,2]
-rainTS4 <- TSaggreg(daily.rain=daily.rain,start.date="1991-01-01",TS=4)
+rainTS4 <- TSaggreg(daily.rain=daily.rain,start.date="1980-01-01",TS=4)
 ```
 
     ## Done. Just ensure the last quasi-week is complete.
@@ -269,38 +269,38 @@ Changes.in.the.SPI <- SPIChanges(rain.at.TS=rainTS4, only.linear = "No")
 head(Changes.in.the.SPI$data.week)
 ```
 
-    ##   Year Month quasiWeek rain.at.TS   SPI Exp.Acum.Prob Actual.Acum.Prob
-    ## 1 1991     1         4      406.3 1.483         0.931            0.864
-    ## 2 1991     2         1      517.7 2.417         0.992            0.992
-    ## 3 1991     2         2      530.5 2.437         0.993            0.815
-    ## 4 1991     2         3      455.5 2.007         0.978            0.897
-    ## 5 1991     2         4      242.5 0.746         0.772            0.551
-    ## 6 1991     3         1      202.5 0.488         0.687            0.687
+    ##   Year Month quasiWeek rain.at.TS    SPI Exp.Acum.Prob Actual.Acum.Prob
+    ## 1 1980     1         4    223.114 -0.203         0.420            0.259
+    ## 2 1980     2         1    217.420 -0.035         0.486            0.486
+    ## 3 1980     2         2    207.020  0.031         0.513            0.513
+    ## 4 1980     2         3    203.876  0.122         0.549            0.598
+    ## 5 1980     2         4    183.254  0.317         0.624            0.624
+    ## 6 1980     3         1    177.995  0.413         0.660            0.660
     ##   ChangeFreq
-    ## 1      6.716
+    ## 1     -0.161
     ## 2      0.000
-    ## 3     17.733
-    ## 4      8.071
-    ## 5     22.097
+    ## 3      0.000
+    ## 4     -4.950
+    ## 5      0.000
     ## 6      0.000
 
 ``` r
 head(Changes.in.the.SPI$data.week)
 ```
 
-    ##   Year Month quasiWeek rain.at.TS   SPI Exp.Acum.Prob Actual.Acum.Prob
-    ## 1 1991     1         4      406.3 1.483         0.931            0.864
-    ## 2 1991     2         1      517.7 2.417         0.992            0.992
-    ## 3 1991     2         2      530.5 2.437         0.993            0.815
-    ## 4 1991     2         3      455.5 2.007         0.978            0.897
-    ## 5 1991     2         4      242.5 0.746         0.772            0.551
-    ## 6 1991     3         1      202.5 0.488         0.687            0.687
+    ##   Year Month quasiWeek rain.at.TS    SPI Exp.Acum.Prob Actual.Acum.Prob
+    ## 1 1980     1         4    223.114 -0.203         0.420            0.259
+    ## 2 1980     2         1    217.420 -0.035         0.486            0.486
+    ## 3 1980     2         2    207.020  0.031         0.513            0.513
+    ## 4 1980     2         3    203.876  0.122         0.549            0.598
+    ## 5 1980     2         4    183.254  0.317         0.624            0.624
+    ## 6 1980     3         1    177.995  0.413         0.660            0.660
     ##   ChangeFreq
-    ## 1      6.716
+    ## 1     -0.161
     ## 2      0.000
-    ## 3     17.733
-    ## 4      8.071
-    ## 5     22.097
+    ## 3      0.000
+    ## 4     -4.950
+    ## 5      0.000
     ## 6      0.000
 
 ``` r
@@ -308,24 +308,24 @@ head(Changes.in.the.SPI$model.selection)
 ```
 
     ##      Month quasiWeek model
-    ## [1,]     1         1     1
-    ## [2,]     1         2     1
-    ## [3,]     1         3     3
-    ## [4,]     1         4     3
+    ## [1,]     1         1     5
+    ## [2,]     1         2     5
+    ## [3,]     1         3     1
+    ## [4,]     1         4     6
     ## [5,]     2         1     1
-    ## [6,]     2         2     8
+    ## [6,]     2         2     1
 
 ``` r
 head(Changes.in.the.SPI$Changes.Freq.Drought)
 ```
 
     ##      Month quasiWeek Moderate Severe Extreme
-    ## [1,]     1         1    0.000  0.000   0.000
-    ## [2,]     1         2    0.000  0.000   0.000
-    ## [3,]     1         3  -12.976 -6.431  -2.288
-    ## [4,]     1         4  -12.833 -6.433  -2.289
+    ## [1,]     1         1   37.445 23.130  10.493
+    ## [2,]     1         2   35.874 22.113  10.075
+    ## [3,]     1         3    0.000  0.000   0.000
+    ## [4,]     1         4   -4.923 -3.619  -1.690
     ## [5,]     2         1    0.000  0.000   0.000
-    ## [6,]     2         2   22.490 13.201   5.940
+    ## [6,]     2         2    0.000  0.000   0.000
 
 # Details
 
