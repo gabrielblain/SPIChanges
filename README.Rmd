@@ -152,13 +152,7 @@ Model 4: both the mean and dispersion are allowed to vary on time linearly.
 
 Model 5: the mean is allowed to vary on time non-linearly with a natural cubic spline function with two degrees of freedom.
 
-Model 6: the dispersion is allowed to vary on time non-linearly with a natural cubic spline function with two degrees of freedom.
-
-Model 7: the mean and dispersion are allowed to, respectively, vary on time non-linearly with a natural cubic spline function with two degrees of freedom, and linearly.
-
-Model 8: the mean and dispersion are allowed to, respectively, vary on time linearly and non-linearly with a natural cubic spline function with two degrees of freedom.
-
-Model 9: both the mean and dispersion are allowed to vary on time non-linearly with natural cubic splines functions with two degrees of freedom.
+Model 6: the mean and dispersion are allowed to, respectively, vary on time non-linearly with a natural cubic spline function with two degrees of freedom, and linearly.
 
 The gamma distribution has two parameters: the shape and scale. Their relationships with the mean and dispersion are given in several studies including Blain et al (2022).
 

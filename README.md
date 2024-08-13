@@ -270,14 +270,14 @@ head(Changes.in.the.SPI$data.week)
 ```
 
     ##   Year Month quasiWeek rain.at.TS    SPI Exp.Acum.Prob Actual.Acum.Prob
-    ## 1 1980     1         4    223.114 -0.203         0.420            0.259
+    ## 1 1980     1         4    223.114 -0.203         0.420            0.337
     ## 2 1980     2         1    217.420 -0.035         0.486            0.486
     ## 3 1980     2         2    207.020  0.031         0.513            0.513
     ## 4 1980     2         3    203.876  0.122         0.549            0.598
     ## 5 1980     2         4    183.254  0.317         0.624            0.624
     ## 6 1980     3         1    177.995  0.413         0.660            0.660
     ##   ChangeFreq
-    ## 1     -0.161
+    ## 1     -0.082
     ## 2      0.000
     ## 3      0.000
     ## 4     -4.950
@@ -289,14 +289,14 @@ head(Changes.in.the.SPI$data.week)
 ```
 
     ##   Year Month quasiWeek rain.at.TS    SPI Exp.Acum.Prob Actual.Acum.Prob
-    ## 1 1980     1         4    223.114 -0.203         0.420            0.259
+    ## 1 1980     1         4    223.114 -0.203         0.420            0.337
     ## 2 1980     2         1    217.420 -0.035         0.486            0.486
     ## 3 1980     2         2    207.020  0.031         0.513            0.513
     ## 4 1980     2         3    203.876  0.122         0.549            0.598
     ## 5 1980     2         4    183.254  0.317         0.624            0.624
     ## 6 1980     3         1    177.995  0.413         0.660            0.660
     ##   ChangeFreq
-    ## 1     -0.161
+    ## 1     -0.082
     ## 2      0.000
     ## 3      0.000
     ## 4     -4.950
@@ -311,7 +311,7 @@ head(Changes.in.the.SPI$model.selection)
     ## [1,]     1         1     5
     ## [2,]     1         2     5
     ## [3,]     1         3     1
-    ## [4,]     1         4     6
+    ## [4,]     1         4     3
     ## [5,]     2         1     1
     ## [6,]     2         2     1
 
@@ -323,7 +323,7 @@ head(Changes.in.the.SPI$Changes.Freq.Drought)
     ## [1,]     1         1   37.445 23.130  10.493
     ## [2,]     1         2   35.874 22.113  10.075
     ## [3,]     1         3    0.000  0.000   0.000
-    ## [4,]     1         4   -4.923 -3.619  -1.690
+    ## [4,]     1         4    9.939  9.083   6.448
     ## [5,]     2         1    0.000  0.000   0.000
     ## [6,]     2         2    0.000  0.000   0.000
 
@@ -353,20 +353,9 @@ linearly.
 Model 5: the mean is allowed to vary on time non-linearly with a natural
 cubic spline function with two degrees of freedom.
 
-Model 6: the dispersion is allowed to vary on time non-linearly with a
-natural cubic spline function with two degrees of freedom.
-
-Model 7: the mean and dispersion are allowed to, respectively, vary on
+Model 6: the mean and dispersion are allowed to, respectively, vary on
 time non-linearly with a natural cubic spline function with two degrees
 of freedom, and linearly.
-
-Model 8: the mean and dispersion are allowed to, respectively, vary on
-time linearly and non-linearly with a natural cubic spline function with
-two degrees of freedom.
-
-Model 9: both the mean and dispersion are allowed to vary on time
-non-linearly with natural cubic splines functions with two degrees of
-freedom.
 
 The gamma distribution has two parameters: the shape and scale. Their
 relationships with the mean and dispersion are given in several studies
