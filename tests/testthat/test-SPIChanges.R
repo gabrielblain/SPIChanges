@@ -1,6 +1,8 @@
 daily.rain <-CampinasRain$Rain
-rainTS4 <- TSaggreg(daily.rain=daily.rain,start.date="1980-01-01",TS=4)
-
+expect_message(
+rainTS4 <- TSaggreg(daily.rain=daily.rain,start.date="1980-01-01",TS=4),
+"Done. Just ensure the last quasi-week is complete.
+  The last day of your series is 31 and TS is 4")
 test_that("SPIChanges() works as expected in example", {
   Changes <- SPIChanges(rain.at.TS=rainTS4, only.linear = "yes")
   expect_type(Changes, "list")
@@ -41,17 +43,17 @@ test_that("SPIChanges() works when only.linear = no", {
                tolerance = 0.05)
   expect_equal(Changes[[1]]$Exp.Acum.Prob[1:4], c(0.420, 0.486, 0.513, 0.549),
                tolerance = 0.05)
-  expect_equal(Changes[[1]]$Actual.Acum.Prob[1:4], c(0.259, 0.486, 0.513, 0.598),
+  expect_equal(Changes[[1]]$Actual.Acum.Prob[1:4], c(0.337, 0.486, 0.513, 0.598),
                tolerance = 0.05)
-  expect_equal(Changes[[1]]$ChangeFreq[1:4], c(-0.161,  0.000,  0.000, -4.950),
+  expect_equal(Changes[[1]]$ChangeFreq[1:4], c(-0.082,  0.000,  0.000, -4.950),
                tolerance = 0.05)
-  expect_equal(Changes[[2]][1:4,3], c(5, 5, 1, 6),
+  expect_equal(Changes[[2]][1:4,3], c(5, 5, 1, 3),
                tolerance = 0.00)
-  expect_equal(Changes[[3]][1:4,3], c(37.445, 35.874,  0.000, -4.923),
+  expect_equal(Changes[[3]][1:4,3], c(37.445, 35.874,  0.000, 9.939),
                tolerance = 0.05)
-  expect_equal(Changes[[3]][1:4,4], c(23.130, 22.113,  0.000, -3.619),
+  expect_equal(Changes[[3]][1:4,4], c(23.130, 22.113,  0.000, 9.083),
                tolerance = 0.05)
-  expect_equal(Changes[[3]][1:4,5], c(10.493, 10.075,  0.000, -1.690),
+  expect_equal(Changes[[3]][1:4,5], c(10.493, 10.075,  0.000, 6.448),
                tolerance = 0.05)
   expect_equal(Changes[[4]][1:4,1], c(1, 1, 1, 1))
   expect_equal(Changes[[4]][1:4,2], c(1, 1, 1, 1))
@@ -64,12 +66,18 @@ test_that("SPIChanges() works when only.linear = no", {
 })
 
 daily.rain <-CampinasRain$Rain
-rainTS4 <- TSaggreg(daily.rain=daily.rain,start.date="1980-01-01",TS=4)
+expect_message(
+rainTS4 <- TSaggreg(daily.rain=daily.rain,start.date="1980-01-01",TS=4),
+"Done. Just ensure the last quasi-week is complete.
+  The last day of your series is 31 and TS is 4")
 test_that("SPIChanges() works as expected in example", {
   rainTS4.warming <- rainTS4[1:1439,]
   expect_warning(
+  expect_warning(
   Changes <- SPIChanges(rain.at.TS=rainTS4.warming, only.linear = "yes"),
-  "Less than 30 years of rainfall records. Longer periods are highly recommended.")
+  "Less than 30 years of rainfall records. Longer periods are highly recommended."),
+  "rainfall series Month 9 Week 1 has more than 6.7% of zeros. In this situation
+             the SPI cannot assume values lower than -1.5")
   expect_type(Changes, "list")
   expect_length(Changes, 4)
   expect_named(Changes, c("data.week", "model.selection", "Changes.Freq.Drought","Model.Drought"))
