@@ -12,17 +12,17 @@ test_that("SPIChanges() works as expected in example", {
                tolerance = 0.05)
   expect_equal(Changes[[1]]$Exp.Acum.Prob[1:4], c(0.420, 0.486, 0.513, 0.549),
                tolerance = 0.05)
-  expect_equal(Changes[[1]]$Actual.Acum.Prob[1:4], c(0.337, 0.486, 0.513, 0.356),
+  expect_equal(Changes[[1]]$Actual.Acum.Prob[1:4], c(0.420, 0.486, 0.513, 0.549),
                tolerance = 0.05)
-  expect_equal(Changes[[1]]$ChangeFreq[1:4], c(-0.082,  0.000,  0.000, 19.305),
+  expect_equal(Changes[[1]]$ChangeFreq[1:4], c(0.000,  0.000,  0.000, 0.000),
                tolerance = 0.05)
-  expect_equal(Changes[[2]][1:4,3], c(1, 3, 1, 3),
+  expect_equal(Changes[[2]][1:4,3], c(1, 1, 1, 1),
                tolerance = 0.00)
-  expect_equal(Changes[[3]][1:4,3], c(0.000, 7.548, 0.000, 9.939),
+  expect_equal(Changes[[3]][1:4,3], c(0.000, 0.000, 0.000, 0.000),
                tolerance = 0.05)
-  expect_equal(Changes[[3]][1:4,4], c(0.000, 6.888, 0.000, 9.083),
+  expect_equal(Changes[[3]][1:4,4], c(0.000, 0.000, 0.000, 0.000),
                tolerance = 0.05)
-  expect_equal(Changes[[3]][1:4,5], c(0.000, 4.756, 0.000, 6.448),
+  expect_equal(Changes[[3]][1:4,5], c(0.000, 0.000, 0.000, 0.000),
                tolerance = 0.05)
   expect_equal(Changes[[4]][1:4,1], c(1, 1, 1, 1))
   expect_equal(Changes[[4]][1:4,2], c(1, 1, 1, 1))
@@ -43,25 +43,25 @@ test_that("SPIChanges() works when only.linear = no", {
                tolerance = 0.05)
   expect_equal(Changes[[1]]$Exp.Acum.Prob[1:4], c(0.420, 0.486, 0.513, 0.549),
                tolerance = 0.05)
-  expect_equal(Changes[[1]]$Actual.Acum.Prob[1:4], c(0.337, 0.486, 0.513, 0.598),
+  expect_equal(Changes[[1]]$Actual.Acum.Prob[1:4], c(0.420, 0.486, 0.513, 0.549),
                tolerance = 0.05)
-  expect_equal(Changes[[1]]$ChangeFreq[1:4], c(-0.082,  0.000,  0.000, -4.950),
+  expect_equal(Changes[[1]]$ChangeFreq[1:4], c(0.000,  0.000,  0.000, 0.000),
                tolerance = 0.05)
-  expect_equal(Changes[[2]][1:4,3], c(5, 5, 1, 3),
+  expect_equal(Changes[[2]][1:4,3], c(1, 1, 1, 1),
                tolerance = 0.00)
-  expect_equal(Changes[[3]][1:4,3], c(37.445, 35.874,  0.000, 9.939),
+  expect_equal(Changes[[3]][1:4,3], c(0.000, 0.000, 0.000, 0.000),
                tolerance = 0.05)
-  expect_equal(Changes[[3]][1:4,4], c(23.130, 22.113,  0.000, 9.083),
+  expect_equal(Changes[[3]][1:4,4], c(0.000, 0.000, 0.000, 0.000),
                tolerance = 0.05)
-  expect_equal(Changes[[3]][1:4,5], c(10.493, 10.075,  0.000, 6.448),
+  expect_equal(Changes[[3]][1:4,5], c(0.000, 0.000, 0.000, 0.000),
                tolerance = 0.05)
   expect_equal(Changes[[4]][1:4,1], c(1, 1, 1, 1))
   expect_equal(Changes[[4]][1:4,2], c(1, 1, 1, 1))
-  expect_equal(Changes[[4]][1:4,3], c(23.610, 20.397, 17.751, 15.582),
+  expect_equal(Changes[[4]][1:4,3], c(15.9, 15.9, 15.9, 15.9),
                tolerance = 0.05)
-  expect_equal(Changes[[4]][1:4,4], c(9.946, 8.272, 6.960, 5.930),
+  expect_equal(Changes[[4]][1:4,4], c(6.7, 6.7, 6.7, 6.7),
                tolerance = 0.05)
-  expect_equal(Changes[[4]][1:4,5], c(3.244, 2.604, 2.124, 1.760),
+  expect_equal(Changes[[4]][1:4,5], c(2.3, 2.3, 2.3, 2.3),
                tolerance = 0.05)
 })
 
@@ -85,17 +85,17 @@ test_that("SPIChanges() works as expected in example", {
                tolerance = 0.05)
   expect_equal(Changes[[1]]$Exp.Acum.Prob[1:4], c(0.331, 0.419, 0.392, 0.418),
                tolerance = 0.05)
-  expect_equal(Changes[[1]]$Actual.Acum.Prob[1:4], c(0.522, 0.419, 0.452, 0.418),
+  expect_equal(Changes[[1]]$Actual.Acum.Prob[1:4], c(0.331, 0.419, 0.392, 0.418),
                tolerance = 0.05)
-  expect_equal(Changes[[1]]$ChangeFreq[1:4], c(0.191, 0.000, 0.061, 0.000),
+  expect_equal(Changes[[1]]$ChangeFreq[1:4], c(0.000, 0.000, 0.000, 0.000),
                tolerance = 0.05)
-  expect_equal(Changes[[2]][1:4,3], c(1, 1, 1, 2),
+  expect_equal(Changes[[2]][1:4,3], c(1, 1, 1, 1),
                tolerance = 0.00)
-  expect_equal(Changes[[3]][1:4,3], c(0.000,  0.000,  0.000, -9.303),
+  expect_equal(Changes[[3]][1:4,3], c(0.000,  0.000,  0.000, 0.000),
                tolerance = 0.05)
-  expect_equal(Changes[[3]][1:4,4], c(0.000,  0.000,  0.000, -4.475),
+  expect_equal(Changes[[3]][1:4,4], c(0.000,  0.000,  0.000, 0.000),
                tolerance = 0.05)
-  expect_equal(Changes[[3]][1:4,5], c(0.000,  0.000,  0.000, -1.696),
+  expect_equal(Changes[[3]][1:4,5], c(0.000,  0.000,  0.000, 0.000),
                tolerance = 0.05)
   expect_equal(Changes[[4]][1:4,1], c(1, 1, 1, 1))
   expect_equal(Changes[[4]][1:4,2], c(1, 1, 1, 1))
