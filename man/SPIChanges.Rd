@@ -7,7 +7,9 @@
 SPIChanges(rain.at.TS, only.linear = "Yes")
 }
 \arguments{
-\item{rain.at.TS}{Vector, 1-column matrix or data frame with rainfall totals accumulated at a time scale.}
+\item{rain.at.TS}{A 4-column matrix or data frame.
+1st column is years, 2nd is the months (1 to 12)
+3rd is the quasiWeeks (1 to 4), and 4th is the rainfall totals accumulated at a time scale.}
 
 \item{only.linear}{A character variable (\code{Yes} or \code{No}) defining if the function must
 consider only linear models (\code{Yes}) or linear and non-linear models (\code{No}).

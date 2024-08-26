@@ -1,7 +1,9 @@
 #' Detect trends and quantify their effect on the probability of SPI values occurring
 #'
 #' @param rain.at.TS
-#' Vector, 1-column matrix or data frame with rainfall totals accumulated at a time scale.
+#' A 4-column matrix or data frame.
+#' 1st column is years, 2nd is the months (1 to 12)
+#' 3rd is the quasiWeeks (1 to 4), and 4th is the rainfall totals accumulated at a time scale.
 #' @param only.linear
 #' A character variable (\code{Yes} or \code{No}) defining if the function must
 #' consider only linear models (\code{Yes}) or linear and non-linear models (\code{No}).
@@ -109,10 +111,10 @@
                                                  sigma.link ="log"))
      t.gam.ns11 <- spsUtil::quiet(gamlss::gamlss(rain.week.nozeros~poly(time.nonzero,1), sigma.formula
                                                  =~poly(time.nonzero,1), family=GA, mu.link = "identity", sigma.link ="log"))
-     model.selection[a,1] <- which.min(c(AIC(t.gam, k=2, c=TRUE),
-                                         AIC(t.gam.ns10, k=2, c=TRUE),
-                                         AIC(t.gam.ns01, k=2, c=TRUE),
-                                         AIC(t.gam.ns11, k=2, c=TRUE)))
+     model.selection[a,1] <- which.min(c(AIC(t.gam, k=4),
+                                         AIC(t.gam.ns10, k=4),
+                                         AIC(t.gam.ns01, k=4),
+                                         AIC(t.gam.ns11, k=4)))
    } else {
      t.gam.ns10 <- spsUtil::quiet(gamlss::gamlss(rain.week.nozeros~poly(time.nonzero,1),family=GA,
                                                  mu.link = "identity", sigma.link ="log"))
@@ -124,12 +126,12 @@
                                                  sigma.link ="log"))
      t.gam.ns21 <- spsUtil::quiet(gamlss::gamlss(rain.week.nozeros~nsp(time.nonzero, df = 2), sigma.formula=~poly(time.nonzero,1),family=GA,
                                                  mu.link = "identity", sigma.link ="log"))
-     model.selection[a,1] <- which.min(c(AIC(t.gam, k=2, c=TRUE),
-                                         AIC(t.gam.ns10, k=2, c=TRUE),
-                                         AIC(t.gam.ns01, k=2, c=TRUE),
-                                         AIC(t.gam.ns11, k=2, c=TRUE),
-                                         AIC(t.gam.ns20, k=2, c=TRUE),
-                                         AIC(t.gam.ns21, k=2, c=TRUE)))}
+     model.selection[a,1] <- which.min(c(AIC(t.gam, k=4),
+                                         AIC(t.gam.ns10, k=4),
+                                         AIC(t.gam.ns01, k=4),
+                                         AIC(t.gam.ns11, k=4),
+                                         AIC(t.gam.ns20, k=4),
+                                         AIC(t.gam.ns21, k=4)))}
 
    quasiprob <- (probzero.st+(1-probzero.st)*pGA(rain.week,mu = t.gam$mu.fv[1], sigma = t.gam$sigma.fv[1],lower.tail = TRUE, log.p=FALSE))
    quasiprob[quasiprob < 0.001351] <- 0.001351
