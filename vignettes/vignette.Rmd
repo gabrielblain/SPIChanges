@@ -37,10 +37,10 @@ As described in the introduction, the SPI requires only rainfall data as its inp
 
 ## Function `TSaggreg()`
 
-This function aggregates or accumulates daily rainfall totals at quasiWeek time scales.
+Aggregates or accumulates daily rainfall totals at quasiWeek time scales.
 
-As a multi-scalar index, the SPI accumulates rainfall totals (often recorded at the daly scale) at any time scale selected by the users. The `SPIChanges` package employs a basic time scale (quasiWeek) that splits each month into four sub-periods. Therefore, a quasiWeek time scale (TS) equal to 4 corresponds to a moving window with a 1-month length. TS equal to 48 corresponds to a moving window with a 1-year length. TS equals to 1 corresponds 1-quasiWeek time scale.\
-At this point, it is worth emphasizing that the use of calendar weeks as a basic time scales may pose challenges since the SPI is a relative metric that require homogeneous periods (@Vicente-Serrano2022). The first day of each year can fall on different weekdays, causing inconsistency throughout the year. Leap years may also complicate this comparison in routine drought monitoring (@Vicente-Serrano2022). Additionally, the 4-quasiWeek time scale aligns with the widely used 1-month time scale. 
+As a multi-scalar index, the SPI accumulates rainfall totals (often recorded at the daily scale) at any time scale selected by the users. The `SPIChanges` package employs a basic time scale (quasiWeek) that splits each month into four sub-periods. Therefore, a quasiWeek time scale (TS) equal to 4 corresponds to a moving window with a 1-month length. TS equal to 48 corresponds to a moving window with a 1-year length. TS equals to 1 corresponds 1-quasiWeek time scale.\
+At this point, it is worth emphasizing that the use of calendar weeks as a basic time scales may pose challenges since the SPI is a relative metric that require homogeneous periods (@Vicente-Serrano2022). The first day of each year can fall on different weekdays, causing inconsistency throughout the year. Leap years may also complicate this comparison in routine drought monitoring (@Vicente-Serrano2022). Additionally, the 4-quasiWeek time scale aligns with the widely used 1-month time scale.
 
 \## Usage
 
@@ -67,5 +67,82 @@ Aggregating daily rainfall values at 4-quasiWeek time scale, which corresponds t
 ```{r example 1}
 library(SPIChanges)
 daily.rain <- CampinasRain[,2]
-head(TSaggreg(daily.rain=daily.rain,start.date="1980-01-01",TS=4))
+RainTS4 <- TSaggreg(daily.rain=daily.rain,start.date="1980-01-01",TS=4)
+plot(RainTS4[,1],RainTS4[,4])
+```
+
+## Function `SPIChanges()`
+
+Detect trends and quantify their effect on the probability of SPI values occurring.
+
+The `SPIChanges()` is the central function of the package is based on the following steps, which adapted from the study of (@Blain2022):
+
+1.  Given a rainfall series with data accumulated at a particular quasiWeek time scale, the function uses the stationary version of the two-parameter gamma distribution to calculate SPI estimates and the cumulative probability of each rainfall amount occurring (i.e., the probability of each SPI estimate occurring).
+
+2.  Using the second-order Akaike Information Criterion (AICc), the package selects the best-fitting model among distinct nonstationary two-parameter gamma distributions (see details).
+
+3.  The package uses the selected nonstationary model to calculate the cumulative probability of each rainfall amount occurring under changing climate conditions.
+
+4.  The package compares the probabilities estimated in steps 1 and 3 to indicate whether the frequency of drought or wet events, quantified by the SPI, has increased or decreased over time.
+
+The gamma distributions are fitted to rainfall data using Generalized Additive Models (GAMLSS) with time as a covariate. This fitting process is based on the maximum likelihood method (@McCullagh1989) and considers the following increasingly complex functions (candidate models). Further information on GAMLSS can be found in (@Rigby2005).
+
+Model 1 (stationary): the mean and dispersion of the distribution are constant on time.
+
+Model 2 (homocedastic): only the mean is allowed to vary on time linearly.
+
+Model 3: only the dispersion is allowed to vary on time linearly.
+
+Model 4: both the mean and dispersion are allowed to vary on time linearly.
+
+Model 5: the mean is allowed to vary on time non-linearly with a natural cubic spline function with two degrees of freedom.
+
+Model 6: the mean and dispersion are allowed to, respectively, vary on time non-linearly with a natural cubic spline function with two degrees of freedom, and linearly.
+
+The gamma distribution has two parameters: the shape and scale. Their relationships with the mean (mu) and dispersion (sigma) are given by equations 1 and 2.
+
+$$
+mu = shape*scale      \tag{1}
+$$ $$
+sigma = \frac{\sqrt{shape*scale^2}}{shape*scale}      \tag{2}
+$$
+
+## Usage
+
+```{r, eval=FALSE}
+SPIChanges(rain.at.TS,
+         only.linear)
+```
+
+## Arguments
+
+-   rain.at.TS: Vector, 1-column matrix or data frame with rainfall totals accumulated at a time scale.
+-   only.linear: A character variable (Yes or No) defining if the function must consider only linear models (Yes) or linear and non-linear models (No). Default is Yes.
+
+## Value
+
+A list object with:
+
+data.week: The Rainfall amounts, SPI, cumulative probability of the SPI values(stationary approach), cumulative probability of the NSPI values (nonstationary approach), and the changes in the frequency of the SPI values caused by the changes in rainfall patterns.
+
+model.selection: The generalized additive model that best fits the rainfall series (see details).
+
+Changes.Freq.Drought: changes in the frequency of moderate, severe and extreme drought events, as definied by the SPI classification system, caused by the changes in rainfall patterns.
+
+Model.Drought: Year to year changes in the expected frequency of moderate, severe and extreme drought events.
+
+## Example 2
+
+Using only linear nonstationary parametric models to assess the probability of rainfall amounts.\
+When the argument `only.linear` is set to "Yes", the `SPIChanges()` function considers only models 1 to 4. In this case, the mean and/or dispersion of the gamma models can only vary on time linearly.
+
+```{r example 2}
+library(SPIChanges)
+daily.rain <- CampinasRain[,2]
+rainTS4 <- TSaggreg(daily.rain=daily.rain,start.date="1980-01-01",TS=4)
+Changes.in.the.SPI <- SPIChanges(rain.at.TS=rainTS4, only.linear = "Yes")
+head(Changes.in.the.SPI$data.week)
+head(Changes.in.the.SPI$Model.Drought)
+head(Changes.in.the.SPI$model.selection)
+head(Changes.in.the.SPI$Changes.Freq.Drought)
 ```
