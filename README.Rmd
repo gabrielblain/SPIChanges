@@ -118,7 +118,7 @@ daily.rain <- CampinasRain[,2]
 rainTS4 <- TSaggreg(daily.rain=daily.rain,start.date="1980-01-01",TS=4)
 Changes.in.the.SPI <- SPIChanges(rain.at.TS=rainTS4, only.linear = "Yes")
 head(Changes.in.the.SPI$data.week)
-head(Changes.in.the.SPI$data.week)
+head(Changes.in.the.SPI$Model.Drought)
 head(Changes.in.the.SPI$model.selection)
 head(Changes.in.the.SPI$Changes.Freq.Drought)
 ```
@@ -133,7 +133,7 @@ daily.rain <- CampinasRain[,2]
 rainTS4 <- TSaggreg(daily.rain=daily.rain,start.date="1980-01-01",TS=4)
 Changes.in.the.SPI <- SPIChanges(rain.at.TS=rainTS4, only.linear = "No")
 head(Changes.in.the.SPI$data.week)
-head(Changes.in.the.SPI$data.week)
+head(Changes.in.the.SPI$Model.Drought)
 head(Changes.in.the.SPI$model.selection)
 head(Changes.in.the.SPI$Changes.Freq.Drought)
 ```

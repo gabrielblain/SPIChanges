@@ -205,23 +205,16 @@ head(Changes.in.the.SPI$data.week)
     ## 6      0.000
 
 ``` r
-head(Changes.in.the.SPI$data.week)
+head(Changes.in.the.SPI$Model.Drought)
 ```
 
-    ##   Year Month quasiWeek rain.at.TS    SPI Exp.Acum.Prob Actual.Acum.Prob
-    ## 1 1980     1         4    223.114 -0.203         0.420            0.337
-    ## 2 1980     2         1    217.420 -0.035         0.486            0.486
-    ## 3 1980     2         2    207.020  0.031         0.513            0.513
-    ## 4 1980     2         3    203.876  0.122         0.549            0.356
-    ## 5 1980     2         4    183.254  0.317         0.624            0.624
-    ## 6 1980     3         1    177.995  0.413         0.660            0.660
-    ##   ChangeFreq
-    ## 1     -0.082
-    ## 2      0.000
-    ## 3      0.000
-    ## 4     19.305
-    ## 5      0.000
-    ## 6      0.000
+    ##   Month quasiWeek Moderate Severe Extreme
+    ## 1     1         1     15.9    6.7     2.3
+    ## 2     1         1     15.9    6.7     2.3
+    ## 3     1         1     15.9    6.7     2.3
+    ## 4     1         1     15.9    6.7     2.3
+    ## 5     1         1     15.9    6.7     2.3
+    ## 6     1         1     15.9    6.7     2.3
 
 ``` r
 head(Changes.in.the.SPI$model.selection)
@@ -285,23 +278,16 @@ head(Changes.in.the.SPI$data.week)
     ## 6      0.000
 
 ``` r
-head(Changes.in.the.SPI$data.week)
+head(Changes.in.the.SPI$Model.Drought)
 ```
 
-    ##   Year Month quasiWeek rain.at.TS    SPI Exp.Acum.Prob Actual.Acum.Prob
-    ## 1 1980     1         4    223.114 -0.203         0.420            0.337
-    ## 2 1980     2         1    217.420 -0.035         0.486            0.486
-    ## 3 1980     2         2    207.020  0.031         0.513            0.513
-    ## 4 1980     2         3    203.876  0.122         0.549            0.598
-    ## 5 1980     2         4    183.254  0.317         0.624            0.624
-    ## 6 1980     3         1    177.995  0.413         0.660            0.660
-    ##   ChangeFreq
-    ## 1     -0.082
-    ## 2      0.000
-    ## 3      0.000
-    ## 4     -4.950
-    ## 5      0.000
-    ## 6      0.000
+    ##   Month quasiWeek Moderate Severe Extreme
+    ## 1     1         1   23.610  9.946   3.244
+    ## 2     1         1   20.397  8.272   2.604
+    ## 3     1         1   17.751  6.960   2.124
+    ## 4     1         1   15.582  5.930   1.760
+    ## 5     1         1   13.811  5.120   1.483
+    ## 6     1         1   12.371  4.482   1.271
 
 ``` r
 head(Changes.in.the.SPI$model.selection)
