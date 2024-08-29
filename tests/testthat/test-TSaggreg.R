@@ -26,9 +26,12 @@ test_that("TSaggreg() works as expected in example", {
 })
 daily.rain <- CampinasRain$Rain[1:10949]
 test_that("TSaggreg() works as expected when rainfall records is short", {
-  expect_warning(
+    expect_message(
+      expect_warning(
     tes <- TSaggreg(daily.rain=daily.rain,start.date="1980-01-01",TS=4),
-    "Less than 30 years of rainfall records. Longer periods are highly recommended.")
+    "Less than 30 years of rainfall records. Longer periods are highly recommended."),
+    "Done. Just ensure the last quasi-week is complete.
+  The last day of your series is 22 and TS is 4")
   expect_s3_class(tes, "data.frame")
   expect_length(tes, 4)
   expect_equal(nrow(tes), 1437)
