@@ -17,7 +17,7 @@ knitr::opts_chunk$set(
 
 # Introduction
 
-The standardized precipitation index (SPI) (@Mckee1993) is a probability-based drought indicator that categorizes dry and wet events as a function of their probability of occurrence or expected frequencies. This widely used drought index was initially developed as a stationary method in which the parameters of the parametric distribution used to estimate the cumulative probability of its unique input variable (rainfall), do not vary over time (@Blain2022). However, there have been observed changes in drought frequency and intensity worldwide (@Strzepek2010, @Dai2012, @Spinoni2019, @Stagge2022, and @Blain2022), which violate the assumption of stationarity (@Coles2001, @Zhang2004, @Cheng2014).
+The standardized precipitation index (SPI) (@Mckee1993) is a probability-based drought indicator that categorizes dry and wet events as a function of their probability of occurrence or expected frequencies. This widely used drought index was initially developed as a stationary method in which the parameters of the parametric distribution used to estimate the cumulative probability of its unique input variable (rainfall), do not vary over time (@Blain2022). However, there have been observed changes in drought frequency and intensity worldwide (@Strzepek2010, @Dai2013, @Spinoni2019, @Stagge2022, and @Blain2022), which violate the assumption of stationarity (@Coles2001, @Zhang2004, @Cheng2014).
 
 In the context of the current climate changes, studies such as (@Russo2013, @Li2015, and @Rashid2019) proposed the nonstationary standardized precipitation index (NSPI), which incorporates several indices (e.g. time) as external covariates. Therefore, the NSPI was designed to capture nonstationary characteristics of rainfall and, thereby, to capture drought signals under transient rainfall distribution patterns (@Blain2022). However, the use of the NSPI is not a straightforward task (@Blain2022). Because time-varying parametric distributions account for temporal changes in rainfall distributions, they remove the effect of rainfall trends on the NSPI estimates (@Shiau2020). For instance, by applying the NSPI to rainfall series presenting significant increasing trends, (@Shiau2020) noted that the NSPI indicated an increase in the frequency and severity of drought events. Similar results were observed by (@Park2018) that found that, in the presence of decreasing rainfall trends, the use of time-varying distribution leads to an increase in the cumulative probability of a particular rainfall event over time, also increasing the corresponding NSPI estimate. Although this contradictory behavior (@Shiau2020) may be algebraically explained by the NSPI calculation algorithm (@Blain2022), it potentially prevents widespread acceptance of nonstationary distributions for calculating standardized drought indices such as the SPI. This statement particularly holds for the operational use of these indices.
 
@@ -95,9 +95,13 @@ Model 3: only the dispersion is allowed to vary on time linearly.
 
 Model 4: both the mean and dispersion are allowed to vary on time linearly.
 
-Model 5: the mean is allowed to vary on time non-linearly with a natural cubic spline function with two degrees of freedom.
+Model 5 (homocedastic): the mean is allowed to vary on time non-linearly with a natural cubic spline function with two degrees of freedom.
 
-Model 6: the mean and dispersion are allowed to, respectively, vary on time non-linearly with a natural cubic spline function with two degrees of freedom, and linearly.
+Model 6: the dispersion is allowed to vary on time non-linearly with a natural cubic spline function with two degrees of freedom.
+
+Model 7: the mean is allowed to, respectively, vary on time non-linearly with a natural cubic spline function with two degrees of freedom. The dispersion is allowed to vary on time linearly.
+
+Model 8: both  mean and dispersion are allowed to vary on time non-linearly with natural cubic spline functions with two degrees of freedom.
 
 The gamma distribution has two parameters: the shape and scale. Their relationships with the mean (mu) and dispersion (sigma) are given by equations 1 and 2.
 
