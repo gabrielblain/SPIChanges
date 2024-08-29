@@ -150,9 +150,13 @@ Model 3: only the dispersion is allowed to vary on time linearly.
 
 Model 4: both the mean and dispersion are allowed to vary on time linearly.
 
-Model 5: the mean is allowed to vary on time non-linearly with a natural cubic spline function with two degrees of freedom.
+Model 5 (homocedastic): the mean is allowed to vary on time non-linearly with a natural cubic spline function with two degrees of freedom.
 
-Model 6: the mean and dispersion are allowed to, respectively, vary on time non-linearly with a natural cubic spline function with two degrees of freedom, and linearly.
+Model 6: the dispersion is allowed to vary on time non-linearly with a natural cubic spline function with two degrees of freedom.
+
+Model 7: the mean is allowed to, respectively, vary on time non-linearly with a natural cubic spline function with two degrees of freedom. The dispersion is allowed to vary on time linearly.
+
+Model 8: both  mean and dispersion are allowed to vary on time non-linearly with natural cubic spline functions with two degrees of freedom.
 
 The gamma distribution has two parameters: the shape and scale. Their relationships with the mean and dispersion are given in several studies including Blain et al (2022).
 

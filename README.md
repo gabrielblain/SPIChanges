@@ -190,19 +190,19 @@ head(Changes.in.the.SPI$data.week)
 ```
 
     ##   Year Month quasiWeek rain.at.TS    SPI Exp.Acum.Prob Actual.Acum.Prob
-    ## 1 1980     1         4    223.114 -0.203         0.420            0.337
+    ## 1 1980     1         4    223.114 -0.203         0.420            0.420
     ## 2 1980     2         1    217.420 -0.035         0.486            0.486
     ## 3 1980     2         2    207.020  0.031         0.513            0.513
-    ## 4 1980     2         3    203.876  0.122         0.549            0.356
+    ## 4 1980     2         3    203.876  0.122         0.549            0.549
     ## 5 1980     2         4    183.254  0.317         0.624            0.624
     ## 6 1980     3         1    177.995  0.413         0.660            0.660
     ##   ChangeFreq
-    ## 1     -0.082
-    ## 2      0.000
-    ## 3      0.000
-    ## 4     19.305
-    ## 5      0.000
-    ## 6      0.000
+    ## 1          0
+    ## 2          0
+    ## 3          0
+    ## 4          0
+    ## 5          0
+    ## 6          0
 
 ``` r
 head(Changes.in.the.SPI$Model.Drought)
@@ -222,9 +222,9 @@ head(Changes.in.the.SPI$model.selection)
 
     ##      Month quasiWeek model
     ## [1,]     1         1     1
-    ## [2,]     1         2     3
+    ## [2,]     1         2     1
     ## [3,]     1         3     1
-    ## [4,]     1         4     3
+    ## [4,]     1         4     1
     ## [5,]     2         1     1
     ## [6,]     2         2     1
 
@@ -233,12 +233,12 @@ head(Changes.in.the.SPI$Changes.Freq.Drought)
 ```
 
     ##      Month quasiWeek Moderate Severe Extreme
-    ## [1,]     1         1    0.000  0.000   0.000
-    ## [2,]     1         2    7.548  6.888   4.756
-    ## [3,]     1         3    0.000  0.000   0.000
-    ## [4,]     1         4    9.939  9.083   6.448
-    ## [5,]     2         1    0.000  0.000   0.000
-    ## [6,]     2         2    0.000  0.000   0.000
+    ## [1,]     1         1        0      0       0
+    ## [2,]     1         2        0      0       0
+    ## [3,]     1         3        0      0       0
+    ## [4,]     1         4        0      0       0
+    ## [5,]     2         1        0      0       0
+    ## [6,]     2         2        0      0       0
 
 ## Example 3
 
@@ -263,41 +263,41 @@ head(Changes.in.the.SPI$data.week)
 ```
 
     ##   Year Month quasiWeek rain.at.TS    SPI Exp.Acum.Prob Actual.Acum.Prob
-    ## 1 1980     1         4    223.114 -0.203         0.420            0.337
+    ## 1 1980     1         4    223.114 -0.203         0.420            0.420
     ## 2 1980     2         1    217.420 -0.035         0.486            0.486
     ## 3 1980     2         2    207.020  0.031         0.513            0.513
-    ## 4 1980     2         3    203.876  0.122         0.549            0.598
+    ## 4 1980     2         3    203.876  0.122         0.549            0.549
     ## 5 1980     2         4    183.254  0.317         0.624            0.624
     ## 6 1980     3         1    177.995  0.413         0.660            0.660
     ##   ChangeFreq
-    ## 1     -0.082
-    ## 2      0.000
-    ## 3      0.000
-    ## 4     -4.950
-    ## 5      0.000
-    ## 6      0.000
+    ## 1          0
+    ## 2          0
+    ## 3          0
+    ## 4          0
+    ## 5          0
+    ## 6          0
 
 ``` r
 head(Changes.in.the.SPI$Model.Drought)
 ```
 
     ##   Month quasiWeek Moderate Severe Extreme
-    ## 1     1         1   23.610  9.946   3.244
-    ## 2     1         1   20.397  8.272   2.604
-    ## 3     1         1   17.751  6.960   2.124
-    ## 4     1         1   15.582  5.930   1.760
-    ## 5     1         1   13.811  5.120   1.483
-    ## 6     1         1   12.371  4.482   1.271
+    ## 1     1         1     15.9    6.7     2.3
+    ## 2     1         1     15.9    6.7     2.3
+    ## 3     1         1     15.9    6.7     2.3
+    ## 4     1         1     15.9    6.7     2.3
+    ## 5     1         1     15.9    6.7     2.3
+    ## 6     1         1     15.9    6.7     2.3
 
 ``` r
 head(Changes.in.the.SPI$model.selection)
 ```
 
     ##      Month quasiWeek model
-    ## [1,]     1         1     5
-    ## [2,]     1         2     5
+    ## [1,]     1         1     1
+    ## [2,]     1         2     1
     ## [3,]     1         3     1
-    ## [4,]     1         4     3
+    ## [4,]     1         4     1
     ## [5,]     2         1     1
     ## [6,]     2         2     1
 
@@ -306,12 +306,12 @@ head(Changes.in.the.SPI$Changes.Freq.Drought)
 ```
 
     ##      Month quasiWeek Moderate Severe Extreme
-    ## [1,]     1         1   37.445 23.130  10.493
-    ## [2,]     1         2   35.874 22.113  10.075
-    ## [3,]     1         3    0.000  0.000   0.000
-    ## [4,]     1         4    9.939  9.083   6.448
-    ## [5,]     2         1    0.000  0.000   0.000
-    ## [6,]     2         2    0.000  0.000   0.000
+    ## [1,]     1         1        0      0       0
+    ## [2,]     1         2        0      0       0
+    ## [3,]     1         3        0      0       0
+    ## [4,]     1         4        0      0       0
+    ## [5,]     2         1        0      0       0
+    ## [6,]     2         2        0      0       0
 
 # Details
 
@@ -336,12 +336,19 @@ Model 3: only the dispersion is allowed to vary on time linearly.
 Model 4: both the mean and dispersion are allowed to vary on time
 linearly.
 
-Model 5: the mean is allowed to vary on time non-linearly with a natural
-cubic spline function with two degrees of freedom.
+Model 5 (homocedastic): the mean is allowed to vary on time non-linearly
+with a natural cubic spline function with two degrees of freedom.
 
-Model 6: the mean and dispersion are allowed to, respectively, vary on
-time non-linearly with a natural cubic spline function with two degrees
-of freedom, and linearly.
+Model 6: the dispersion is allowed to vary on time non-linearly with a
+natural cubic spline function with two degrees of freedom.
+
+Model 7: the mean is allowed to, respectively, vary on time non-linearly
+with a natural cubic spline function with two degrees of freedom. The
+dispersion is allowed to vary on time linearly.
+
+Model 8: both mean and dispersion are allowed to vary on time
+non-linearly with natural cubic spline functions with two degrees of
+freedom.
 
 The gamma distribution has two parameters: the shape and scale. Their
 relationships with the mean and dispersion are given in several studies
