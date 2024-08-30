@@ -1,5 +1,5 @@
 Package: SPIChanges
-Title: Improves The Interpretation Of The Standardized Precipitation Index Under Changing Climate Conditions
+Title: Improves The Interpretation of The Standardized Precipitation Index Under Changing Climate Conditions
 Version: 0.0.0.9000
 Authors@R: c(
   person(
