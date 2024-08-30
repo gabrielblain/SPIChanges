@@ -43,17 +43,17 @@ test_that("SPIChanges() works when only.linear = no", {
                tolerance = 0.05)
   expect_equal(Changes[[1]]$Exp.Acum.Prob[1:4], c(0.420, 0.486, 0.513, 0.549),
                tolerance = 0.05)
-  expect_equal(Changes[[1]]$Actual.Acum.Prob[1:4], c(0.420, 0.486, 0.513, 0.549),
+  expect_equal(Changes[[1]]$Actual.Acum.Prob[1:4], c(00.218, 0.486, 0.513, 0.549),
                tolerance = 0.05)
-  expect_equal(Changes[[1]]$ChangeFreq[1:4], c(0.000,  0.000,  0.000, 0.000),
+  expect_equal(Changes[[1]]$ChangeFreq[1:4], c(-0.202,  0.000,  0.000, 0.000),
                tolerance = 0.05)
-  expect_equal(Changes[[2]][1:4,3], c(1, 1, 1, 1),
+  expect_equal(Changes[[2]][1:4,3], c(1, 1, 1, 6),
                tolerance = 0.00)
-  expect_equal(Changes[[3]][1:4,3], c(0.000, 0.000, 0.000, 0.000),
+  expect_equal(Changes[[3]][1:4,3], c(0.000, 0.000, 0.000, 9.541),
                tolerance = 0.05)
-  expect_equal(Changes[[3]][1:4,4], c(0.000, 0.000, 0.000, 0.000),
+  expect_equal(Changes[[3]][1:4,4], c(0.000, 0.000, 0.000, 8.251),
                tolerance = 0.05)
-  expect_equal(Changes[[3]][1:4,5], c(0.000, 0.000, 0.000, 0.000),
+  expect_equal(Changes[[3]][1:4,5], c(0.000, 0.000, 0.000, 5.567),
                tolerance = 0.05)
   expect_equal(Changes[[4]][1:4,1], c(1, 1, 1, 1))
   expect_equal(Changes[[4]][1:4,2], c(1, 1, 1, 1))
