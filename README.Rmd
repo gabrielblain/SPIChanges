@@ -179,7 +179,7 @@ q = \frac{\frac{nz}{n +1}}{2} \tag{if x = 0,    2.2}
 $$\
 where n is the sample size and nz is the number of zero precipitation records in the sample.
 
-In cases where one of the nonstationary models has been selected, a nonstationary binomial distribution, is used to calculate q. The parameter of this distribution is allowed to vary on time linearly. The binomial distribution is also fitted using GAMLSS models (packages `gamlss` and `gamlss.dist`), in which zero rain is successes and positive rain values are failures (equation 3).
+In cases where one of the nonstationary models has been selected, a nonstationary binomial distribution Stagge et al. (2022), is used to calculate q. The parameter of this distribution is allowed to vary on time linearly. The binomial distribution is also fitted using GAMLSS models (packages `gamlss` and `gamlss.dist`), in which zero rain is successes and positive rain values are failures (equation 3).
 
 $$
 gamlss(SuccFail~poly(time,1), family = BI) \tag{3}
