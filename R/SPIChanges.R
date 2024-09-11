@@ -125,12 +125,12 @@
      t.gam.ns20 <- spsUtil::quiet(gamlss::gamlss(rain.week.nozeros~nsp(time.nonzero, df = 2),family=GA, mu.link = "identity",
                                                  sigma.link ="log"))
      t.gam.ns02 <- spsUtil::quiet(gamlss::gamlss(rain.week.nozeros~1,family=GA, mu.link = "identity",
-                                                 sigma.formula=~log(time.nonzero),sigma.link ="log"))
+                                                 sigma.formula=~nsp(time.nonzero, df = 2),sigma.link ="log"))
      t.gam.ns21 <- spsUtil::quiet(gamlss::gamlss(rain.week.nozeros~nsp(time.nonzero, df = 2), sigma.formula=~poly(time.nonzero,1),family=GA,
                                                  mu.link = "identity", sigma.link ="log"))
      t.gam.ns12 <- spsUtil::quiet(gamlss::gamlss(rain.week.nozeros~poly(time.nonzero,1), sigma.formula=~nsp(time.nonzero, df = 2),family=GA,
                                                  mu.link = "identity", sigma.link ="log"))
-     t.gam.ns22 <- spsUtil::quiet(gamlss::gamlss(rain.week.nozeros~nsp(time.nonzero, df = 2), sigma.formula=~log(time.nonzero),family=GA,
+     t.gam.ns22 <- spsUtil::quiet(gamlss::gamlss(rain.week.nozeros~nsp(time.nonzero, df = 2), sigma.formula=~nsp(time.nonzero, df = 2),family=GA,
                                                  mu.link = "identity", sigma.link ="log"))
      model.selection[a,1] <- which.min(c(AIC(t.gam, k=4),
                                          AIC(t.gam.ns10, k=4),
