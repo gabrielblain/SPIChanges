@@ -263,19 +263,19 @@ head(Changes.in.the.SPI$data.week)
 ```
 
     ##   Year Month quasiWeek rain.at.TS    SPI Exp.Acum.Prob Actual.Acum.Prob
-    ## 1 1980     1         4    223.114 -0.203         0.420            0.420
+    ## 1 1980     1         4    223.114 -0.203         0.420            0.218
     ## 2 1980     2         1    217.420 -0.035         0.486            0.486
     ## 3 1980     2         2    207.020  0.031         0.513            0.513
     ## 4 1980     2         3    203.876  0.122         0.549            0.549
     ## 5 1980     2         4    183.254  0.317         0.624            0.624
     ## 6 1980     3         1    177.995  0.413         0.660            0.660
     ##   ChangeFreq
-    ## 1          0
-    ## 2          0
-    ## 3          0
-    ## 4          0
-    ## 5          0
-    ## 6          0
+    ## 1     -0.202
+    ## 2      0.000
+    ## 3      0.000
+    ## 4      0.000
+    ## 5      0.000
+    ## 6      0.000
 
 ``` r
 head(Changes.in.the.SPI$Model.Drought)
@@ -297,7 +297,7 @@ head(Changes.in.the.SPI$model.selection)
     ## [1,]     1         1     1
     ## [2,]     1         2     1
     ## [3,]     1         3     1
-    ## [4,]     1         4     1
+    ## [4,]     1         4     6
     ## [5,]     2         1     1
     ## [6,]     2         2     1
 
@@ -306,12 +306,12 @@ head(Changes.in.the.SPI$Changes.Freq.Drought)
 ```
 
     ##      Month quasiWeek Moderate Severe Extreme
-    ## [1,]     1         1        0      0       0
-    ## [2,]     1         2        0      0       0
-    ## [3,]     1         3        0      0       0
-    ## [4,]     1         4        0      0       0
-    ## [5,]     2         1        0      0       0
-    ## [6,]     2         2        0      0       0
+    ## [1,]     1         1    0.000  0.000   0.000
+    ## [2,]     1         2    0.000  0.000   0.000
+    ## [3,]     1         3    0.000  0.000   0.000
+    ## [4,]     1         4    9.541  8.251   5.567
+    ## [5,]     2         1    0.000  0.000   0.000
+    ## [6,]     2         2    0.000  0.000   0.000
 
 # Details
 
@@ -325,30 +325,31 @@ likelihood method (McCullagh and Nelder, 1989) and considers the
 following increasingly complex functions (candidate models). Further
 information on GAMLSS can be found in Rigby and Stasinopoulos (2005).
 
-Model 1 (stationary): the mean and dispersion of the distribution are
-constant on time.
+Model 1 (stationary): the mean (µ) and dispersion (δ) of the
+distribution are constant on time.
 
-Model 2 (homocedastic): only the mean is allowed to vary on time
-linearly.
+Model 2 (homocedastic): only µ is allowed to vary on time linearly.
 
-Model 3: only the dispersion is allowed to vary on time linearly.
+Model 3: only δ is allowed to vary on time linearly.
 
-Model 4: both the mean and dispersion are allowed to vary on time
-linearly.
+Model 4: both µ and δ are allowed to vary on time linearly.
 
-Model 5 (homocedastic): the mean is allowed to vary on time non-linearly
+Model 5 (homocedastic): only µ is allowed to vary on time non-linearly
 with a natural cubic spline function with two degrees of freedom.
 
-Model 6: the dispersion is allowed to vary on time non-linearly with a
-natural cubic spline function with two degrees of freedom.
+Model 6: only δ is allowed to vary on time non-linearly with a natural
+cubic spline function with two degrees of freedom.
 
-Model 7: the mean is allowed to, respectively, vary on time non-linearly
-with a natural cubic spline function with two degrees of freedom. The
-dispersion is allowed to vary on time linearly.
+Model 7: µ is allowed to vary on time non-linearly with a natural cubic
+spline function with two degrees of freedom; δ is allowed to vary on
+time linearly.
 
-Model 8: both mean and dispersion are allowed to vary on time
-non-linearly with natural cubic spline functions with two degrees of
-freedom.
+Model 8: µ is allowed to vary on time linearly; δ is allowed to vary on
+time non-linearly with a natural cubic spline function with two degrees
+of freedom.
+
+Model 9: both µ and δ are allowed to vary on time non-linearly with
+natural cubic spline functions with two degrees of freedom.
 
 The gamma distribution has two parameters: the shape and scale. Their
 relationships with the mean and dispersion are given in several studies

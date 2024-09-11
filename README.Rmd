@@ -142,21 +142,23 @@ head(Changes.in.the.SPI$Changes.Freq.Drought)
 
 The NSPI uses the same calculation algorithm as the SPI. However, the stationary gamma distribution is replaced by nonstationary versions of this parametric function, which allows its parameters to vary as a function of covariates. In this package, the gamma distributions are fitted to rainfall data using Generalized Additive Models (GAMLSS) with time as a covariate. This fitting process is based on the maximum likelihood method (McCullagh and Nelder, 1989) and considers the following increasingly complex functions (candidate models). Further information on GAMLSS can be found in Rigby and Stasinopoulos (2005).
 
-Model 1 (stationary): the mean and dispersion of the distribution are constant on time.
+Model 1 (stationary): the mean (µ) and dispersion (δ) of the distribution are constant on time.
 
-Model 2 (homocedastic): only the mean is allowed to vary on time linearly.
+Model 2 (homocedastic): only µ is allowed to vary on time linearly.
 
-Model 3: only the dispersion is allowed to vary on time linearly.
+Model 3: only δ is allowed to vary on time linearly.
 
-Model 4: both the mean and dispersion are allowed to vary on time linearly.
+Model 4: both µ and δ are allowed to vary on time linearly.
 
-Model 5 (homocedastic): the mean is allowed to vary on time non-linearly with a natural cubic spline function with two degrees of freedom.
+Model 5 (homocedastic): only µ is allowed to vary on time non-linearly with a natural cubic spline function with two degrees of freedom.
 
-Model 6: the dispersion is allowed to vary on time non-linearly with a natural cubic spline function with two degrees of freedom.
+Model 6: only δ is allowed to vary on time non-linearly with a natural cubic spline function with two degrees of freedom.
 
-Model 7: the mean is allowed to, respectively, vary on time non-linearly with a natural cubic spline function with two degrees of freedom. The dispersion is allowed to vary on time linearly.
+Model 7: µ is allowed to vary on time non-linearly with a natural cubic spline function with two degrees of freedom; δ is allowed to vary on time linearly.
 
-Model 8: both  mean and dispersion are allowed to vary on time non-linearly with natural cubic spline functions with two degrees of freedom.
+Model 8: µ is allowed to vary on time linearly; δ is allowed to vary on time non-linearly with a natural cubic spline function with two degrees of freedom.
+
+Model 9: both µ and δ are allowed to vary on time non-linearly with natural cubic spline functions with two degrees of freedom.
 
 The gamma distribution has two parameters: the shape and scale. Their relationships with the mean and dispersion are given in several studies including Blain et al (2022).
 
