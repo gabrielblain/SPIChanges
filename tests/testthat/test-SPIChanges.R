@@ -1,4 +1,4 @@
-daily.rain <-CampinasRain$Rain
+daily.rain <- CampinasRain$Rain
 expect_message(
 rainTS4 <- TSaggreg(daily.rain=daily.rain,start.date="1980-01-01",TS=4),
 "Done. Just ensure the last quasi-week is complete.
@@ -43,9 +43,9 @@ test_that("SPIChanges() works when only.linear = no", {
                tolerance = 0.05)
   expect_equal(Changes[[1]]$Exp.Acum.Prob[1:4], c(0.420, 0.486, 0.513, 0.549),
                tolerance = 0.05)
-  expect_equal(Changes[[1]]$Actual.Acum.Prob[1:4], c(0.420, 0.486, 0.513, 0.549),
+  expect_equal(Changes[[1]]$Actual.Acum.Prob[1:4], c(0.420, 0.486, 0.513,  0.549),
                tolerance = 0.05)
-  expect_equal(Changes[[1]]$ChangeFreq[1:4], c(0.000,  0.000,  0.000, 0.000),
+  expect_equal(Changes[[1]]$ChangeFreq[1:4], c(0.000,  0.000,  0.000, 0),
                tolerance = 0.05)
   expect_equal(Changes[[2]][1:4,3], c(1, 1, 1, 1),
                tolerance = 0.00)
