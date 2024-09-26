@@ -61,7 +61,6 @@
        length(rain.at.TS[rain.at.TS[,3] == 3]) < 96 ||
        length(rain.at.TS[rain.at.TS[,3] == 4]) < 96) {
      stop("Column quasiWeek in rain.at.TS is probably malformed.")}
-
    only.linear <- tolower(only.linear)
    if (only.linear != "yes" & only.linear != "no"){stop("imput only.linear should be Yes or No.")}
    years <- rain.at.TS[,1]
