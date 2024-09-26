@@ -29,10 +29,10 @@ Imports:
     zoo,
     gamlss,
     gamlss.dist,
-    splines2,
     stats,
     spsUtil,
-    dplyr
+    dplyr,
+    MuMIn
 LazyData: true
 Suggests: 
     knitr,
