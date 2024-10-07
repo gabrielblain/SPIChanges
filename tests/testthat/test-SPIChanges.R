@@ -4,10 +4,13 @@ rainTS4 <- TSaggreg(daily.rain=daily.rain,start.date="1980-01-01",TS=4),
 "Done. Just ensure the last quasi-week is complete.
   The last day of your series is 31 and TS is 4")
 test_that("SPIChanges() works as expected in example", {
-  Changes <- SPIChanges(rain.at.TS=rainTS4, only.linear = "yes")
+  expect_warning(
+  Changes <- SPIChanges(rain.at.TS=rainTS4, only.linear = "yes"),
+  "rainfall series Month 9 Week 1 has more than 6.7% of zeros. In this situation
+             the SPI cannot assume values lower than -1.5")
   expect_type(Changes, "list")
   expect_length(Changes, 4)
-  expect_named(Changes, c("data.week", "model.selection", "Changes.Freq.Drought","Model.Drought"))
+  expect_named(Changes, c("data.week", "model.selection", "Changes.Freq.Drought","Statistics"))
   expect_equal(Changes[[1]]$SPI[1:4], c(-0.203, -0.035,  0.031,  0.122),
                tolerance = 0.05)
   expect_equal(Changes[[1]]$Exp.Acum.Prob[1:4], c(0.420, 0.486, 0.513, 0.549),
@@ -18,51 +21,50 @@ test_that("SPIChanges() works as expected in example", {
                tolerance = 0.05)
   expect_equal(Changes[[2]][1:4,3], c(1, 1, 1, 1),
                tolerance = 0.00)
-  expect_equal(Changes[[3]][1:4,3], c(0.000, 0.000, 0.000, 0.000),
-               tolerance = 0.05)
-  expect_equal(Changes[[3]][1:4,4], c(0.000, 0.000, 0.000, 0.000),
-               tolerance = 0.05)
-  expect_equal(Changes[[3]][1:4,5], c(0.000, 0.000, 0.000, 0.000),
-               tolerance = 0.05)
+  expect_equal(Changes[[3]][1:4,3], c("No_Change", "No_Change", "No_Change", "No_Change"))
+  expect_equal(Changes[[3]][1:4,4], c("No_Change", "No_Change", "No_Change", "No_Change"))
+  expect_equal(Changes[[3]][1:4,5], c("No_Change", "No_Change", "No_Change", "No_Change"))
+  expect_equal(Changes[[3]][1:4,6], c("No_Change", "No_Change", "No_Change", "No_Change"))
+  expect_equal(Changes[[3]][1:4,7], c("No_Change", "No_Change", "No_Change", "No_Change"))
+  expect_equal(Changes[[3]][1:4,8], c("No_Change", "No_Change", "No_Change", "No_Change"))
+  expect_equal(Changes[[3]][1:4,9], c("No_Change", "No_Change", "No_Change", "No_Change"))
   expect_equal(Changes[[4]][1:4,1], c(1, 1, 1, 1))
   expect_equal(Changes[[4]][1:4,2], c(1, 1, 1, 1))
-  expect_equal(Changes[[4]][1:4,3], c(15.9, 15.9, 15.9, 15.9),
-               tolerance = 0.05)
-  expect_equal(Changes[[4]][1:4,4], c(6.7, 6.7, 6.7, 6.7),
-               tolerance = 0.05)
-  expect_equal(Changes[[4]][1:4,5], c(2.3, 2.3, 2.3, 2.3),
-               tolerance = 0.05)
+  expect_equal(Changes[[4]][1:4,3], c(0, 0, 0, 0),tolerance = 0.1)
+  expect_equal(Changes[[4]][1:4,4], c(218.182, 218.182, 218.182, 218.182),tolerance = 1)
+  expect_equal(Changes[[4]][1:4,5], c(0.326, 0.326, 0.326, 0.326),tolerance = 0.1)
 })
 
 test_that("SPIChanges() works when only.linear = no", {
-  Changes <- SPIChanges(rain.at.TS=rainTS4, only.linear = "no")
+  expect_warning(
+    Changes <- SPIChanges(rain.at.TS=rainTS4, only.linear = "No"),
+    "rainfall series Month 9 Week 1 has more than 6.7% of zeros. In this situation
+             the SPI cannot assume values lower than -1.5")
   expect_type(Changes, "list")
   expect_length(Changes, 4)
-  expect_named(Changes, c("data.week", "model.selection", "Changes.Freq.Drought","Model.Drought"))
+  expect_named(Changes, c("data.week", "model.selection", "Changes.Freq.Drought","Statistics"))
   expect_equal(Changes[[1]]$SPI[1:4], c(-0.203, -0.035,  0.031,  0.122),
                tolerance = 0.05)
   expect_equal(Changes[[1]]$Exp.Acum.Prob[1:4], c(0.420, 0.486, 0.513, 0.549),
                tolerance = 0.05)
-  expect_equal(Changes[[1]]$Actual.Acum.Prob[1:4], c(0.420, 0.486, 0.513,  0.549),
+  expect_equal(Changes[[1]]$Actual.Acum.Prob[1:4], c(0.420, 0.486, 0.513, 0.549),
                tolerance = 0.05)
-  expect_equal(Changes[[1]]$ChangeFreq[1:4], c(0.000,  0.000,  0.000, 0),
+  expect_equal(Changes[[1]]$ChangeFreq[1:4], c(0.000,  0.000,  0.000, 0.000),
                tolerance = 0.05)
   expect_equal(Changes[[2]][1:4,3], c(1, 1, 1, 1),
                tolerance = 0.00)
-  expect_equal(Changes[[3]][1:4,3], c(0.000, 0.000, 0.000,  0.000),
-               tolerance = 0.05)
-  expect_equal(Changes[[3]][1:4,4], c(0.000, 0.000, 0.000, 0.000),
-               tolerance = 0.05)
-  expect_equal(Changes[[3]][1:4,5], c(0.000, 0.000, 0.000, 0.000),
-               tolerance = 0.05)
+  expect_equal(Changes[[3]][1:4,3], c("No_Change", "No_Change", "No_Change", "No_Change"))
+  expect_equal(Changes[[3]][1:4,4], c("No_Change", "No_Change", "No_Change", "No_Change"))
+  expect_equal(Changes[[3]][1:4,5], c("No_Change", "No_Change", "No_Change", "No_Change"))
+  expect_equal(Changes[[3]][1:4,6], c("No_Change", "No_Change", "No_Change", "No_Change"))
+  expect_equal(Changes[[3]][1:4,7], c("No_Change", "No_Change", "No_Change", "No_Change"))
+  expect_equal(Changes[[3]][1:4,8], c("No_Change", "No_Change", "No_Change", "No_Change"))
+  expect_equal(Changes[[3]][1:4,9], c("No_Change", "No_Change", "No_Change", "No_Change"))
   expect_equal(Changes[[4]][1:4,1], c(1, 1, 1, 1))
   expect_equal(Changes[[4]][1:4,2], c(1, 1, 1, 1))
-  expect_equal(Changes[[4]][1:4,3], c(15.9, 15.9, 15.9, 15.9),
-               tolerance = 0.05)
-  expect_equal(Changes[[4]][1:4,4], c(6.7, 6.7, 6.7, 6.7),
-               tolerance = 0.05)
-  expect_equal(Changes[[4]][1:4,5], c(2.3, 2.3, 2.3, 2.3),
-               tolerance = 0.05)
+  expect_equal(Changes[[4]][1:4,3], c(0, 0, 0, 0),tolerance = 0.1)
+  expect_equal(Changes[[4]][1:4,4], c(218.182, 218.182, 218.182, 218.182),tolerance = 1)
+  expect_equal(Changes[[4]][1:4,5], c(0.326, 0.326, 0.326, 0.326),tolerance = 0.1)
 })
 
 daily.rain <-CampinasRain$Rain
@@ -80,31 +82,29 @@ test_that("SPIChanges() works as expected in example", {
              the SPI cannot assume values lower than -1.5")
   expect_type(Changes, "list")
   expect_length(Changes, 4)
-  expect_named(Changes, c("data.week", "model.selection", "Changes.Freq.Drought","Model.Drought"))
+  expect_named(Changes, c("data.week", "model.selection", "Changes.Freq.Drought","Statistics"))
   expect_equal(Changes[[1]]$SPI[1:4], c(-0.438, -0.204, -0.275, -0.206),
                tolerance = 0.05)
   expect_equal(Changes[[1]]$Exp.Acum.Prob[1:4], c(0.331, 0.419, 0.392, 0.418),
                tolerance = 0.05)
   expect_equal(Changes[[1]]$Actual.Acum.Prob[1:4], c(0.331, 0.419, 0.392, 0.418),
                tolerance = 0.05)
-  expect_equal(Changes[[1]]$ChangeFreq[1:4], c(0.000, 0.000, 0.000, 0.000),
+  expect_equal(Changes[[1]]$ChangeFreq[1:4], c(0.000,  0.000,  0.000, 0.000),
                tolerance = 0.05)
   expect_equal(Changes[[2]][1:4,3], c(1, 1, 1, 1),
                tolerance = 0.00)
-  expect_equal(Changes[[3]][1:4,3], c(0.000,  0.000,  0.000, 0.000),
-               tolerance = 0.05)
-  expect_equal(Changes[[3]][1:4,4], c(0.000,  0.000,  0.000, 0.000),
-               tolerance = 0.05)
-  expect_equal(Changes[[3]][1:4,5], c(0.000,  0.000,  0.000, 0.000),
-               tolerance = 0.05)
+  expect_equal(Changes[[3]][1:4,3], c("No_Change", "No_Change", "No_Change", "No_Change"))
+  expect_equal(Changes[[3]][1:4,4], c("No_Change", "No_Change", "No_Change", "No_Change"))
+  expect_equal(Changes[[3]][1:4,5], c("No_Change", "No_Change", "No_Change", "No_Change"))
+  expect_equal(Changes[[3]][1:4,6], c("No_Change", "No_Change", "No_Change", "No_Change"))
+  expect_equal(Changes[[3]][1:4,7], c("No_Change", "No_Change", "No_Change", "No_Change"))
+  expect_equal(Changes[[3]][1:4,8], c("No_Change", "No_Change", "No_Change", "No_Change"))
+  expect_equal(Changes[[3]][1:4,9], c("No_Change", "No_Change", "No_Change", "No_Change"))
   expect_equal(Changes[[4]][1:4,1], c(1, 1, 1, 1))
   expect_equal(Changes[[4]][1:4,2], c(1, 1, 1, 1))
-  expect_equal(Changes[[4]][1:4,3], c(15.9, 15.9, 15.9, 15.9),
-               tolerance = 0.05)
-  expect_equal(Changes[[4]][1:4,4], c(6.7, 6.7, 6.7, 6.7),
-               tolerance = 0.05)
-  expect_equal(Changes[[4]][1:4,5], c(2.3, 2.3, 2.3, 2.3),
-               tolerance = 0.05)
+  expect_equal(Changes[[4]][1:4,3], c(0, 0, 0, 0),tolerance = 0.1)
+  expect_equal(Changes[[4]][1:4,4], c(234.914, 234.914, 234.914, 234.914),tolerance = 1)
+  expect_equal(Changes[[4]][1:4,5], c(0.312, 0.312, 0.312, 0.312),tolerance = 0.1)
 })
 
 test_that("rainTS4 with negative data", {
