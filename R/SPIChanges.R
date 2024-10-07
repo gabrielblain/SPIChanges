@@ -125,7 +125,13 @@ SPIChanges <- function(rain.at.TS, only.linear = "Yes"){
     stat.rain.drought.extr <- qGA(ext.param.prob, mu = t.gam$mu.fv[1], sigma = t.gam$sigma.fv[1])
     if (model.selection[a,1]==1){
       quasiprob.ns <- as.matrix(data.week[initial.row:last.row,6])
-      Changes.Freq.Drought [a,] <- c("No_Change")
+      Changes.Freq.Drought [a,1] <- round((probzero.st[1]),3)
+      Changes.Freq.Drought [a,2] <- round((probzero.st[n.week]),3)
+      Changes.Freq.Drought [a,3] <- round(stat.rain.normal,2)
+      Changes.Freq.Drought [a,4] <- Changes.Freq.Drought [a,3]
+      Changes.Freq.Drought [a,5] <- 0
+      Changes.Freq.Drought [a,6] <- 0
+      Changes.Freq.Drought [a,7] <- 0
       Model.Drought.week[,3] <- probzero.st[1]
       Model.Drought.week[,4] <- t.gam$mu.fv
       Model.Drought.week[,5] <- t.gam$sigma.fv
