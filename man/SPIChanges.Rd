@@ -22,9 +22,10 @@ A \code{list} object with:
 approach, cumulative probability of the SPI values under the non-stationary approach,
 and the changes in the frequency of the SPI values caused by the changes in rainfall patterns.}
 \item{model.selection}{The generalized additive model that best fits the rainfall series}
-\item{Changes.Freq.Drought}{changes in the frequency of moderate, severe and extreme drought events,
-as definied by the SPI classification system, caused by the changes in rainfall patterns.}
-\item{Model.Drought}{Year to year changes in the expected frequency of moderate, severe and extreme drought events.}
+\item{Changes.Freq.Drought}{changes in the frequency of zero precipitation, moderate, severe and extreme drought events,
+as definied by the SPI classification system, caused by the changes in rainfall patterns.
+Changes in the precipitation amounts associated describing normal conditions is also shown.}
+\item{Statistics}{Year to year changes in the expected frequency of moderate, severe and extreme drought events.}
 }
 }
 \description{
