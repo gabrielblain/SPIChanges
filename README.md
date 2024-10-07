@@ -152,20 +152,21 @@ SPIChanges(rain.at.TS,
 
 A list object with:
 
-data.week: The Rainfall amounts, SPI, cumulative probability of the SPI
-values(stationary approach), cumulative probability of the NSPI values
-(nonstationary approach), and the changes in the frequency of the SPI
-values caused by the changes in rainfall patterns.
+data.week: The precipitation amounts, SPI, cumulative probability of the
+SPI values (stationary approach), cumulative probability of the
+precipitation values calculated from the nonstationary algorithm of the
+NSPI, and the changes in the frequency of the SPI values caused by the
+changes in precipitation patterns.
 
-model.selection: The generalized additive model that best fits the
-rainfall series (see details).
+model.selection: The generalized additive model (section 2.2) that best
+fits the precipitation series.
 
 Changes.Freq.Drought: changes in the frequency of moderate, severe and
-extreme drought events, as definied by the SPI classification system,
-caused by the changes in rainfall patterns.
+extreme drought events, as definied by the SPI classification system
+(Table 1), caused by the changes in precipitation patterns.
 
-Model.Drought: Year to year changes in the expected frequency of
-moderate, severe and extreme drought events.
+Statistics: Year to year changes in the expected frequency of moderate,
+severe and extreme drought events.
 
 ## Example 2
 
@@ -186,6 +187,12 @@ rainTS4 <- TSaggreg(daily.rain=daily.rain,start.date="1980-01-01",TS=4)
 
 ``` r
 Changes.in.the.SPI <- SPIChanges(rain.at.TS=rainTS4, only.linear = "Yes")
+```
+
+    ## Warning in SPIChanges(rain.at.TS = rainTS4, only.linear = "Yes"): rainfall series Month 9 Week 1 has more than 6.7% of zeros. In this situation
+    ##              the SPI cannot assume values lower than -1.5
+
+``` r
 head(Changes.in.the.SPI$data.week)
 ```
 
@@ -208,13 +215,7 @@ head(Changes.in.the.SPI$data.week)
 head(Changes.in.the.SPI$Model.Drought)
 ```
 
-    ##   Month quasiWeek Moderate Severe Extreme
-    ## 1     1         1     15.9    6.7     2.3
-    ## 2     1         1     15.9    6.7     2.3
-    ## 3     1         1     15.9    6.7     2.3
-    ## 4     1         1     15.9    6.7     2.3
-    ## 5     1         1     15.9    6.7     2.3
-    ## 6     1         1     15.9    6.7     2.3
+    ## NULL
 
 ``` r
 head(Changes.in.the.SPI$model.selection)
@@ -232,13 +233,20 @@ head(Changes.in.the.SPI$model.selection)
 head(Changes.in.the.SPI$Changes.Freq.Drought)
 ```
 
-    ##      Month quasiWeek Moderate Severe Extreme
-    ## [1,]     1         1        0      0       0
-    ## [2,]     1         2        0      0       0
-    ## [3,]     1         3        0      0       0
-    ## [4,]     1         4        0      0       0
-    ## [5,]     2         1        0      0       0
-    ## [6,]     2         2        0      0       0
+    ##      Month quasiWeek StatProbZero NonStatProbZero StatNormalRain
+    ## [1,] "1"   "1"       "No_Change"  "No_Change"     "No_Change"   
+    ## [2,] "1"   "2"       "No_Change"  "No_Change"     "No_Change"   
+    ## [3,] "1"   "3"       "No_Change"  "No_Change"     "No_Change"   
+    ## [4,] "1"   "4"       "No_Change"  "No_Change"     "No_Change"   
+    ## [5,] "2"   "1"       "No_Change"  "No_Change"     "No_Change"   
+    ## [6,] "2"   "2"       "No_Change"  "No_Change"     "No_Change"   
+    ##      NonStatNormalRain ChangeMod   ChangeSev   ChangeExt  
+    ## [1,] "No_Change"       "No_Change" "No_Change" "No_Change"
+    ## [2,] "No_Change"       "No_Change" "No_Change" "No_Change"
+    ## [3,] "No_Change"       "No_Change" "No_Change" "No_Change"
+    ## [4,] "No_Change"       "No_Change" "No_Change" "No_Change"
+    ## [5,] "No_Change"       "No_Change" "No_Change" "No_Change"
+    ## [6,] "No_Change"       "No_Change" "No_Change" "No_Change"
 
 ## Example 3
 
@@ -259,35 +267,35 @@ rainTS4 <- TSaggreg(daily.rain=daily.rain,start.date="1980-01-01",TS=4)
 
 ``` r
 Changes.in.the.SPI <- SPIChanges(rain.at.TS=rainTS4, only.linear = "No")
+```
+
+    ## Warning in SPIChanges(rain.at.TS = rainTS4, only.linear = "No"): rainfall series Month 9 Week 1 has more than 6.7% of zeros. In this situation
+    ##              the SPI cannot assume values lower than -1.5
+
+``` r
 head(Changes.in.the.SPI$data.week)
 ```
 
     ##   Year Month quasiWeek rain.at.TS    SPI Exp.Acum.Prob Actual.Acum.Prob
-    ## 1 1980     1         4    223.114 -0.203         0.420            0.218
+    ## 1 1980     1         4    223.114 -0.203         0.420            0.420
     ## 2 1980     2         1    217.420 -0.035         0.486            0.486
     ## 3 1980     2         2    207.020  0.031         0.513            0.513
     ## 4 1980     2         3    203.876  0.122         0.549            0.549
     ## 5 1980     2         4    183.254  0.317         0.624            0.624
     ## 6 1980     3         1    177.995  0.413         0.660            0.660
     ##   ChangeFreq
-    ## 1     -0.202
-    ## 2      0.000
-    ## 3      0.000
-    ## 4      0.000
-    ## 5      0.000
-    ## 6      0.000
+    ## 1          0
+    ## 2          0
+    ## 3          0
+    ## 4          0
+    ## 5          0
+    ## 6          0
 
 ``` r
 head(Changes.in.the.SPI$Model.Drought)
 ```
 
-    ##   Month quasiWeek Moderate Severe Extreme
-    ## 1     1         1     15.9    6.7     2.3
-    ## 2     1         1     15.9    6.7     2.3
-    ## 3     1         1     15.9    6.7     2.3
-    ## 4     1         1     15.9    6.7     2.3
-    ## 5     1         1     15.9    6.7     2.3
-    ## 6     1         1     15.9    6.7     2.3
+    ## NULL
 
 ``` r
 head(Changes.in.the.SPI$model.selection)
@@ -297,7 +305,7 @@ head(Changes.in.the.SPI$model.selection)
     ## [1,]     1         1     1
     ## [2,]     1         2     1
     ## [3,]     1         3     1
-    ## [4,]     1         4     6
+    ## [4,]     1         4     1
     ## [5,]     2         1     1
     ## [6,]     2         2     1
 
@@ -305,13 +313,20 @@ head(Changes.in.the.SPI$model.selection)
 head(Changes.in.the.SPI$Changes.Freq.Drought)
 ```
 
-    ##      Month quasiWeek Moderate Severe Extreme
-    ## [1,]     1         1    0.000  0.000   0.000
-    ## [2,]     1         2    0.000  0.000   0.000
-    ## [3,]     1         3    0.000  0.000   0.000
-    ## [4,]     1         4    9.541  8.251   5.567
-    ## [5,]     2         1    0.000  0.000   0.000
-    ## [6,]     2         2    0.000  0.000   0.000
+    ##      Month quasiWeek StatProbZero NonStatProbZero StatNormalRain
+    ## [1,] "1"   "1"       "No_Change"  "No_Change"     "No_Change"   
+    ## [2,] "1"   "2"       "No_Change"  "No_Change"     "No_Change"   
+    ## [3,] "1"   "3"       "No_Change"  "No_Change"     "No_Change"   
+    ## [4,] "1"   "4"       "No_Change"  "No_Change"     "No_Change"   
+    ## [5,] "2"   "1"       "No_Change"  "No_Change"     "No_Change"   
+    ## [6,] "2"   "2"       "No_Change"  "No_Change"     "No_Change"   
+    ##      NonStatNormalRain ChangeMod   ChangeSev   ChangeExt  
+    ## [1,] "No_Change"       "No_Change" "No_Change" "No_Change"
+    ## [2,] "No_Change"       "No_Change" "No_Change" "No_Change"
+    ## [3,] "No_Change"       "No_Change" "No_Change" "No_Change"
+    ## [4,] "No_Change"       "No_Change" "No_Change" "No_Change"
+    ## [5,] "No_Change"       "No_Change" "No_Change" "No_Change"
+    ## [6,] "No_Change"       "No_Change" "No_Change" "No_Change"
 
 # Details
 
@@ -325,31 +340,53 @@ likelihood method (McCullagh and Nelder, 1989) and considers the
 following increasingly complex functions (candidate models). Further
 information on GAMLSS can be found in Rigby and Stasinopoulos (2005).
 
-Model 1 (stationary): the mean (µ) and dispersion (δ) of the
-distribution are constant on time.
+Model 1 (stationary): The mean (µ) and dispersion (δ) of the
+distribution are constant over time.
 
-Model 2 (homocedastic): only µ is allowed to vary on time linearly.
+Model 2 (homoscedastic): Only µ is allowed to vary over time linearly.
 
-Model 3: only δ is allowed to vary on time linearly.
+Model 3: Only δ is allowed to vary over time linearly.
 
-Model 4: both µ and δ are allowed to vary on time linearly.
+Model 4: Both µ and δ are allowed to vary over time linearly.
 
-Model 5 (homocedastic): only µ is allowed to vary on time non-linearly
-with a natural cubic spline function with two degrees of freedom.
+Model 5 (homoscedastic): Only µ is allowed to vary over time
+non-linearly with a quadratic polynomial function.
 
-Model 6: only δ is allowed to vary on time non-linearly with a natural
-cubic spline function with two degrees of freedom.
+Model 6: Only δ is allowed to vary over time non-linearly with a
+quadratic polynomial function.
 
-Model 7: µ is allowed to vary on time non-linearly with a natural cubic
-spline function with two degrees of freedom; δ is allowed to vary on
-time linearly.
+Model 7: µ is allowed to vary over time non-linearly with a quadratic
+polynomial function; δ is allowed to vary over time linearly.
 
-Model 8: µ is allowed to vary on time linearly; δ is allowed to vary on
-time non-linearly with a natural cubic spline function with two degrees
-of freedom.
+Model 8: µ is allowed to vary over time linearly; δ is allowed to vary
+over time non-linearly with a quadratic polynomial function.
 
-Model 9: both µ and δ are allowed to vary on time non-linearly with
-natural cubic spline functions with two degrees of freedom.
+Model 9: Both µ and δ are allowed to vary over time non-linearly with a
+quadratic polynomial function.
+
+Model 10: Only µ is allowed to vary over time non-linearly with a cubic
+polynomial function.
+
+Model 11: Only δ is allowed to vary over time non-linearly with a cubic
+polynomial function.
+
+Model 12: µ is allowed to vary over time non-linearly with a cubic
+polynomial function; δ is allowed to vary over time linearly.
+
+Model 13: µ is allowed to vary over time linearly; δ is allowed to vary
+over time non-linearly with a cubic polynomial function.
+
+Model 14: µ is allowed to vary over time non-linearly with a cubic
+polynomial function; δ is allowed to vary over time non-linearly with a
+quadratic polynomial function.
+
+Model 15: µ is allowed to vary over time non-linearly with a quadratic
+polynomial function; δ is allowed to vary over time non-linearly with a
+cubic polynomial function.
+
+Model 16: µ is allowed to vary over time non-linearly with a cubic
+polynomial function; δ is allowed to vary over time non-linearly with a
+cubic polynomial function.
 
 The gamma distribution has two parameters: the shape and scale. Their
 relationships with the mean and dispersion are given in several studies
@@ -364,31 +401,14 @@ $$
 H(x) = q + (1-q)G(x > 0, \mu, \sigma)      \tag{1}
 $$
 
-In cases where model 1 has been selected (stationary process), q is
-calculated by the system of equations 2.1 and 2.2 , as suggested in
-Stagge et al. (2015, 2022).  
-
-$$
-q = \frac{nz}{n +1},   \tag{if x > 0,    2.1} 
-$$
-
-$$
-q = \frac{\frac{nz}{n +1}}{2} \tag{if x = 0,    2.2} 
-$$  
-where n is the sample size and nz is the number of zero precipitation
-records in the sample.
-
-In cases where one of the nonstationary models has been selected, a
-nonstationary binomial distribution Stagge et al. (2022), is used to
-calculate q. The parameter of this distribution is allowed to vary on
-time linearly. The binomial distribution is also fitted using GAMLSS
-models (packages `gamlss` and `gamlss.dist`), in which zero rain is
-successes and positive rain values are failures (equation 3).
-
-$$
-gamlss(SuccFail~poly(time,1), family = BI) \tag{3}
-$$  
-where SuccFail represents the counts of successes(1) and failures (0).
+Within the original SPI algorithm, q is often calculated from equations
+based on the ratio of zeros in the precipitation records (nz) and the
+sample size (n). This package uses the binomial distribution to
+calculate q. As described in studies such as Stagge et al. (2022), this
+single parameter discrete distribution can also be adapted to
+nonstationary cases. It was also fitted using GAMLSS models (packages
+gamlss and gamlss.dist), where zero rain is considered a success and
+positive rain values are considered failures.
 
 ## BugReports:
 

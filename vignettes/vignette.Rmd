@@ -87,21 +87,37 @@ The `SPIChanges()` is the central function of the package is based on the follow
 
 The gamma distributions are fitted to rainfall data using Generalized Additive Models (GAMLSS) with time as a covariate. This fitting process is based on the maximum likelihood method (@McCullagh1989) and considers the following increasingly complex functions (candidate models). Further information on GAMLSS can be found in (@Rigby2005).
 
-Model 1 (stationary): the mean and dispersion of the distribution are constant on time.
+Model 1 (stationary): The mean (µ) and dispersion (δ) of the distribution are constant over time.
 
-Model 2 (homocedastic): only the mean is allowed to vary on time linearly.
+Model 2 (homoscedastic): Only µ is allowed to vary over time linearly.
 
-Model 3: only the dispersion is allowed to vary on time linearly.
+Model 3: Only δ is allowed to vary over time linearly.
 
-Model 4: both the mean and dispersion are allowed to vary on time linearly.
+Model 4: Both µ and δ are allowed to vary over time linearly.
 
-Model 5 (homocedastic): the mean is allowed to vary on time non-linearly with a natural cubic spline function with two degrees of freedom.
+Model 5 (homoscedastic): Only µ is allowed to vary over time non-linearly with a quadratic polynomial function.
 
-Model 6: the dispersion is allowed to vary on time non-linearly with a natural cubic spline function with two degrees of freedom.
+Model 6: Only δ is allowed to vary over time non-linearly with a quadratic polynomial function.
 
-Model 7: the mean is allowed to, respectively, vary on time non-linearly with a natural cubic spline function with two degrees of freedom. The dispersion is allowed to vary on time linearly.
+Model 7: µ is allowed to vary over time non-linearly with a quadratic polynomial function; δ is allowed to vary over time linearly.
 
-Model 8: both  mean and dispersion are allowed to vary on time non-linearly with natural cubic spline functions with two degrees of freedom.
+Model 8: µ is allowed to vary over time linearly; δ is allowed to vary over time non-linearly with a quadratic polynomial function.
+
+Model 9: Both µ and δ are allowed to vary over time non-linearly with a quadratic polynomial function.
+
+Model 10: Only µ is allowed to vary over time non-linearly with a cubic polynomial function.
+
+Model 11: Only δ is allowed to vary over time non-linearly with a cubic polynomial function.
+
+Model 12: µ is allowed to vary over time non-linearly with a cubic polynomial function; δ is allowed to vary over time linearly.
+
+Model 13: µ is allowed to vary over time linearly; δ is allowed to vary over time non-linearly with a cubic polynomial function.
+
+Model 14: µ is allowed to vary over time non-linearly with a cubic polynomial function; δ is allowed to vary over time non-linearly with a quadratic polynomial function.
+
+Model 15: µ is allowed to vary over time non-linearly with a quadratic polynomial function; δ is allowed to vary over time non-linearly with a cubic polynomial function.
+
+Model 16: µ is allowed to vary over time non-linearly with a cubic polynomial function; δ is allowed to vary over time non-linearly with a cubic polynomial function.
 
 The gamma distribution has two parameters: the shape and scale. Their relationships with the mean (mu) and dispersion (sigma) are given by equations 1 and 2.
 
@@ -127,13 +143,13 @@ SPIChanges(rain.at.TS,
 
 A list object with:
 
-data.week: The Rainfall amounts, SPI, cumulative probability of the SPI values(stationary approach), cumulative probability of the NSPI values (nonstationary approach), and the changes in the frequency of the SPI values caused by the changes in rainfall patterns.
+data.week: The precipitation amounts, SPI, cumulative probability of the SPI values (stationary approach), cumulative probability of the precipitation values calculated from the nonstationary algorithm of the NSPI, and the changes in the frequency of the SPI values caused by the changes in precipitation patterns.
 
-model.selection: The generalized additive model that best fits the rainfall series (see details).
+model.selection: The generalized additive model (section 2.2) that best fits the precipitation series.
 
-Changes.Freq.Drought: changes in the frequency of moderate, severe and extreme drought events, as definied by the SPI classification system, caused by the changes in rainfall patterns.
+Changes.Freq.Drought: changes in the frequency of moderate, severe and extreme drought events, as definied by the SPI classification system (Table 1), caused by the changes in precipitation patterns.
 
-Model.Drought: Year to year changes in the expected frequency of moderate, severe and extreme drought events.
+Statistics: Year to year changes in the expected frequency of moderate, severe and extreme drought events.
 
 ## Example 2
 

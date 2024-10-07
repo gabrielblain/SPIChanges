@@ -100,13 +100,13 @@ SPIChanges(rain.at.TS,
 
 A list object with:
 
-data.week: The Rainfall amounts, SPI, cumulative probability of the SPI values(stationary approach), cumulative probability of the NSPI values (nonstationary approach), and the changes in the frequency of the SPI values caused by the changes in rainfall patterns.
+data.week: The precipitation amounts, SPI, cumulative probability of the SPI values (stationary approach), cumulative probability of the precipitation values calculated from the nonstationary algorithm of the NSPI, and the changes in the frequency of the SPI values caused by the changes in precipitation patterns.
 
-model.selection: The generalized additive model that best fits the rainfall series (see details).
+model.selection: The generalized additive model (section 2.2) that best fits the precipitation series.
 
-Changes.Freq.Drought: changes in the frequency of moderate, severe and extreme drought events, as definied by the SPI classification system, caused by the changes in rainfall patterns.
+Changes.Freq.Drought: changes in the frequency of moderate, severe and extreme drought events, as definied by the SPI classification system (Table 1), caused by the changes in precipitation patterns.
 
-Model.Drought: Year to year changes in the expected frequency of moderate, severe and extreme drought events.
+Statistics: Year to year changes in the expected frequency of moderate, severe and extreme drought events.
 
 ## Example 2
 
@@ -142,23 +142,37 @@ head(Changes.in.the.SPI$Changes.Freq.Drought)
 
 The NSPI uses the same calculation algorithm as the SPI. However, the stationary gamma distribution is replaced by nonstationary versions of this parametric function, which allows its parameters to vary as a function of covariates. In this package, the gamma distributions are fitted to rainfall data using Generalized Additive Models (GAMLSS) with time as a covariate. This fitting process is based on the maximum likelihood method (McCullagh and Nelder, 1989) and considers the following increasingly complex functions (candidate models). Further information on GAMLSS can be found in Rigby and Stasinopoulos (2005).
 
-Model 1 (stationary): the mean (µ) and dispersion (δ) of the distribution are constant on time.
+Model 1 (stationary): The mean (µ) and dispersion (δ) of the distribution are constant over time.
 
-Model 2 (homocedastic): only µ is allowed to vary on time linearly.
+Model 2 (homoscedastic): Only µ is allowed to vary over time linearly.
 
-Model 3: only δ is allowed to vary on time linearly.
+Model 3: Only δ is allowed to vary over time linearly.
 
-Model 4: both µ and δ are allowed to vary on time linearly.
+Model 4: Both µ and δ are allowed to vary over time linearly.
 
-Model 5 (homocedastic): only µ is allowed to vary on time non-linearly with a natural cubic spline function with two degrees of freedom.
+Model 5 (homoscedastic): Only µ is allowed to vary over time non-linearly with a quadratic polynomial function.
 
-Model 6: only δ is allowed to vary on time non-linearly with a natural cubic spline function with two degrees of freedom.
+Model 6: Only δ is allowed to vary over time non-linearly with a quadratic polynomial function.
 
-Model 7: µ is allowed to vary on time non-linearly with a natural cubic spline function with two degrees of freedom; δ is allowed to vary on time linearly.
+Model 7: µ is allowed to vary over time non-linearly with a quadratic polynomial function; δ is allowed to vary over time linearly.
 
-Model 8: µ is allowed to vary on time linearly; δ is allowed to vary on time non-linearly with a natural cubic spline function with two degrees of freedom.
+Model 8: µ is allowed to vary over time linearly; δ is allowed to vary over time non-linearly with a quadratic polynomial function.
 
-Model 9: both µ and δ are allowed to vary on time non-linearly with natural cubic spline functions with two degrees of freedom.
+Model 9: Both µ and δ are allowed to vary over time non-linearly with a quadratic polynomial function.
+
+Model 10: Only µ is allowed to vary over time non-linearly with a cubic polynomial function.
+
+Model 11: Only δ is allowed to vary over time non-linearly with a cubic polynomial function.
+
+Model 12: µ is allowed to vary over time non-linearly with a cubic polynomial function; δ is allowed to vary over time linearly.
+
+Model 13: µ is allowed to vary over time linearly; δ is allowed to vary over time non-linearly with a cubic polynomial function.
+
+Model 14: µ is allowed to vary over time non-linearly with a cubic polynomial function; δ is allowed to vary over time non-linearly with a quadratic polynomial function.
+
+Model 15: µ is allowed to vary over time non-linearly with a quadratic polynomial function; δ is allowed to vary over time non-linearly with a cubic polynomial function.
+
+Model 16: µ is allowed to vary over time non-linearly with a cubic polynomial function; δ is allowed to vary over time non-linearly with a cubic polynomial function.
 
 The gamma distribution has two parameters: the shape and scale. Their relationships with the mean and dispersion are given in several studies including Blain et al (2022).
 
@@ -168,23 +182,7 @@ $$
 H(x) = q + (1-q)G(x > 0, \mu, \sigma)      \tag{1}
 $$
 
-In cases where model 1 has been selected (stationary process), q is calculated by the system of equations 2.1 and 2.2 , as suggested in Stagge et al. (2015, 2022).\
-
-$$
-q = \frac{nz}{n +1},   \tag{if x > 0,    2.1} 
-$$
-
-$$
-q = \frac{\frac{nz}{n +1}}{2} \tag{if x = 0,    2.2} 
-$$\
-where n is the sample size and nz is the number of zero precipitation records in the sample.
-
-In cases where one of the nonstationary models has been selected, a nonstationary binomial distribution Stagge et al. (2022), is used to calculate q. The parameter of this distribution is allowed to vary on time linearly. The binomial distribution is also fitted using GAMLSS models (packages `gamlss` and `gamlss.dist`), in which zero rain is successes and positive rain values are failures (equation 3).
-
-$$
-gamlss(SuccFail~poly(time,1), family = BI) \tag{3}
-$$\
-where SuccFail represents the counts of successes(1) and failures (0).
+Within the original SPI algorithm, q is often calculated from equations based on the ratio of zeros in the precipitation records (nz) and the sample size (n). This package uses the binomial distribution to calculate q. As described in studies such as Stagge et al. (2022), this single parameter discrete distribution can also be adapted to nonstationary cases. It was also fitted using GAMLSS models (packages gamlss and gamlss.dist), where zero rain is considered a success and positive rain values are considered failures.
 
 ## BugReports:
 
