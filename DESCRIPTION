@@ -1,5 +1,5 @@
 Package: SPIChanges
-Title: Improves the Interpretation of The Standardized Precipitation Index Under Changing Climate Conditions
+Title: Improves the Interpretation of the Standardized Precipitation Index Under Changing Climate Conditions
 Version: 0.0.0.9000
 Authors@R: c(
   person(
@@ -13,9 +13,9 @@ Authors@R: c(
     family = "Sobierajski",
     role = "aut",
     comment = c(ORCID = "0000-0002-7211-9268")))
-Description: The package improves the interpretation of the 
+Description: Improves the interpretation of the 
    Standardized Precipitation Index (SPI) under changing climate conditions. 
-   It is based on the nonstationary approach proposed in Blain et al. (2022) 
+   The package uses the nonstationary approach proposed in Blain et al. (2022) 
    <doi:10.1002/joc.7550> to detect trends in rainfall quantities and to quantify 
    the effect of such trends on the probability of a SPI value occurring. 
 License: MIT + file LICENSE
