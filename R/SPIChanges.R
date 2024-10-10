@@ -13,7 +13,7 @@
 #' \describe{
 #'   \item{data.week}{The Rainfall amounts, SPI, cumulative probability of the SPI values under the stationary
 #'   approach, cumulative probability of the SPI values under the non-stationary approach,
-#'   and the changes in the frequency of the SPI values caused by the changes in rainfall patterns.}
+#'   and the changes in the frequency of below zero SPI values caused by the changes in rainfall patterns.}
 #'   \item{model.selection}{The generalized additive model that best fits the rainfall series}
 #'   \item{Changes.Freq.Drought}{changes in the frequency of zero precipitation, moderate, severe and extreme drought events,
 #'   as definied by the SPI classification system, caused by the changes in rainfall patterns.
@@ -186,7 +186,7 @@ SPIChanges <- function(rain.at.TS, only.linear = "Yes"){
   data.week[wet.values,8] <- "NoDrought"
   data.week <- data.week[order(data.week[,1]),]
   colnames(data.week) <- c("Year","Month","quasiWeek","rain.at.TS",
-                           "SPI","Exp.Acum.Prob","Actual.Acum.Prob","ChangeFreq")
+                           "SPI","Exp.Acum.Prob","Actual.Acum.Prob","ChangeDryFreq")
   data.week[,5:7] <- round(data.week[,5:7],3)
   Statistics <- round(Statistics,3)
   months <- sort(rep(seq(1:12),4))
