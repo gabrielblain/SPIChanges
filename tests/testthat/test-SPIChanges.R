@@ -17,7 +17,7 @@ test_that("SPIChanges() works as expected in example", {
                tolerance = 0.05)
   expect_equal(Changes[[1]]$Actual.Acum.Prob[1:4], c(0.420, 0.486, 0.513, 0.549),
                tolerance = 0.05)
-  expect_equal(Changes[[1]]$ChangeFreq[1:4], c(0.000,  0.000,  0.000, 0.000),
+  expect_equal(Changes[[1]]$ChangeFreq[1:4], c("0",  "0", "NoDrought", "NoDrought"),
                tolerance = 0.05)
   expect_equal(Changes[[2]][1:4,3], c(1, 1, 1, 1),
                tolerance = 0.00)
@@ -49,7 +49,7 @@ test_that("SPIChanges() works when only.linear = no", {
                tolerance = 0.05)
   expect_equal(Changes[[1]]$Actual.Acum.Prob[1:4], c(0.420, 0.486, 0.513, 0.549),
                tolerance = 0.05)
-  expect_equal(Changes[[1]]$ChangeFreq[1:4], c(0.000,  0.000,  0.000, 0.000),
+  expect_equal(Changes[[1]]$ChangeFreq[1:4], c("0",  "0", "NoDrought", "NoDrought"),
                tolerance = 0.05)
   expect_equal(Changes[[2]][1:4,3], c(1, 1, 1, 1),
                tolerance = 0.00)
@@ -89,7 +89,7 @@ test_that("SPIChanges() works as expected in example", {
                tolerance = 0.05)
   expect_equal(Changes[[1]]$Actual.Acum.Prob[1:4], c(0.331, 0.419, 0.392, 0.418),
                tolerance = 0.05)
-  expect_equal(Changes[[1]]$ChangeFreq[1:4], c(0.000,  0.000,  0.000, 0.000),
+  expect_equal(Changes[[1]]$ChangeFreq[1:4], c("0",  "0",  "0", "0"),
                tolerance = 0.05)
   expect_equal(Changes[[2]][1:4,3], c(1, 1, 1, 1),
                tolerance = 0.00)
