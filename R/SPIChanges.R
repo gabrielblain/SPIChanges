@@ -182,13 +182,12 @@ SPIChanges <- function(rain.at.TS, only.linear = "Yes"){
   data.week[,5] <- c(qnorm(data.week[,6], mean = 0, sd = 1))
   dry.values <- which(data.week[,5] <= 0)
   wet.values <- which(data.week[,5] > 0)
-  data.week[dry.values,8] <- data.week[dry.values,7]-data.week[dry.values,6]
-  data.week[wet.values,8] <- data.week[wet.values,6]-data.week[wet.values,7]
-  data.week[wet.values,8] <- 100*data.week[wet.values,8]
+  data.week[dry.values,8] <- 100*round(data.week[dry.values,7]-data.week[dry.values,6],3)
+  data.week[wet.values,8] <- "NoDrought"
   data.week <- data.week[order(data.week[,1]),]
   colnames(data.week) <- c("Year","Month","quasiWeek","rain.at.TS",
                            "SPI","Exp.Acum.Prob","Actual.Acum.Prob","ChangeFreq")
-  data.week <- round(data.week,3)
+  data.week[,5:7] <- round(data.week[,5:7],3)
   Statistics <- round(Statistics,3)
   months <- sort(rep(seq(1:12),4))
   quasiweeks <- rep(seq(1:4),12)
