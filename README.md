@@ -20,8 +20,7 @@ isolate the effect of such changes on the central tendency and
 dispersion of the SPI frequency distributions.
 
 The package depends on R (\>= 2.10) and imports the following packages:
-dplyr, gamlss, gamlss.dist, lubridate, splines2, spsUtil, stats, and
-zoo.
+lubridate, zoo, gamlss, gamlss.dist, stats, spsUtil, dplyr, and MuMIn.
 
 ## Installation
 
@@ -197,25 +196,31 @@ head(Changes.in.the.SPI$data.week)
 ```
 
     ##   Year Month quasiWeek rain.at.TS    SPI Exp.Acum.Prob Actual.Acum.Prob
-    ## 1 1980     1         4    223.114 -0.203         0.420            0.420
-    ## 2 1980     2         1    217.420 -0.035         0.486            0.486
-    ## 3 1980     2         2    207.020  0.031         0.513            0.513
-    ## 4 1980     2         3    203.876  0.122         0.549            0.549
-    ## 5 1980     2         4    183.254  0.317         0.624            0.624
-    ## 6 1980     3         1    177.995  0.413         0.660            0.660
+    ## 1 1980     1         4   223.1143 -0.203         0.420            0.420
+    ## 2 1980     2         1   217.4197 -0.035         0.486            0.486
+    ## 3 1980     2         2   207.0196  0.031         0.513            0.513
+    ## 4 1980     2         3   203.8757  0.122         0.549            0.549
+    ## 5 1980     2         4   183.2537  0.317         0.624            0.624
+    ## 6 1980     3         1   177.9945  0.413         0.660            0.660
     ##   ChangeFreq
     ## 1          0
     ## 2          0
-    ## 3          0
-    ## 4          0
-    ## 5          0
-    ## 6          0
+    ## 3  NoDrought
+    ## 4  NoDrought
+    ## 5  NoDrought
+    ## 6  NoDrought
 
 ``` r
-head(Changes.in.the.SPI$Model.Drought)
+head(Changes.in.the.SPI$Statistics)
 ```
 
-    ## NULL
+    ##   Month quasiWeek ProbZero      mu sigma
+    ## 1     1         1        0 218.182 0.326
+    ## 2     1         1        0 218.182 0.326
+    ## 3     1         1        0 218.182 0.326
+    ## 4     1         1        0 218.182 0.326
+    ## 5     1         1        0 218.182 0.326
+    ## 6     1         1        0 218.182 0.326
 
 ``` r
 head(Changes.in.the.SPI$model.selection)
@@ -234,19 +239,19 @@ head(Changes.in.the.SPI$Changes.Freq.Drought)
 ```
 
     ##      Month quasiWeek StatProbZero NonStatProbZero StatNormalRain
-    ## [1,] "1"   "1"       "No_Change"  "No_Change"     "No_Change"   
-    ## [2,] "1"   "2"       "No_Change"  "No_Change"     "No_Change"   
-    ## [3,] "1"   "3"       "No_Change"  "No_Change"     "No_Change"   
-    ## [4,] "1"   "4"       "No_Change"  "No_Change"     "No_Change"   
-    ## [5,] "2"   "1"       "No_Change"  "No_Change"     "No_Change"   
-    ## [6,] "2"   "2"       "No_Change"  "No_Change"     "No_Change"   
-    ##      NonStatNormalRain ChangeMod   ChangeSev   ChangeExt  
-    ## [1,] "No_Change"       "No_Change" "No_Change" "No_Change"
-    ## [2,] "No_Change"       "No_Change" "No_Change" "No_Change"
-    ## [3,] "No_Change"       "No_Change" "No_Change" "No_Change"
-    ## [4,] "No_Change"       "No_Change" "No_Change" "No_Change"
-    ## [5,] "No_Change"       "No_Change" "No_Change" "No_Change"
-    ## [6,] "No_Change"       "No_Change" "No_Change" "No_Change"
+    ## [1,]     1         1            0               0         210.51
+    ## [2,]     1         2            0               0         228.64
+    ## [3,]     1         3            0               0         231.14
+    ## [4,]     1         4            0               0         237.84
+    ## [5,]     2         1            0               0         220.15
+    ## [6,]     2         2            0               0         204.63
+    ##      NonStatNormalRain ChangeMod ChangeSev ChangeExt
+    ## [1,]            210.51         0         0         0
+    ## [2,]            228.64         0         0         0
+    ## [3,]            231.14         0         0         0
+    ## [4,]            237.84         0         0         0
+    ## [5,]            220.15         0         0         0
+    ## [6,]            204.63         0         0         0
 
 ## Example 3
 
@@ -277,25 +282,31 @@ head(Changes.in.the.SPI$data.week)
 ```
 
     ##   Year Month quasiWeek rain.at.TS    SPI Exp.Acum.Prob Actual.Acum.Prob
-    ## 1 1980     1         4    223.114 -0.203         0.420            0.420
-    ## 2 1980     2         1    217.420 -0.035         0.486            0.486
-    ## 3 1980     2         2    207.020  0.031         0.513            0.513
-    ## 4 1980     2         3    203.876  0.122         0.549            0.549
-    ## 5 1980     2         4    183.254  0.317         0.624            0.624
-    ## 6 1980     3         1    177.995  0.413         0.660            0.660
+    ## 1 1980     1         4   223.1143 -0.203         0.420            0.420
+    ## 2 1980     2         1   217.4197 -0.035         0.486            0.486
+    ## 3 1980     2         2   207.0196  0.031         0.513            0.513
+    ## 4 1980     2         3   203.8757  0.122         0.549            0.549
+    ## 5 1980     2         4   183.2537  0.317         0.624            0.624
+    ## 6 1980     3         1   177.9945  0.413         0.660            0.660
     ##   ChangeFreq
     ## 1          0
     ## 2          0
-    ## 3          0
-    ## 4          0
-    ## 5          0
-    ## 6          0
+    ## 3  NoDrought
+    ## 4  NoDrought
+    ## 5  NoDrought
+    ## 6  NoDrought
 
 ``` r
-head(Changes.in.the.SPI$Model.Drought)
+head(Changes.in.the.SPI$Statistics)
 ```
 
-    ## NULL
+    ##   Month quasiWeek ProbZero      mu sigma
+    ## 1     1         1        0 218.182 0.326
+    ## 2     1         1        0 218.182 0.326
+    ## 3     1         1        0 218.182 0.326
+    ## 4     1         1        0 218.182 0.326
+    ## 5     1         1        0 218.182 0.326
+    ## 6     1         1        0 218.182 0.326
 
 ``` r
 head(Changes.in.the.SPI$model.selection)
@@ -314,19 +325,19 @@ head(Changes.in.the.SPI$Changes.Freq.Drought)
 ```
 
     ##      Month quasiWeek StatProbZero NonStatProbZero StatNormalRain
-    ## [1,] "1"   "1"       "No_Change"  "No_Change"     "No_Change"   
-    ## [2,] "1"   "2"       "No_Change"  "No_Change"     "No_Change"   
-    ## [3,] "1"   "3"       "No_Change"  "No_Change"     "No_Change"   
-    ## [4,] "1"   "4"       "No_Change"  "No_Change"     "No_Change"   
-    ## [5,] "2"   "1"       "No_Change"  "No_Change"     "No_Change"   
-    ## [6,] "2"   "2"       "No_Change"  "No_Change"     "No_Change"   
-    ##      NonStatNormalRain ChangeMod   ChangeSev   ChangeExt  
-    ## [1,] "No_Change"       "No_Change" "No_Change" "No_Change"
-    ## [2,] "No_Change"       "No_Change" "No_Change" "No_Change"
-    ## [3,] "No_Change"       "No_Change" "No_Change" "No_Change"
-    ## [4,] "No_Change"       "No_Change" "No_Change" "No_Change"
-    ## [5,] "No_Change"       "No_Change" "No_Change" "No_Change"
-    ## [6,] "No_Change"       "No_Change" "No_Change" "No_Change"
+    ## [1,]     1         1            0               0         210.51
+    ## [2,]     1         2            0               0         228.64
+    ## [3,]     1         3            0               0         231.14
+    ## [4,]     1         4            0               0         237.84
+    ## [5,]     2         1            0               0         220.15
+    ## [6,]     2         2            0               0         204.63
+    ##      NonStatNormalRain ChangeMod ChangeSev ChangeExt
+    ## [1,]            210.51         0         0         0
+    ## [2,]            228.64         0         0         0
+    ## [3,]            231.14         0         0         0
+    ## [4,]            237.84         0         0         0
+    ## [5,]            220.15         0         0         0
+    ## [6,]            204.63         0         0         0
 
 # Details
 
@@ -420,13 +431,16 @@ MIT
 
 ## Authors:
 
-Gabriel Constantino Blain, Graciela da Rocha Sobierajski. Maintainer:
-Gabriel Constantino Blain, <gabriel.blain@sp.gov.br>
+Gabriel Constantino Blain, Graciela da Rocha Sobierajski, Leticia Lopes
+Martins. Maintainer: Gabriel Constantino Blain,
+<gabriel.blain@sp.gov.br>
 
 ## Acknowledgments:
 
-The package uses data from the Agronomic Institute of Campinas. The
-authors greatly appreciate this initiative.
+The package uses data from the CPC Global Unified Gauge-Based Analysis
+of Daily Precipitation data provided by the NOAA PSL, Boulder, Colorado,
+USA, from their website at <https://psl.noaa.gov>. The authors greatly
+appreciate this initiative.
 
 ## References
 
@@ -471,5 +485,3 @@ SPEI). International Journal of Climatology, 35,4027–4040.
 Stagge J H and Sung K 2022 A Nonstationary Standardized Precipitation
 Index (NSPI) using Bayesian splines. Journal of Applied Meteorology and
 Climatology, 61, 761-779. <https://doi.org/10.1175/JAMC-D-21-0244.1>
-
-ToDO: ADD other references
