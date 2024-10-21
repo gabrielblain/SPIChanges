@@ -1,3 +1,5 @@
 # SPIChanges (development version)
 
-* Initial CRAN submission.
+# SPIChanges 0.1.0
+
+-   Initial CRAN submission.
