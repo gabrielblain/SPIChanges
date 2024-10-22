@@ -202,13 +202,13 @@ head(Changes.in.the.SPI$data.week)
     ## 4 1980     2         3   203.8757  0.122         0.549            0.549
     ## 5 1980     2         4   183.2537  0.317         0.624            0.624
     ## 6 1980     3         1   177.9945  0.413         0.660            0.660
-    ##   ChangeFreq
-    ## 1          0
-    ## 2          0
-    ## 3  NoDrought
-    ## 4  NoDrought
-    ## 5  NoDrought
-    ## 6  NoDrought
+    ##   ChangeDryFreq
+    ## 1             0
+    ## 2             0
+    ## 3     NoDrought
+    ## 4     NoDrought
+    ## 5     NoDrought
+    ## 6     NoDrought
 
 ``` r
 head(Changes.in.the.SPI$Statistics)
@@ -288,13 +288,13 @@ head(Changes.in.the.SPI$data.week)
     ## 4 1980     2         3   203.8757  0.122         0.549            0.549
     ## 5 1980     2         4   183.2537  0.317         0.624            0.624
     ## 6 1980     3         1   177.9945  0.413         0.660            0.660
-    ##   ChangeFreq
-    ## 1          0
-    ## 2          0
-    ## 3  NoDrought
-    ## 4  NoDrought
-    ## 5  NoDrought
-    ## 6  NoDrought
+    ##   ChangeDryFreq
+    ## 1             0
+    ## 2             0
+    ## 3     NoDrought
+    ## 4     NoDrought
+    ## 5     NoDrought
+    ## 6     NoDrought
 
 ``` r
 head(Changes.in.the.SPI$Statistics)
@@ -413,13 +413,13 @@ H(x) = q + (1-q)G(x > 0, \mu, \sigma)      \tag{1}
 $$
 
 Within the original SPI algorithm, q is often calculated from equations
-based on the ratio of zeros in the precipitation records (nz) and the
-sample size (n). This package uses the binomial distribution to
-calculate q. As described in studies such as Stagge et al. (2022), this
-single parameter discrete distribution can also be adapted to
-nonstationary cases. It was also fitted using GAMLSS models (packages
-gamlss and gamlss.dist), where zero rain is considered a success and
-positive rain values are considered failures.
+based on the ratio of zeros in the precipitation records and the sample
+size. This package uses the binomial distribution to calculate q. As
+described in studies such as Stagge et al. (2022), this single parameter
+discrete distribution can also be adapted to nonstationary cases. It was
+also fitted using GAMLSS models (packages gamlss and gamlss.dist), where
+zero rain is considered a success and positive rain values are
+considered failures.
 
 ## BugReports:
 
@@ -476,11 +476,6 @@ location, scale and shape. Appl Stat 54(3):507–554
 Shiau, J-T. 2020. Effects of Gamma-Distribution Variations on SPI-Based
 Stationary and nonstationary Drought Analyses. Water Resources
 Management, 34:2081-2095. <https://doi.org/10.1007/s11269-020-02548-x>
-
-Stagge J H, Tallaksen L M, Gudmundsson L, Van Loon A F, Stahl K 2015
-Candidate distribution for climatological drought indices (SPI and
-SPEI). International Journal of Climatology, 35,4027–4040.
-<https://doi.org/10.1002/joc.4267>
 
 Stagge J H and Sung K 2022 A Nonstationary Standardized Precipitation
 Index (NSPI) using Bayesian splines. Journal of Applied Meteorology and

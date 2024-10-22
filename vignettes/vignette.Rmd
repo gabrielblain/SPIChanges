@@ -85,7 +85,7 @@ The `SPIChanges()` is the central function of the package is based on the follow
 
 4.  The package compares the probabilities estimated in steps 1 and 3 to indicate whether the frequency of drought or wet events, quantified by the SPI, has increased or decreased over time.
 
-The gamma distributions are fitted to rainfall data using Generalized Additive Models (GAMLSS) with time as a covariate. This fitting process is based on the maximum likelihood method (@McCullagh1989) and considers the following increasingly complex functions (candidate models). Further information on GAMLSS can be found in (@Rigby2005).
+The gamma distributions are fitted to rainfall data using Generalized Additive Models (GAMLSS) with time as a covariate. This fitting process is based on the maximum likelihood method (@McCullagh2018) and considers the following increasingly complex functions (candidate models). Further information on GAMLSS can be found in (@Rigby2005).
 
 Model 1 (stationary): The mean (µ) and dispersion (δ) of the distribution are constant over time.
 
