@@ -17,7 +17,13 @@ Authors@R: c(
     given = "Leticia L.",
     family = "Martins",
     role = "aut",
-    comment = c(ORCID = "0000-0002-0299-3005")))
+    comment = c(ORCID = "0000-0002-0299-3005")),
+    person(
+    given = "Adam H.",
+    family = "Sparks",
+    email = "adamhsparks@gmail.com",
+    role = "aut",
+    comment = c(ORCID = "0000-0002-0061-8359")))
 Description: Improves the interpretation of the 
    Standardized Precipitation Index (SPI) under changing climate conditions. 
    The package uses the nonstationary approach proposed in Blain et al. (2022) 
