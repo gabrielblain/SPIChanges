@@ -404,13 +404,11 @@ relationships with the mean and dispersion are given in several studies
 including Blain et al (2022).
 
 Precipitation frequency distributions are zero-bounded, thus a mixed
-function that combines the empirical probabilities of no rainfall events
-(q) and the probability given by the parametric distribution
-G(x\>0,mu,sigma) must be employed to calculate the SPI (equation 1).  
+function that combines the probabilities of no rainfall events (q) and
+the probability given by the parametric distribution G(x\>0,mu,sigma)
+must be employed to calculate the SPI (equation 1).  
 
-$$
-H(x) = q + (1-q)G(x > 0, \mu, \sigma)      \tag{1}
-$$
+H(x) = q + (1 - q) \* G(x \> 0, μ, σ) (1)
 
 Within the original SPI algorithm, q is often calculated from equations
 based on the ratio of zeros in the precipitation records and the sample
@@ -432,7 +430,7 @@ MIT
 ## Authors:
 
 Gabriel Constantino Blain, Graciela da Rocha Sobierajski, Leticia Lopes
-Martins. Maintainer: Gabriel Constantino Blain,
+Martins, Adam H. Sparks. Maintainer: Gabriel Constantino Blain,
 <gabriel.blain@sp.gov.br>
 
 ## Acknowledgments:
