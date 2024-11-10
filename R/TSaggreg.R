@@ -7,10 +7,10 @@
 #' \dQuote{YYYY-MM-DD}, \dQuote{YYYY/MM/DD} but most any valid date format
 #' should work.
 #' @param TS
-#' Time scale on the quasiWeek basis (whole integer values between 1 and 96).
+#' Time scale on the quasiWeek basis (integer values between 1 and 96).
 #'   Default is 4, which corresponds to the monthly time scale.
 #' @return
-#' A data frame with rainfall amounts aggregated at the time scale selected by
+#' A matrix with rainfall amounts aggregated at the time scale selected by
 #' the user
 #' @examples
 #'
@@ -31,7 +31,7 @@ TSaggreg <- function(daily.rain,start.date,TS=4){
   if (!is.numeric(TS) || length(TS) != 1 ||
       TS < 1 ||
       TS > 96) {
-    stop("TS must be a whole integer between 1 and 96")
+    stop("TS must be an integer between 1 and 96")
   }
 
   n <- length(daily.rain)
@@ -39,8 +39,7 @@ TSaggreg <- function(daily.rain,start.date,TS=4){
     stop("Less than 10 years of rainfall records. We cannot proceed")
   }
   if (n < 10950) {
-    warning("Less than 30 years of rainfall records.
-            Longer periods are highly recommended.")
+    warning("Less than 30 years of rainfall records. Longer periods are highly recommended.")
   }
   start.cycle <- .check_date(start.date)
   end.cycle <- start.cycle + (n - 1)
@@ -107,9 +106,12 @@ TSaggreg <- function(daily.rain,start.date,TS=4){
   }
   data.week <- data.week[,-c(4)]
   data.week <- na.omit(data.week)
-  colnames(data.week) <- c("Year","Month","quasiWeek",paste0("rain.at.TS",TS))
+  colnames(data.week) <- c("Year", "Month", "quasiWeek", paste0("rain.at.TS", TS))
   message("Done. Just ensure the last quasi-week is complete.
-  The last day of your series is ", paste(days[n]), " and TS is ", paste(TS))
+  The last day of your series is ", days[n], " and TS is ", TS)
+
+  class(data.week) <- union("TSaggreg", class(data.week))
+
   return(data.week)
 }
 

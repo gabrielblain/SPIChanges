@@ -13,11 +13,11 @@ TSaggreg(daily.rain, start.date, TS = 4)
 \dQuote{YYYY-MM-DD}, \dQuote{YYYY/MM/DD} but most any valid date format
 should work.}
 
-\item{TS}{Time scale on the quasiWeek basis (whole integer values between 1 and 96).
+\item{TS}{Time scale on the quasiWeek basis (integer values between 1 and 96).
 Default is 4, which corresponds to the monthly time scale.}
 }
 \value{
-A data frame with rainfall amounts aggregated at the time scale selected by
+A matrix with rainfall amounts aggregated at the time scale selected by
 the user
 }
 \description{
