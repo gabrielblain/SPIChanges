@@ -3,7 +3,6 @@
 export(SPIChanges)
 export(TSaggreg)
 importFrom(MuMIn,AICc)
-importFrom(dplyr,bind_rows)
 importFrom(gamlss,GAIC)
 importFrom(gamlss,gamlss)
 importFrom(gamlss.dist,BI)

@@ -37,7 +37,6 @@
 #' @importFrom gamlss.dist GA pGA qGA BI
 #' @importFrom stats qnorm fitted
 #' @importFrom spsUtil quiet
-#' @importFrom dplyr bind_rows
 #' @importFrom MuMIn AICc
 #' @export
 
@@ -191,7 +190,7 @@ SPIChanges <- function(rain.at.TS, only.linear = "Yes"){
     data.week[initial.row:last.row,7] <- quasiprob.ns
     ifelse (a == 1,
             Statistics <- as.data.frame(Model.Drought.week),
-            Statistics <- spsUtil::quiet(bind_rows(Statistics,Model.Drought.week)))
+            Statistics <- spsUtil::quiet(rbind(Statistics,Model.Drought.week)))
     week <- week+1
     if (week==5)
     {month <- month+1

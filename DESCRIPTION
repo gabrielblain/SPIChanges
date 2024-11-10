@@ -24,7 +24,6 @@ BugReports: https://github.com/gabrielblain/SPIChanges/issues
 Depends: 
     R (>= 2.10)
 Imports:
-    dplyr,
     gamlss,
     gamlss.dist,
     lubridate,

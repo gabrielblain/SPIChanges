@@ -99,18 +99,6 @@
     },
     "2": {
       "@type": "SoftwareApplication",
-      "identifier": "dplyr",
-      "name": "dplyr",
-      "provider": {
-        "@id": "https://cran.r-project.org",
-        "@type": "Organization",
-        "name": "Comprehensive R Archive Network (CRAN)",
-        "url": "https://cran.r-project.org"
-      },
-      "sameAs": "https://CRAN.R-project.org/package=dplyr"
-    },
-    "3": {
-      "@type": "SoftwareApplication",
       "identifier": "gamlss",
       "name": "gamlss",
       "provider": {
@@ -121,7 +109,7 @@
       },
       "sameAs": "https://CRAN.R-project.org/package=gamlss"
     },
-    "4": {
+    "3": {
       "@type": "SoftwareApplication",
       "identifier": "gamlss.dist",
       "name": "gamlss.dist",
@@ -133,7 +121,7 @@
       },
       "sameAs": "https://CRAN.R-project.org/package=gamlss.dist"
     },
-    "5": {
+    "4": {
       "@type": "SoftwareApplication",
       "identifier": "lubridate",
       "name": "lubridate",
@@ -145,7 +133,7 @@
       },
       "sameAs": "https://CRAN.R-project.org/package=lubridate"
     },
-    "6": {
+    "5": {
       "@type": "SoftwareApplication",
       "identifier": "MuMIn",
       "name": "MuMIn",
@@ -157,7 +145,7 @@
       },
       "sameAs": "https://CRAN.R-project.org/package=MuMIn"
     },
-    "7": {
+    "6": {
       "@type": "SoftwareApplication",
       "identifier": "rlang",
       "name": "rlang",
@@ -169,7 +157,7 @@
       },
       "sameAs": "https://CRAN.R-project.org/package=rlang"
     },
-    "8": {
+    "7": {
       "@type": "SoftwareApplication",
       "identifier": "spsUtil",
       "name": "spsUtil",
@@ -181,12 +169,12 @@
       },
       "sameAs": "https://CRAN.R-project.org/package=spsUtil"
     },
-    "9": {
+    "8": {
       "@type": "SoftwareApplication",
       "identifier": "stats",
       "name": "stats"
     },
-    "10": {
+    "9": {
       "@type": "SoftwareApplication",
       "identifier": "zoo",
       "name": "zoo",
@@ -200,7 +188,7 @@
     },
     "SystemRequirements": null
   },
-  "fileSize": "174.825KB",
+  "fileSize": "174.803KB",
   "releaseNotes": "https://github.com/gabrielblain/SPIChanges/blob/master/NEWS.md",
   "readme": "https://github.com/gabrielblain/SPIChanges/blob/master/README.md",
   "contIntegration": "https://github.com/gabrielblain/SPIChanges/actions/workflows/R-CMD-check.yaml"
