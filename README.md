@@ -12,19 +12,20 @@ Precipitation index (SPI) under changing climate conditions.
 
 ## Basic Description
 
-The `SPIChanges` was created to detect changes in rainfall patterns and
-quantify how they affect the probability of a drought event, quantified
-by the SPI (Mckee et al. 1993), occurring. The package applies a
-nonstationary approach proposed by Blain et al. (2022), designed to
-isolate the effect of such changes on the central tendency and
-dispersion of the SPI frequency distributions.
+The {SPIChanges} package was created to detect changes in rainfall
+patterns and quantify how they affect the probability of a drought
+event, quantified by the SPI (Mckee et al. 1993), occurring. The package
+applies a nonstationary approach proposed by Blain et al. (2022),
+designed to isolate the effect of such changes on the central tendency
+and dispersion of the SPI frequency distributions.
 
 The package depends on R (\>= 2.10) and imports the following packages:
-lubridate, zoo, gamlss, gamlss.dist, stats, spsUtil, dplyr, and MuMIn.
+{lubridate}, {zoo}, {gamlss}, {gamlss.dist}, {stats}, {spsUtil},
+{rlang}, and {MuMIn}.
 
 ## Installation
 
-You can install the development version of SPIChanges from
+You can install the development version of {SPIChanges} from
 [GitHub](https://github.com/) with:
 
 ``` r
@@ -112,8 +113,12 @@ corresponds to monthly data.
 
 ``` r
 library(SPIChanges)
-daily.rain <- CampinasRain[,2]
-head(TSaggreg(daily.rain=daily.rain,start.date="1980-01-01",TS=4))
+daily.rain <- CampinasRain[, 2]
+head(TSaggreg(
+  daily.rain = daily.rain,
+  start.date = "1980-01-01",
+  TS = 4
+))
 ```
 
     ## Done. Just ensure the last quasi-week is complete.
@@ -135,17 +140,16 @@ occurring.
 ## Usage
 
 ``` r
-SPIChanges(rain.at.TS,
-         only.linear)
+SPIChanges(rain.at.TS, only.linear)
 ```
 
 ## Arguments
 
-- rain.at.TS: Vector, 1-column matrix or data frame with rainfall totals
-  accumulated at a time scale.
-- only.linear: A character variable (Yes or No) defining if the function
-  must consider only linear models (Yes) or linear and non-linear models
-  (No). Default is Yes.
+- `rain.at.TS`: Vector, 1-column matrix or data frame with rainfall
+  totals accumulated at a time scale.
+- `only.linear`: A character variable (`Yes` or `No`) defining if the
+  function must consider only linear models (`Yes`) or linear and
+  non-linear models (`No`). Default is `Yes`.
 
 ## Value
 
@@ -161,7 +165,7 @@ model.selection: The generalized additive model (section 2.2) that best
 fits the precipitation series.
 
 Changes.Freq.Drought: changes in the frequency of moderate, severe and
-extreme drought events, as definied by the SPI classification system
+extreme drought events, as defined by the SPI classification system
 (Table 1), caused by the changes in precipitation patterns.
 
 Statistics: Year to year changes in the expected frequency of moderate,
@@ -177,15 +181,17 @@ used for such estimations.
 
 ``` r
 library(SPIChanges)
-daily.rain <- CampinasRain[,2]
-rainTS4 <- TSaggreg(daily.rain=daily.rain,start.date="1980-01-01",TS=4)
+daily.rain <- CampinasRain[, 2]
+rainTS4 <- TSaggreg(daily.rain = daily.rain,
+                    start.date = "1980-01-01",
+                    TS = 4)
 ```
 
     ## Done. Just ensure the last quasi-week is complete.
     ##   The last day of your series is 31 and TS is 4
 
 ``` r
-Changes.in.the.SPI <- SPIChanges(rain.at.TS=rainTS4, only.linear = "Yes")
+Changes.in.the.SPI <- SPIChanges(rain.at.TS = rainTS4, only.linear = "Yes")
 ```
 
     ## Warning in SPIChanges(rain.at.TS = rainTS4, only.linear = "Yes"): rainfall series Month 9 Week 1 has more than 6.7% of zeros. In this situation
@@ -263,15 +269,17 @@ used for such estimations.
 
 ``` r
 library(SPIChanges)
-daily.rain <- CampinasRain[,2]
-rainTS4 <- TSaggreg(daily.rain=daily.rain,start.date="1980-01-01",TS=4)
+daily.rain <- CampinasRain[, 2]
+rainTS4 <- TSaggreg(daily.rain = daily.rain,
+                    start.date = "1980-01-01",
+                    TS = 4)
 ```
 
     ## Done. Just ensure the last quasi-week is complete.
     ##   The last day of your series is 31 and TS is 4
 
 ``` r
-Changes.in.the.SPI <- SPIChanges(rain.at.TS=rainTS4, only.linear = "No")
+Changes.in.the.SPI <- SPIChanges(rain.at.TS = rainTS4, only.linear = "No")
 ```
 
     ## Warning in SPIChanges(rain.at.TS = rainTS4, only.linear = "No"): rainfall series Month 9 Week 1 has more than 6.7% of zeros. In this situation
@@ -421,7 +429,7 @@ considered failures.
 
 ## BugReports:
 
-\<<https://github.com/gabrielblain/SPIChanges/issues> \>
+<https://github.com/gabrielblain/SPIChanges/issues>
 
 ## License:
 
