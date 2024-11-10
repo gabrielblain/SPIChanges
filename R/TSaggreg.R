@@ -22,18 +22,27 @@
 #' @export
 
 TSaggreg <- function(daily.rain,start.date,TS=4){
-  daily.rain=as.matrix(daily.rain)
+  daily.rain = as.matrix(daily.rain)
   if (!is.numeric(daily.rain) || any(is.na(daily.rain)) ||
-      length(daily.rain[daily.rain < 0]) != 0 || ncol(daily.rain) != 1) {
+      length(daily.rain[daily.rain < 0]) != 0 ||
+      ncol(daily.rain) != 1) {
     stop("Physically impossible or missing rain values")
   }
   if (!is.numeric(TS) || length(TS) != 1 ||
-      TS < 1 || TS> 96) {stop("TS must be an integer single number between 1 and 96")}
+      TS < 1 ||
+      TS > 96) {
+    stop("TS must be a whole integer between 1 and 96")
+  }
+
   n <- length(daily.rain)
-  if (n<3650){stop("Less than 10 years of rainfall records. We cannot procede")}
-  if (n<10950){warning("Less than 30 years of rainfall records. Longer periods are highly recommended.")}
-  start.date <- .check_date(start.date)
-  start.cycle <- as.Date(start.date)
+  if (n < 3650) {
+    stop("Less than 10 years of rainfall records. We cannot proceed")
+  }
+  if (n < 10950) {
+    warning("Less than 30 years of rainfall records.
+            Longer periods are highly recommended.")
+  }
+  start.cycle <- .check_date(start.date)
   end.cycle <- start.cycle + (n - 1)
   all.period <- seq(start.cycle, end.cycle, "days")
   years <- year(all.period)
@@ -45,7 +54,7 @@ TSaggreg <- function(daily.rain,start.date,TS=4){
   b <- 2
   c <- 3
   d <- 4
-  data.week <- data.frame(matrix(NA, n, 5))
+  data.week <- matrix(NA, n, 5)
   start.year <- rain[1,1]
   final.year <- rain[n,1]
   start.month <- rain[1,2]
@@ -107,7 +116,7 @@ TSaggreg <- function(daily.rain,start.date,TS=4){
 #' Check User Input Dates for Validity
 #'
 #' @param x User entered date value
-#' @return Validated date string as a `POSIXct` object.
+#' @return Validated date string as a `Date` object.
 #' @note This was taken from \CRANpkg{nasapower}, but tz changed to UTC.
 #' @example .check_date(x)
 #' @author Adam H. Sparks \email{adamhsparks@@gmail.com}
@@ -136,5 +145,5 @@ TSaggreg <- function(daily.rain,start.date,TS=4){
       )
     }
   )
-  return(x)
+  return(as.Date(x))
 }

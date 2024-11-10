@@ -57,7 +57,7 @@ daily.rain <- CampinasRain$Rain[1:100]
 test_that("rainfall record is too short", {
   expect_error(
     tes <- TSaggreg(daily.rain=daily.rain,start.date="1980-01-01",TS=4),
-  "Less than 10 years of rainfall records. We cannot procede")
+  "Less than 10 years of rainfall records. We cannot proceed")
 })
 
 daily.rain <- CampinasRain$Rain
