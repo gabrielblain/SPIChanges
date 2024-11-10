@@ -19,6 +19,7 @@
 #' @importFrom lubridate year month day parse_date_time
 #' @importFrom zoo rollsum
 #' @importFrom stats na.omit
+#' @autoglobal
 #' @export
 
 TSaggreg <- function(daily.rain, start.date, TS = 4L) {
