@@ -84,16 +84,18 @@ SPIChanges <- function(rain.at.TS, only.linear = "Yes"){
   week <- 1
   model.selection <- matrix(NA,48,1)
   Changes.Freq.Drought <- matrix(NA,48,7)
-  for (a in 1:48){
-    rain.week <- (data.week[which(data.week[,2]==month & data.week[,3]==week),4])
+  for (a in 1:48) {
+    rain.week <- (data.week[which(data.week[, 2] == month &
+                                    data.week[, 3] == week), 4])
     n.week <- length(rain.week)
-    rain.week.nozeros <- (rain.week[rain.week>0])
-    if (a > 1){
-      initial.row <- last.row+1
-      last.row <- initial.row+n.week-1} else{
-        initial.row <- 1
-        last.row <- n.week
-      }
+    rain.week.nozeros <- (rain.week[rain.week > 0])
+    if (a > 1) {
+      initial.row <- last.row + 1
+      last.row <- initial.row + n.week - 1
+    } else{
+      initial.row <- 1
+      last.row <- n.week
+    }
     nz <- n.week - length(rain.week.nozeros)
     time <- as.matrix(seq(1:n.week))
     probzero.st <- calc.probzero.st(rain.week)
@@ -111,15 +113,19 @@ SPIChanges <- function(rain.at.TS, only.linear = "Yes"){
     time.nonzero <- as.vector(time[id])
     n.time.nonzero <- length(time.nonzero)
     Model.Drought.week <- data.frame(matrix(NA,n.time.nonzero,5))
-    t.gam <- spsUtil::quiet(gamlss::gamlss(rain.week.nozeros~1,family=GA, mu.link = "log",
-                                           sigma.link ="log"))
-    if (only.linear == "yes"){
+    t.gam <- spsUtil::quiet(gamlss::gamlss(
+      rain.week.nozeros ~ 1,
+      family = GA,
+      mu.link = "log",
+      sigma.link = "log"
+    ))
+    if (only.linear == "yes") {
       models <- Fit.linears(rain.week.nozeros, time.nonzero)
-      model.selection[a,1] <- models$best
+      model.selection[a, 1] <- models$best
       selected.model <- models$selected.model
     } else {
       models <- Fit.Nonlinears(rain.week.nozeros, time.nonzero)
-      model.selection[a,1] <- models$best
+      model.selection[a, 1] <- models$best
       selected.model <- models$selected.model
     }
     quasiprob <- (probzero.st[1]+(1-probzero.st[1])*pGA(rain.week,mu = t.gam$mu.fv[1], sigma = t.gam$sigma.fv[1],lower.tail = TRUE, log.p=FALSE))
