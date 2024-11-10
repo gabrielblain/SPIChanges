@@ -3,7 +3,7 @@
 #' @param daily.rain
 #' Vector, 1-column matrix or data frame with daily rainfall totals.
 #' @param start.date
-#' Date at which the aggregation should start. Formats:
+#' Date at which the aggregation should start. Preferred formats are
 #' \dQuote{YYYY-MM-DD}, \dQuote{YYYY/MM/DD} but most any valid date format
 #' should work.
 #' @param TS
@@ -21,7 +21,8 @@
 #' @importFrom stats na.omit
 #' @export
 
-TSaggreg <- function(daily.rain,start.date,TS=4){
+TSaggreg <- function(daily.rain, start.date, TS = 4L) {
+
   daily.rain = as.matrix(daily.rain)
   if (!is.numeric(daily.rain) || any(is.na(daily.rain)) ||
       length(daily.rain[daily.rain < 0]) != 0 ||

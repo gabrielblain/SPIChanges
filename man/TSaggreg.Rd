@@ -4,12 +4,12 @@
 \alias{TSaggreg}
 \title{Aggregates daily rainfall totals at quasi-week time scales}
 \usage{
-TSaggreg(daily.rain, start.date, TS = 4)
+TSaggreg(daily.rain, start.date, TS = 4L)
 }
 \arguments{
 \item{daily.rain}{Vector, 1-column matrix or data frame with daily rainfall totals.}
 
-\item{start.date}{Date at which the aggregation should start. Formats:
+\item{start.date}{Date at which the aggregation should start. Preferred formats are
 \dQuote{YYYY-MM-DD}, \dQuote{YYYY/MM/DD} but most any valid date format
 should work.}
 
