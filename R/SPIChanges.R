@@ -107,7 +107,7 @@ SPIChanges <- function(rain.at.TS, only.linear = "Yes"){
       model.selection[a,1] <- models$best
       selected.model <- models$selected.model
     } else {
-      models <- Fit.Nonlineares(rain.week.nozeros, time.nonzero)
+      models <- Fit.Nonlinears(rain.week.nozeros, time.nonzero)
       model.selection[a,1] <- models$best
       selected.model <- models$selected.model
     }
@@ -259,11 +259,10 @@ Fit.lineares <- function (rain.week.nozeros,time.nonzero){
     MuMIn::AICc(t.gam, k = 4.4),
     MuMIn::AICc(t.gam.ns10, k = 4.4),
     MuMIn::AICc(t.gam.ns01, k = 4.4),
-    MuMIn::AICc(t.gam.ns11, k = 4.4)))
-  if (best == 1){selected.model <- t.gam} else if (best == 2) {
-    selected.model <- t.gam.ns10} else if (best == 3) {
-      selected.model <- t.gam.ns01} else {selected.model <- t.gam.ns11}
-  return(list(selected.model=selected.model,best=best))
+    MuMIn::AICc(t.gam.ns11, k = 4.4)
+  ))
+  selected.model = switch(best, t.gam, t.gam.ns10, t.gam.ns01, t.gam.ns11)
+  return(list(selected.model = selected.model, best = best))
 }
 
 
@@ -274,7 +273,7 @@ Fit.lineares <- function (rain.week.nozeros,time.nonzero){
 #' @note This was adapted from \CRANpkg{gamlss}.
 #' @noRd
 #' @keywords Internal
-Fit.Nonlineares <- function (rain.week.nozeros,time.nonzero){
+Fit.Nonlinears <- function (rain.week.nozeros,time.nonzero){
   t.gam <- spsUtil::quiet(gamlss::gamlss(rain.week.nozeros ~ 1, family = GA,
                                          mu.link = "log", sigma.link = "log"))
   t.gam.ns10 <- spsUtil::quiet(gamlss::gamlss(rain.week.nozeros ~ time.nonzero, family = GA,
@@ -326,20 +325,25 @@ Fit.Nonlineares <- function (rain.week.nozeros,time.nonzero){
     MuMIn::AICc(t.gam.ns33, k = 4.4)
   ))
 
-  if (best == 1){selected.model <- t.gam} else if (best == 2) {
-    selected.model <- t.gam.ns10} else if (best == 3) {
-      selected.model <- t.gam.ns01} else if (best == 4) {
-        selected.model <- t.gam.ns11} else if (best == 5) {
-          selected.model <- t.gam.ns20} else if (best == 6) {
-            selected.model <- t.gam.ns02} else if (best == 7) {
-              selected.model <- t.gam.ns21} else if (best == 8) {
-                selected.model <- t.gam.ns12} else if (best == 9) {
-                  selected.model <- t.gam.ns22} else if (best == 10) {
-                    selected.model <- t.gam.ns30} else if (best == 11) {
-                      selected.model <- t.gam.ns03} else if (best == 12) {
-                        selected.model <- t.gam.ns31} else if (best == 13) {
-                          selected.model <- t.gam.ns13} else if (best == 14) {
-                            selected.model <- t.gam.ns32} else if (best == 15) {
-                              selected.model <- t.gam.ns23} else {selected.model <- t.gam.ns33}
-  return(list(selected.model=selected.model,best=best))
+
+  selected.model <- switch(
+    best,
+    t.gam,
+    t.gam.ns10,
+    t.gam.ns01,
+    t.gam.ns11,
+    t.gam.ns20,
+    t.gam.ns02,
+    t.gam.ns21,
+    t.gam.ns12,
+    t.gam.ns22,
+    t.gam.ns30,
+    t.gam.ns03,
+    t.gam.ns31,
+    t.gam.ns13,
+    t.gam.ns32,
+    t.gam.ns23,
+    t.gam.ns33
+  )
+  return(list(selected.model = selected.model, best = best))
 }
