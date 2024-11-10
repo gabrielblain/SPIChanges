@@ -1,16 +1,17 @@
 #' Aggregates daily rainfall totals at quasi-week time scales
 #'
 #' @param daily.rain
-#' Vector, 1-column matrix or data frame with daily rainfall totals
+#' Vector, 1-column matrix or data frame with daily rainfall totals.
 #' @param start.date
-#' Date at which the aggregation should start. Formats:
-#' \dQuote{YYYY-MM-DD}, \dQuote{YYYY/MM/DD}.
+#' Date at which the aggregation should start. Preferred formats are
+#' \dQuote{YYYY-MM-DD}, \dQuote{YYYY/MM/DD} but most any valid date format
+#' should work.
 #' @param TS
 #' Time scale on the quasiWeek basis (integer values between 1 and 96).
 #'   Default is 4, which corresponds to the monthly time scale.
 #' @return
-#' Rainfall amounts aggregated at the time scale selected by the user
-#' @export
+#' A matrix with rainfall amounts aggregated at the time scale selected by
+#' the user
 #' @examples
 #'
 #' daily.rain <- CampinasRain[,2]
@@ -18,31 +19,42 @@
 #' @importFrom lubridate year month day parse_date_time
 #' @importFrom zoo rollsum
 #' @importFrom stats na.omit
-TSaggreg <- function(daily.rain,start.date,TS=4){
-  daily.rain=as.matrix(daily.rain)
+#' @export
+
+TSaggreg <- function(daily.rain, start.date, TS = 4L) {
+
+  daily.rain = as.matrix(daily.rain)
   if (!is.numeric(daily.rain) || any(is.na(daily.rain)) ||
-      length(daily.rain[daily.rain < 0]) != 0 || ncol(daily.rain) != 1) {
-    stop("Physically impossible or missing rain values")
+      length(daily.rain[daily.rain < 0]) != 0 ||
+      ncol(daily.rain) != 1) {
+    stop("Physically impossible or missing rain values.")
   }
   if (!is.numeric(TS) || length(TS) != 1 ||
-      TS < 1 || TS> 96) {stop("TS must be an interger single number between 1 and 96")}
+      TS < 1 ||
+      TS > 96) {
+    stop("TS must be an integer between 1 and 96.")
+  }
+
   n <- length(daily.rain)
-  if (n<3650){stop("Less than 10 years of rainfall records. We cannot procede")}
-  if (n<10950){warning("Less than 30 years of rainfall records. Longer periods are highly recommended.")}
-  start.date <- .check_date(start.date)
-  start.cycle <- as.Date(start.date)
+  if (n < 3650) {
+    stop("Less than 10 years of rainfall records. We cannot proceed.")
+  }
+  if (n < 10950) {
+    warning("Less than 30 years of rainfall records. Longer periods are highly recommended.")
+  }
+  start.cycle <- .check_date(start.date)
   end.cycle <- start.cycle + (n - 1)
   all.period <- seq(start.cycle, end.cycle, "days")
-  years <- lubridate::year(all.period)
-  months <- lubridate::month(all.period)
-  days <- lubridate::day(all.period)
-  rain <- matrix(NA,n,4)
-  rain[,1:4] <- c(years,months,days,daily.rain)
+  years <- year(all.period)
+  months <- month(all.period)
+  days <- day(all.period)
+  rain <- matrix(NA, n, 4)
+  rain[, 1:4] <- c(years, months, days, daily.rain)
   a <- 1
   b <- 2
   c <- 3
   d <- 4
-  data.week <- data.frame(matrix(NA, n, 5))
+  data.week <- matrix(NA, n, 5)
   start.year <- rain[1,1]
   final.year <- rain[n,1]
   start.month <- rain[1,2]
@@ -68,10 +80,10 @@ TSaggreg <- function(daily.rain,start.date,TS=4){
                                    year &
                                    rain[,2] == month &
                                    rain[,3] > 21),4])
-    data.week[a,1:4] <- c(year, month, 1,data.week1)
-    data.week[b,1:4] <- c(year, month, 2,data.week2)
-    data.week[c,1:4] <- c(year, month, 3,data.week3)
-    data.week[d,1:4] <- c(year, month, 4,data.week4)
+    data.week[a, 1:4] <- c(year, month, 1, data.week1)
+    data.week[b, 1:4] <- c(year, month, 2, data.week2)
+    data.week[c, 1:4] <- c(year, month, 3, data.week3)
+    data.week[d, 1:4] <- c(year, month, 4, data.week4)
     month <- month + 1
     if (year == final.year & month > final.month) {
       break
@@ -86,7 +98,7 @@ TSaggreg <- function(daily.rain,start.date,TS=4){
     d <- d + 4
   }
   if (TS > 1){
-    data.at.TS <- na.omit(zoo::rollsum(data.week[,4],TS))
+    data.at.TS <- na.omit(rollsum(data.week[,4],TS))
     n.TS <- length(data.at.TS)
     data.week[TS:(n.TS+(TS-1)),5]<- data.at.TS
     data.week <- data.week[-c((n.TS+(TS)):n),]
@@ -95,16 +107,19 @@ TSaggreg <- function(daily.rain,start.date,TS=4){
   }
   data.week <- data.week[,-c(4)]
   data.week <- na.omit(data.week)
-  colnames(data.week) <- c("Year","Month","quasiWeek",paste0("rain.at.TS",TS))
+  colnames(data.week) <- c("Year", "Month", "quasiWeek", paste0("rain.at.TS", TS))
   message("Done. Just ensure the last quasi-week is complete.
-  The last day of your series is ", paste(days[n]), " and TS is ", paste(TS))
+  The last day of your series is ", days[n], " and TS is ", TS)
+
+  class(data.week) <- union("TSaggreg", class(data.week))
+
   return(data.week)
 }
 
 #' Check User Input Dates for Validity
 #'
 #' @param x User entered date value
-#' @return Validated date string as a `POSIXct` object.
+#' @return Validated date string as a `Date` object.
 #' @note This was taken from \CRANpkg{nasapower}, but tz changed to UTC.
 #' @example .check_date(x)
 #' @author Adam H. Sparks \email{adamhsparks@@gmail.com}
@@ -112,7 +127,7 @@ TSaggreg <- function(daily.rain,start.date,TS=4){
 #' @noRd
 .check_date <- function(x) {
   tryCatch(
-    x <- lubridate::parse_date_time(x,
+    x <- parse_date_time(x,
                                     c(
                                       "Ymd",
                                       "dmY",
@@ -133,5 +148,5 @@ TSaggreg <- function(daily.rain,start.date,TS=4){
       )
     }
   )
-  return(x)
+  return(as.Date(x))
 }
