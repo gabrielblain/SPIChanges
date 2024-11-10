@@ -7,7 +7,7 @@
 SPIChanges(rain.at.TS, only.linear = "Yes")
 }
 \arguments{
-\item{rain.at.TS}{A 4-column matrix or data frame.
+\item{rain.at.TS}{A 4-column matrix generated with \code{TSaggreg()}. No other objects are accepted.
 \itemize{
 \item 1st column is years (YYYY),
 \item 2nd is the months (1 to 12),
