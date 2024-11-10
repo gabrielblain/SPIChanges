@@ -47,10 +47,11 @@ SPIChanges <- function(rain.at.TS, only.linear = "Yes"){
   }
 
   if (!is.numeric(rain.at.TS) || any(is.na(rain.at.TS)) ||
-      length(rain.at.TS[rain.at.TS < 0]) != 0 || ncol(rain.at.TS) != 4 ) {
+      any(rain.at.TS[rain.at.TS < 0]) || ncol(rain.at.TS) != 4 ) {
     stop("Physically impossible or missing values in rain.at.TS.")}
 
   n <- length(rain.at.TS[, 1])
+
   if (n < 480) {
     stop("Less than 10 years of rainfall records. We cannot proceed.")
   }
@@ -73,6 +74,7 @@ SPIChanges <- function(rain.at.TS, only.linear = "Yes"){
       length(rain.at.TS[rain.at.TS[,2] == 11]) < 32 ||
       length(rain.at.TS[rain.at.TS[,2] == 12]) < 32) {
     stop("Column Month in rain.at.TS is probably malformed.")}
+
   if (length(rain.at.TS[rain.at.TS[,3] < 1]) != 0 ||
       length(rain.at.TS[rain.at.TS[,3] > 4]) != 0 ||
       length(rain.at.TS[rain.at.TS[,3] == 1]) < 96 ||
@@ -93,6 +95,7 @@ SPIChanges <- function(rain.at.TS, only.linear = "Yes"){
   week <- 1
   model.selection <- matrix(NA,48,1)
   Changes.Freq.Drought <- matrix(NA,48,7)
+
   for (a in 1:48) {
     rain.week <- (data.week[which(data.week[, 2] == month &
                                     data.week[, 3] == week), 4])
@@ -137,7 +140,15 @@ SPIChanges <- function(rain.at.TS, only.linear = "Yes"){
       model.selection[a, 1] <- models$best
       selected.model <- models$selected.model
     }
-    quasiprob <- (probzero.st[1]+(1-probzero.st[1])*pGA(rain.week,mu = t.gam$mu.fv[1], sigma = t.gam$sigma.fv[1],lower.tail = TRUE, log.p=FALSE))
+    quasiprob <- (
+      probzero.st[1] + (1 - probzero.st[1]) * pGA(
+        rain.week,
+        mu = t.gam$mu.fv[1],
+        sigma = t.gam$sigma.fv[1],
+        lower.tail = TRUE,
+        log.p = FALSE
+      )
+    )
     quasiprob[quasiprob < 0.001351] <- 0.001351
     quasiprob[quasiprob > 0.998649] <- 0.998649
     data.week[initial.row:last.row,6] <- quasiprob
