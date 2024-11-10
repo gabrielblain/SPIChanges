@@ -14,13 +14,13 @@ A package designed to improve the interpretation of the Standardized Precipitati
 
 ## Basic Description
 
-The `SPIChanges` was created to detect changes in rainfall patterns and quantify how they affect the probability of a drought event, quantified by the SPI (Mckee et al. 1993), occurring. The package applies a nonstationary approach proposed by Blain et al. (2022), designed to isolate the effect of such changes on the central tendency and dispersion of the SPI frequency distributions.
+The {SPIChanges} package was created to detect changes in rainfall patterns and quantify how they affect the probability of a drought event, quantified by the SPI (Mckee et al. 1993), occurring. The package applies a nonstationary approach proposed by Blain et al. (2022), designed to isolate the effect of such changes on the central tendency and dispersion of the SPI frequency distributions.
 
-The package depends on R (\>= 2.10) and imports the following packages: lubridate, zoo, gamlss, gamlss.dist, stats, spsUtil, dplyr, and MuMIn.
+The package depends on R (\>= 2.10) and imports the following packages: {lubridate}, {zoo}, {gamlss}, {gamlss.dist}, {stats}, {spsUtil}, {rlang}, and {MuMIn}.
 
 ## Installation
 
-You can install the development version of SPIChanges from [GitHub](https://github.com/) with:
+You can install the development version of {SPIChanges} from [GitHub](https://github.com/) with:
 
 ``` r
 # install.packages("devtools")
@@ -76,8 +76,12 @@ Aggregating daily rainfall values at 4-quasiWeek time scale, which corresponds t
 
 ```{r example 1}
 library(SPIChanges)
-daily.rain <- CampinasRain[,2]
-head(TSaggreg(daily.rain=daily.rain,start.date="1980-01-01",TS=4))
+daily.rain <- CampinasRain[, 2]
+head(TSaggreg(
+  daily.rain = daily.rain,
+  start.date = "1980-01-01",
+  TS = 4
+))
 ```
 
 ## Function `SPIChanges()`
@@ -87,14 +91,13 @@ Detect trends and quantify their effect on the probability of SPI values occurri
 ## Usage
 
 ```{r, eval=FALSE}
-SPIChanges(rain.at.TS,
-         only.linear)
+SPIChanges(rain.at.TS, only.linear)
 ```
 
 ## Arguments
 
--   rain.at.TS: Vector, 1-column matrix or data frame with rainfall totals accumulated at a time scale.
--   only.linear: A character variable (Yes or No) defining if the function must consider only linear models (Yes) or linear and non-linear models (No). Default is Yes.
+-   `rain.at.TS`: Vector, 1-column matrix or data frame with rainfall totals accumulated at a time scale.
+-   `only.linear`: A character variable (`Yes` or `No`) defining if the function must consider only linear models (`Yes`) or linear and non-linear models (`No`). Default is `Yes`.
 
 ## Value
 
@@ -104,7 +107,7 @@ data.week: The precipitation amounts, SPI, cumulative probability of the SPI val
 
 model.selection: The generalized additive model (section 2.2) that best fits the precipitation series.
 
-Changes.Freq.Drought: changes in the frequency of moderate, severe and extreme drought events, as definied by the SPI classification system (Table 1), caused by the changes in precipitation patterns.
+Changes.Freq.Drought: changes in the frequency of moderate, severe and extreme drought events, as defined by the SPI classification system (Table 1), caused by the changes in precipitation patterns.
 
 Statistics: Year to year changes in the expected frequency of moderate, severe and extreme drought events.
 
@@ -114,9 +117,11 @@ Using only linear nonstationary parametric models to assess the probability of r
 
 ```{r example 2}
 library(SPIChanges)
-daily.rain <- CampinasRain[,2]
-rainTS4 <- TSaggreg(daily.rain=daily.rain,start.date="1980-01-01",TS=4)
-Changes.in.the.SPI <- SPIChanges(rain.at.TS=rainTS4, only.linear = "Yes")
+daily.rain <- CampinasRain[, 2]
+rainTS4 <- TSaggreg(daily.rain = daily.rain,
+                    start.date = "1980-01-01",
+                    TS = 4)
+Changes.in.the.SPI <- SPIChanges(rain.at.TS = rainTS4, only.linear = "Yes")
 head(Changes.in.the.SPI$data.week)
 head(Changes.in.the.SPI$Statistics)
 head(Changes.in.the.SPI$model.selection)
@@ -129,9 +134,11 @@ Using linear and non-linear nonstationary parametric models to assess the probab
 
 ```{r example 3}
 library(SPIChanges)
-daily.rain <- CampinasRain[,2]
-rainTS4 <- TSaggreg(daily.rain=daily.rain,start.date="1980-01-01",TS=4)
-Changes.in.the.SPI <- SPIChanges(rain.at.TS=rainTS4, only.linear = "No")
+daily.rain <- CampinasRain[, 2]
+rainTS4 <- TSaggreg(daily.rain = daily.rain,
+                    start.date = "1980-01-01",
+                    TS = 4)
+Changes.in.the.SPI <- SPIChanges(rain.at.TS = rainTS4, only.linear = "No")
 head(Changes.in.the.SPI$data.week)
 head(Changes.in.the.SPI$Statistics)
 head(Changes.in.the.SPI$model.selection)
@@ -184,7 +191,7 @@ Within the original SPI algorithm, q is often calculated from equations based on
 
 ## BugReports:
 
-\<<https://github.com/gabrielblain/SPIChanges/issues> \>
+<https://github.com/gabrielblain/SPIChanges/issues>
 
 ## License:
 
