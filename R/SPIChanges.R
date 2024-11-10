@@ -47,7 +47,7 @@ SPIChanges <- function(rain.at.TS, only.linear = "Yes"){
       length(rain.at.TS[rain.at.TS < 0]) != 0 || ncol(rain.at.TS) != 4 ) {
     stop("Physically impossible or missing values in rain.at.TS.")}
   n <- length(rain.at.TS[,1])
-  if (n<480){stop("Less than 10 years of rainfall records. We cannot procede.")}
+  if (n<480){stop("Less than 10 years of rainfall records. We cannot proceed.")}
   if (n<1440){warning("Less than 30 years of rainfall records. Longer periods are highly recommended.")}
   if (length(rain.at.TS[rain.at.TS[,2] < 1]) != 0 ||
       length(rain.at.TS[rain.at.TS[,2] > 12]) != 0 ||

@@ -125,7 +125,7 @@ test_that("rainfall records too short", {
   rainTS4.wrong <- rainTS4[1:479,]
   expect_error(
     Changes.wrong <- SPIChanges(rain.at.TS=rainTS4.wrong, only.linear = "no"),
-    "Less than 10 years of rainfall records. We cannot procede.")
+    "Less than 10 years of rainfall records. We cannot proceed.")
 })
 
 test_that("rainfall records with missing months", {
