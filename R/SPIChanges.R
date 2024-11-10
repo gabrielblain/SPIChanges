@@ -2,25 +2,32 @@
 #'
 #' @param rain.at.TS
 #' A 4-column matrix or data frame.
-#' 1st column is years, 2nd is the months (1 to 12)
-#' 3rd is the quasiWeeks (1 to 4), and 4th is the rainfall totals accumulated at a time scale.
+#'  * 1st column is years (YYYY),
+#'  * 2nd is the months (1 to 12),
+#'  * 3rd is the quasiWeeks (1 to 4),
+#'  * and 4th is the rainfall totals accumulated at a time scale.
 #' @param only.linear
-#' A character variable (\code{Yes} or \code{No}) defining if the function must
-#' consider only linear models (\code{Yes}) or linear and non-linear models (\code{No}).
-#' Default is Yes.
+#' A character variable (`Yes` or `No`) defining if the function must
+#' consider only linear models (`Yes`) or linear and non-linear models (`No`).
+#' Default is `Yes`.
 #' @return
-#' A \code{list} object with:
+#' A `list` object with:
 #' \describe{
-#'   \item{data.week}{The Rainfall amounts, SPI, cumulative probability of the SPI values under the stationary
-#'   approach, cumulative probability of the SPI values under the non-stationary approach,
-#'   and the changes in the frequency of below zero SPI values caused by the changes in rainfall patterns.}
-#'   \item{model.selection}{The generalized additive model that best fits the rainfall series}
-#'   \item{Changes.Freq.Drought}{changes in the frequency of zero precipitation, moderate, severe and extreme drought events,
-#'   as definied by the SPI classification system, caused by the changes in rainfall patterns.
-#'   Changes in the precipitation amounts associated describing normal conditions is also shown.}
-#'   \item{Statistics}{Year to year changes in the expected frequency of moderate, severe and extreme drought events.}
+#'   \item{data.week}{The Rainfall amounts, \acronym{SPI}, cumulative
+#'   probability of the \acronym{SPI} values under the stationary approach,
+#'   cumulative probability of the \acronym{SPI} values under the non-stationary
+#'   approach, and the changes in the frequency of below zero SPI values caused
+#'   by the changes in rainfall patterns.}
+#'   \item{model.selection}{The generalized additive model that best fits the
+#'   rainfall series}
+#'   \item{Changes.Freq.Drought}{changes in the frequency of zero precipitation,
+#'   moderate, severe and extreme drought events, as defined by the
+#'   \acronym{SPI} classification system, caused by the changes in rainfall
+#'   patterns. Changes in the precipitation amounts associated describing normal
+#'   conditions is also shown.}
+#'   \item{Statistics}{Year to year changes in the expected frequency of
+#'   moderate, severe and extreme drought events.}
 #'  }
-#' @export
 #' @examples
 #'
 #' daily.rain <- CampinasRain[,2]
@@ -32,6 +39,8 @@
 #' @importFrom spsUtil quiet
 #' @importFrom dplyr bind_rows
 #' @importFrom MuMIn AICc
+#' @export
+
 SPIChanges <- function(rain.at.TS, only.linear = "Yes"){
   rain.at.TS <- as.matrix(rain.at.TS)
   if (!is.numeric(rain.at.TS) || any(is.na(rain.at.TS)) ||
@@ -174,7 +183,9 @@ SPIChanges <- function(rain.at.TS, only.linear = "Yes"){
     quasiprob.ns[quasiprob.ns < 0.001351] <- 0.001351
     quasiprob.ns[quasiprob.ns > 0.998649] <- 0.998649
     data.week[initial.row:last.row,7] <- quasiprob.ns
-    ifelse (a == 1, Statistics <- as.data.frame(Model.Drought.week), Statistics <- spsUtil::quiet(bind_rows(Statistics,Model.Drought.week)))
+    ifelse (a == 1,
+            Statistics <- as.data.frame(Model.Drought.week),
+            Statistics <- spsUtil::quiet(bind_rows(Statistics,Model.Drought.week)))
     week <- week+1
     if (week==5)
     {month <- month+1

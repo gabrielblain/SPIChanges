@@ -4,13 +4,14 @@
 #' Vector, 1-column matrix or data frame with daily rainfall totals
 #' @param start.date
 #' Date at which the aggregation should start. Formats:
-#' \dQuote{YYYY-MM-DD}, \dQuote{YYYY/MM/DD}.
+#' \dQuote{YYYY-MM-DD}, \dQuote{YYYY/MM/DD} but most any valid date format
+#' should work.
 #' @param TS
 #' Time scale on the quasiWeek basis (integer values between 1 and 96).
 #'   Default is 4, which corresponds to the monthly time scale.
 #' @return
-#' Rainfall amounts aggregated at the time scale selected by the user
-#' @export
+#' A data frame with rainfall amounts aggregated at the time scale selected by
+#' the user
 #' @examples
 #'
 #' daily.rain <- CampinasRain[,2]
@@ -18,6 +19,7 @@
 #' @importFrom lubridate year month day parse_date_time
 #' @importFrom zoo rollsum
 #' @importFrom stats na.omit
+#' @export
 TSaggreg <- function(daily.rain,start.date,TS=4){
   daily.rain=as.matrix(daily.rain)
   if (!is.numeric(daily.rain) || any(is.na(daily.rain)) ||
