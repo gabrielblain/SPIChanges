@@ -7,13 +7,13 @@
 TSaggreg(daily.rain, start.date, TS = 4)
 }
 \arguments{
-\item{daily.rain}{Vector, 1-column matrix or data frame with daily rainfall totals}
+\item{daily.rain}{Vector, 1-column matrix or data frame with daily rainfall totals.}
 
 \item{start.date}{Date at which the aggregation should start. Formats:
 \dQuote{YYYY-MM-DD}, \dQuote{YYYY/MM/DD} but most any valid date format
 should work.}
 
-\item{TS}{Time scale on the quasiWeek basis (integer values between 1 and 96).
+\item{TS}{Time scale on the quasiWeek basis (whole integer values between 1 and 96).
 Default is 4, which corresponds to the monthly time scale.}
 }
 \value{

@@ -106,26 +106,26 @@ daily.rain <- CampinasRain$Rain
 test_that("TS not a number", {
   expect_error(
     tes <- TSaggreg(daily.rain=daily.rain,start.date="1980-01-01",TS="quatro"),
-    "TS must be an interger single number between 1 and 96")
+    "TS must be an integer single number between 1 and 96")
 })
 
 daily.rain <- CampinasRain$Rain
 test_that("TS lower than 1", {
   expect_error(
     tes <- TSaggreg(daily.rain=daily.rain,start.date="1980-01-01",TS=0),
-    "TS must be an interger single number between 1 and 96")
+    "TS must be an integer single number between 1 and 96")
 })
 
 daily.rain <- CampinasRain$Rain
 test_that("TS larger than 96", {
   expect_error(
     tes <- TSaggreg(daily.rain=daily.rain,start.date="1980-01-01",TS=97),
-    "TS must be an interger single number between 1 and 96")
+    "TS must be an integer single number between 1 and 96")
 })
 
 daily.rain <- CampinasRain$Rain
 test_that("TS wrong format", {
   expect_error(
     tes <- TSaggreg(daily.rain=daily.rain,start.date="1980-01-01",TS=c(2,97)),
-    "TS must be an interger single number between 1 and 96")
+    "TS must be an integer single number between 1 and 96")
 })

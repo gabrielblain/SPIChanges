@@ -1,13 +1,13 @@
 #' Aggregates daily rainfall totals at quasi-week time scales
 #'
 #' @param daily.rain
-#' Vector, 1-column matrix or data frame with daily rainfall totals
+#' Vector, 1-column matrix or data frame with daily rainfall totals.
 #' @param start.date
 #' Date at which the aggregation should start. Formats:
 #' \dQuote{YYYY-MM-DD}, \dQuote{YYYY/MM/DD} but most any valid date format
 #' should work.
 #' @param TS
-#' Time scale on the quasiWeek basis (integer values between 1 and 96).
+#' Time scale on the quasiWeek basis (whole integer values between 1 and 96).
 #'   Default is 4, which corresponds to the monthly time scale.
 #' @return
 #' A data frame with rainfall amounts aggregated at the time scale selected by
@@ -20,6 +20,7 @@
 #' @importFrom zoo rollsum
 #' @importFrom stats na.omit
 #' @export
+
 TSaggreg <- function(daily.rain,start.date,TS=4){
   daily.rain=as.matrix(daily.rain)
   if (!is.numeric(daily.rain) || any(is.na(daily.rain)) ||
@@ -27,7 +28,7 @@ TSaggreg <- function(daily.rain,start.date,TS=4){
     stop("Physically impossible or missing rain values")
   }
   if (!is.numeric(TS) || length(TS) != 1 ||
-      TS < 1 || TS> 96) {stop("TS must be an interger single number between 1 and 96")}
+      TS < 1 || TS> 96) {stop("TS must be an integer single number between 1 and 96")}
   n <- length(daily.rain)
   if (n<3650){stop("Less than 10 years of rainfall records. We cannot procede")}
   if (n<10950){warning("Less than 30 years of rainfall records. Longer periods are highly recommended.")}
@@ -35,9 +36,9 @@ TSaggreg <- function(daily.rain,start.date,TS=4){
   start.cycle <- as.Date(start.date)
   end.cycle <- start.cycle + (n - 1)
   all.period <- seq(start.cycle, end.cycle, "days")
-  years <- lubridate::year(all.period)
-  months <- lubridate::month(all.period)
-  days <- lubridate::day(all.period)
+  years <- year(all.period)
+  months <- month(all.period)
+  days <- day(all.period)
   rain <- matrix(NA,n,4)
   rain[,1:4] <- c(years,months,days,daily.rain)
   a <- 1
@@ -88,7 +89,7 @@ TSaggreg <- function(daily.rain,start.date,TS=4){
     d <- d + 4
   }
   if (TS > 1){
-    data.at.TS <- na.omit(zoo::rollsum(data.week[,4],TS))
+    data.at.TS <- na.omit(rollsum(data.week[,4],TS))
     n.TS <- length(data.at.TS)
     data.week[TS:(n.TS+(TS-1)),5]<- data.at.TS
     data.week <- data.week[-c((n.TS+(TS)):n),]
@@ -114,7 +115,7 @@ TSaggreg <- function(daily.rain,start.date,TS=4){
 #' @noRd
 .check_date <- function(x) {
   tryCatch(
-    x <- lubridate::parse_date_time(x,
+    x <- parse_date_time(x,
                                     c(
                                       "Ymd",
                                       "dmY",
