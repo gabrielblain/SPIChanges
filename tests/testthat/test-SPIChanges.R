@@ -185,11 +185,11 @@ test_that("rainfall records with another wrong quasiWeek", {
 test_that("Wrong only.linear", {
   expect_error(
     Changes.wrong <- SPIChanges(rain.at.TS=rainTS4, only.linear = "maybe"),
-    "imput only.linear should be Yes or No.")
+    "`only.linear` must be one of \"yes\", \"no\", \"Yes\", \"No\", \"YES\", \"NO\", \"yEs\", \"nO\", or \"yeS\", not \"maybe\".")
 })
 
 test_that("Another wrong only.linear", {
   expect_error(
     Changes.wrong <- SPIChanges(rain.at.TS=rainTS4, only.linear = 4),
-    "imput only.linear should be Yes or No.")
+    "`only.linear` must be a character vector, not the number 4.")
 })

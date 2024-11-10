@@ -62,8 +62,10 @@ SPIChanges <- function(rain.at.TS, only.linear = "Yes"){
       length(rain.at.TS[rain.at.TS[,3] == 3]) < 96 ||
       length(rain.at.TS[rain.at.TS[,3] == 4]) < 96) {
     stop("Column quasiWeek in rain.at.TS is probably malformed.")}
-  only.linear <- tolower(only.linear)
-  if (only.linear != "yes" & only.linear != "no"){stop("imput only.linear should be Yes or No.")}
+
+  rlang::arg_match(only.linear,
+                   c("yes", "no", "Yes", "No", "YES", "NO", "yEs", "nO", "yeS"))
+
   years <- rain.at.TS[,1]
   months <- rain.at.TS[,2]
   data.week <- data.frame(matrix(NA, n, 8))

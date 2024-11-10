@@ -43,7 +43,8 @@ Imports:
     stats,
     spsUtil,
     dplyr,
-    MuMIn
+    MuMIn,
+    rlang
 LazyData: true
 Suggests: 
     knitr,
