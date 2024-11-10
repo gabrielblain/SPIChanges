@@ -47,7 +47,7 @@ SPIChanges <- function(rain.at.TS, only.linear = "Yes"){
   }
 
   if (!is.numeric(rain.at.TS) || any(is.na(rain.at.TS)) ||
-      any(rain.at.TS[rain.at.TS < 0]) || ncol(rain.at.TS) != 4 ) {
+      length(rain.at.TS[rain.at.TS < 0]) != 0 || ncol(rain.at.TS) != 4 ) {
     stop("Physically impossible or missing values in rain.at.TS.")}
 
   n <- length(rain.at.TS[, 1])
@@ -151,27 +151,37 @@ SPIChanges <- function(rain.at.TS, only.linear = "Yes"){
     )
     quasiprob[quasiprob < 0.001351] <- 0.001351
     quasiprob[quasiprob > 0.998649] <- 0.998649
-    data.week[initial.row:last.row,6] <- quasiprob
-    normal.param.prob <- ifelse(probzero.st[1]<0.5,0.5-probzero.st[1],0)
-    mod.param.prob <- ifelse(probzero.st[1]<0.159,0.159-probzero.st[1],0)
-    sev.param.prob <- ifelse(probzero.st[1]<0.067,0.067-probzero.st[1],0)
-    ext.param.prob <- ifelse(probzero.st[1]<0.023,0.023-probzero.st[1],0)
-    stat.rain.normal <- qGA(normal.param.prob, mu = t.gam$mu.fv[1], sigma = t.gam$sigma.fv[1])
-    stat.rain.drought.mod <- qGA(mod.param.prob , mu = t.gam$mu.fv[1], sigma = t.gam$sigma.fv[1])
-    stat.rain.drought.sev <- qGA(sev.param.prob, mu = t.gam$mu.fv[1], sigma = t.gam$sigma.fv[1])
-    stat.rain.drought.extr <- qGA(ext.param.prob, mu = t.gam$mu.fv[1], sigma = t.gam$sigma.fv[1])
+    data.week[initial.row:last.row, 6] <- quasiprob
+    normal.param.prob <- ifelse(probzero.st[1] < 0.5, 0.5 - probzero.st[1], 0)
+    mod.param.prob <- ifelse(probzero.st[1] < 0.159, 0.159 - probzero.st[1], 0)
+    sev.param.prob <- ifelse(probzero.st[1] < 0.067, 0.067 - probzero.st[1], 0)
+    ext.param.prob <- ifelse(probzero.st[1] < 0.023, 0.023 - probzero.st[1], 0)
+
+    calc.stat.rain <- function(param.prob, t.gam) {
+      return(qGA(param.prob, mu = t.gam$mu.fv[1], sigma = t.gam$sigma.fv[1]))
+    }
+
+    list2env(lapply(
+      list(
+        "stat.rain.normal" = normal.param.prob,
+        "stat.rain.drought.mod" = mod.param.prob,
+        "stat.rain.drought.sev" = sev.param.prob,
+        "stat.rain.drought.extr" = ext.param.prob
+      ),
+      calc.stat.rain,
+      t.gam
+    ), .GlobalEnv)
+
     if (model.selection[a,1]==1){
-      quasiprob.ns <- as.matrix(data.week[initial.row:last.row,6])
-      Changes.Freq.Drought [a,1] <- round((probzero.st[1]),3)
-      Changes.Freq.Drought [a,2] <- round((probzero.st[n.week]),3)
-      Changes.Freq.Drought [a,3] <- round(stat.rain.normal,2)
-      Changes.Freq.Drought [a,4] <- Changes.Freq.Drought [a,3]
-      Changes.Freq.Drought [a,5] <- 0
-      Changes.Freq.Drought [a,6] <- 0
-      Changes.Freq.Drought [a,7] <- 0
-      Model.Drought.week[,3] <- probzero.st[1]
-      Model.Drought.week[,4] <- t.gam$mu.fv
-      Model.Drought.week[,5] <- t.gam$sigma.fv
+      quasiprob.ns <- as.matrix(data.week[initial.row:last.row, 6])
+      Changes.Freq.Drought[a, 1] <- round((probzero.st[1]), 3)
+      Changes.Freq.Drought[a, 2] <- round((probzero.st[n.week]), 3)
+      Changes.Freq.Drought[a, 3] <- round(stat.rain.normal, 2)
+      Changes.Freq.Drought[a, 4] <- Changes.Freq.Drought [a, 3]
+      Changes.Freq.Drought[a, 5:7] <- 0
+      Model.Drought.week[, 3] <- probzero.st[1]
+      Model.Drought.week[, 4] <- t.gam$mu.fv
+      Model.Drought.week[, 5] <- t.gam$sigma.fv
     } else {
       probzero <- calc.probzero(rain.week, time)
       probzero[probzero < 0.0001] <- 0
@@ -179,11 +189,13 @@ SPIChanges <- function(rain.at.TS, only.linear = "Yes"){
       Changes.Freq.Drought [a,1] <- round((probzero.st[1]),3)
       Changes.Freq.Drought [a,2] <- round((probzero[n.week]),3)
       Changes.Freq.Drought [a,3] <- round(stat.rain.normal,2)
-      nonstat.normal.param.prob <- ifelse(probzero[n.week]<0.5,0.5-probzero[n.week],0)
+      nonstat.normal.param.prob <- ifelse(probzero[n.week] < 0.5, 0.5 - probzero[n.week], 0)
+
       Changes.Freq.Drought [a,4] <- round(qGA(nonstat.normal.param.prob , mu = selected.model$mu.fv[(n.week-nz)],
                                               sigma = selected.model$sigma.fv[(n.week-nz)]),2)
-      Changes.Freq.Drought [a,5] <- round(ifelse(probzero[n.week] >= 0.159, 100*(probzero[n.week]-probzero[1]),
-                                                 100*((probzero[n.week]+(1-probzero[n.week])*
+
+      Changes.Freq.Drought [a,5] <- round(ifelse(probzero[n.week] >= 0.159, 100 * (probzero[n.week]-probzero[1]),
+                                                 100 * ((probzero[n.week] + (1 - probzero[n.week]) *
                                                          pGA(stat.rain.drought.mod,
                                                              mu = selected.model$mu.fv[(n.week-nz)],
                                                              sigma = selected.model$sigma.fv[(n.week-nz)]))-0.159)),2)
@@ -209,14 +221,16 @@ SPIChanges <- function(rain.at.TS, only.linear = "Yes"){
     quasiprob.ns[quasiprob.ns < 0.001351] <- 0.001351
     quasiprob.ns[quasiprob.ns > 0.998649] <- 0.998649
     data.week[initial.row:last.row,7] <- quasiprob.ns
-    ifelse (a == 1,
-            Statistics <- as.data.frame(Model.Drought.week),
-            Statistics <- quiet(rbind(Statistics,Model.Drought.week)))
-    week <- week+1
-    if (week==5)
-    {month <- month+1
-    week <- 1}
+    ifelse(a == 1,
+           Statistics <- as.data.frame(Model.Drought.week),
+           Statistics <- quiet(rbind(Statistics, Model.Drought.week)))
+    week <- week + 1
+    if (week == 5)
+    {
+      month <- month + 1
+      week <- 1}
   }
+
   Statistics[,3:5] <- Statistics[,3:5]
   data.week[,5] <- c(qnorm(data.week[,6], mean = 0, sd = 1))
   dry.values <- which(data.week[,5] <= 0)
@@ -224,22 +238,41 @@ SPIChanges <- function(rain.at.TS, only.linear = "Yes"){
   data.week[dry.values,8] <- 100*round(data.week[dry.values,7]-data.week[dry.values,6],3)
   data.week[wet.values,8] <- "NoDrought"
   data.week <- data.week[order(data.week[,1]),]
-  colnames(data.week) <- c("Year","Month","quasiWeek","rain.at.TS",
-                           "SPI","Exp.Acum.Prob","Actual.Acum.Prob","ChangeDryFreq")
+  colnames(data.week) <- c(
+    "Year",
+    "Month",
+    "quasiWeek",
+    "rain.at.TS",
+    "SPI",
+    "Exp.Acum.Prob",
+    "Actual.Acum.Prob",
+    "ChangeDryFreq"
+  )
   data.week[,5:7] <- round(data.week[,5:7],3)
   Statistics <- round(Statistics,3)
   months <- sort(rep(seq(1:12),4))
   quasiweeks <- rep(seq(1:4),12)
   Changes.Freq.Drought <- cbind(months, quasiweeks, Changes.Freq.Drought)
-  colnames(Changes.Freq.Drought) <- c("Month","quasiWeek","StatProbZero","NonStatProbZero","StatNormalRain","NonStatNormalRain", "ChangeMod","ChangeSev","ChangeExt")
+  colnames(Changes.Freq.Drought) <- c(
+    "Month",
+    "quasiWeek",
+    "StatProbZero",
+    "NonStatProbZero",
+    "StatNormalRain",
+    "NonStatNormalRain",
+    "ChangeMod",
+    "ChangeSev",
+    "ChangeExt"
+  )
   model.selection <- cbind(months, quasiweeks, model.selection)
-  colnames(model.selection) <- c("Month","quasiWeek","model")
-  colnames(Statistics) <- c("Month","quasiWeek", "ProbZero", "mu", "sigma")
-  Drought_Changes <- list(data.week, model.selection,Changes.Freq.Drought,Statistics)
-  Drought_Changes <- list(data.week = data.week,
-                          model.selection = model.selection,
-                          Changes.Freq.Drought=Changes.Freq.Drought,
-                          Statistics=Statistics)
+  colnames(model.selection) <- c("Month", "quasiWeek", "model")
+  colnames(Statistics) <- c("Month", "quasiWeek", "ProbZero", "mu", "sigma")
+  Drought_Changes <- list(
+    data.week = data.week,
+    model.selection = model.selection,
+    Changes.Freq.Drought = Changes.Freq.Drought,
+    Statistics = Statistics
+  )
   return(Drought_Changes)
 }
 
