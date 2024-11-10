@@ -15,7 +15,7 @@ SPIChanges(rain.at.TS, only.linear = "Yes")
 \item and 4th is the rainfall totals accumulated at a time scale.
 }}
 
-\item{only.linear}{A character variable (\code{Yes} or \code{No}) defining if the function must
+\item{only.linear}{A character string value (\code{Yes} or \code{No}) defining if the function must
 consider only linear models (\code{Yes}) or linear and non-linear models (\code{No}).
 Default is \code{Yes}.}
 }
