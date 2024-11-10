@@ -105,7 +105,7 @@ SPIChanges <- function(rain.at.TS, only.linear = "Yes"){
     t.gam <- spsUtil::quiet(gamlss::gamlss(rain.week.nozeros~1,family=GA, mu.link = "log",
                                            sigma.link ="log"))
     if (only.linear == "yes"){
-      models <- Fit.lineares(rain.week.nozeros, time.nonzero)
+      models <- Fit.linears(rain.week.nozeros, time.nonzero)
       model.selection[a,1] <- models$best
       selected.model <- models$selected.model
     } else {
@@ -246,7 +246,7 @@ calc.probzero.st <- function(rain.week) {
 #' @noRd
 #' @keywords Internal
 
-Fit.lineares <- function (rain.week.nozeros,time.nonzero){
+Fit.linears <- function (rain.week.nozeros,time.nonzero){
   t.gam <- spsUtil::quiet(gamlss::gamlss(rain.week.nozeros ~ 1, family = GA,
                                          mu.link = "log", sigma.link = "log"))
   t.gam.ns10 <- spsUtil::quiet(gamlss::gamlss(rain.week.nozeros~time.nonzero,family=GA,
