@@ -26,17 +26,17 @@ TSaggreg <- function(daily.rain,start.date,TS=4){
   if (!is.numeric(daily.rain) || any(is.na(daily.rain)) ||
       length(daily.rain[daily.rain < 0]) != 0 ||
       ncol(daily.rain) != 1) {
-    stop("Physically impossible or missing rain values")
+    stop("Physically impossible or missing rain values.")
   }
   if (!is.numeric(TS) || length(TS) != 1 ||
       TS < 1 ||
       TS > 96) {
-    stop("TS must be an integer between 1 and 96")
+    stop("TS must be an integer between 1 and 96.")
   }
 
   n <- length(daily.rain)
   if (n < 3650) {
-    stop("Less than 10 years of rainfall records. We cannot proceed")
+    stop("Less than 10 years of rainfall records. We cannot proceed.")
   }
   if (n < 10950) {
     warning("Less than 30 years of rainfall records. Longer periods are highly recommended.")
