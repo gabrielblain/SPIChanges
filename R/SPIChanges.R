@@ -16,8 +16,8 @@
 #'   \item{data.week}{The Rainfall amounts, \acronym{SPI}, cumulative
 #'   probability of the \acronym{SPI} values under the stationary approach,
 #'   cumulative probability of the \acronym{SPI} values under the non-stationary
-#'   approach, and the changes in the frequency of below zero SPI values caused
-#'   by the changes in rainfall patterns.}
+#'   approach, and the changes in the frequency of below zero \acronym{SPI}
+#'   values caused by the changes in rainfall patterns.}
 #'   \item{model.selection}{The generalized additive model that best fits the
 #'   rainfall series}
 #'   \item{Changes.Freq.Drought}{changes in the frequency of zero precipitation,
