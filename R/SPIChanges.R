@@ -7,7 +7,7 @@
 #'  * 3rd is the quasiWeeks (1 to 4),
 #'  * and 4th is the rainfall totals accumulated at a time scale.
 #' @param only.linear
-#' A character variable (`Yes` or `No`) defining if the function must
+#' A character string value (`Yes` or `No`) defining if the function must
 #' consider only linear models (`Yes`) or linear and non-linear models (`No`).
 #' Default is `Yes`.
 #' @return
@@ -38,6 +38,7 @@
 #' @importFrom stats qnorm fitted
 #' @importFrom spsUtil quiet
 #' @importFrom MuMIn AICc
+#' @importFrom rlang arg_match
 #' @export
 
 SPIChanges <- function(rain.at.TS, only.linear = "Yes"){
@@ -71,7 +72,7 @@ SPIChanges <- function(rain.at.TS, only.linear = "Yes"){
       length(rain.at.TS[rain.at.TS[,3] == 4]) < 96) {
     stop("Column quasiWeek in rain.at.TS is probably malformed.")}
 
-  rlang::arg_match(only.linear,
+  arg_match(only.linear,
                    c("yes", "no", "Yes", "No", "YES", "NO", "yEs", "nO", "yeS"))
 
   years <- rain.at.TS[,1]
@@ -112,7 +113,7 @@ SPIChanges <- function(rain.at.TS, only.linear = "Yes"){
     time.nonzero <- as.vector(time[id])
     n.time.nonzero <- length(time.nonzero)
     Model.Drought.week <- data.frame(matrix(NA,n.time.nonzero,5))
-    t.gam <- spsUtil::quiet(gamlss::gamlss(
+    t.gam <- quiet(gamlss(
       rain.week.nozeros ~ 1,
       family = GA,
       mu.link = "log",
@@ -190,7 +191,7 @@ SPIChanges <- function(rain.at.TS, only.linear = "Yes"){
     data.week[initial.row:last.row,7] <- quasiprob.ns
     ifelse (a == 1,
             Statistics <- as.data.frame(Model.Drought.week),
-            Statistics <- spsUtil::quiet(rbind(Statistics,Model.Drought.week)))
+            Statistics <- quiet(rbind(Statistics,Model.Drought.week)))
     week <- week+1
     if (week==5)
     {month <- month+1
@@ -232,7 +233,7 @@ SPIChanges <- function(rain.at.TS, only.linear = "Yes"){
 
 calc.probzero <- function(rain.week,time) {
   zero_rain <- ifelse(rain.week == 0, 1, 0)
-  modelo <- spsUtil::quiet(gamlss(zero_rain~poly(time,1), family = BI))
+  modelo <- quiet(gamlss(zero_rain~poly(time,1), family = BI))
   prob_zero_rain <- fitted(modelo, "mu")
   return(prob_zero_rain)
 }
@@ -249,7 +250,7 @@ calc.probzero <- function(rain.week,time) {
 
 calc.probzero.st <- function(rain.week) {
   zero_rain <- ifelse(rain.week == 0, 1, 0)
-  modelo <- spsUtil::quiet(gamlss(zero_rain~1, family = BI))
+  modelo <- quiet(gamlss(zero_rain~1, family = BI))
   prob_zero_rain <- fitted(modelo, "mu")
   return(prob_zero_rain)
 }
@@ -265,24 +266,24 @@ calc.probzero.st <- function(rain.week) {
 Fit.linears <- function(rain.week.nozeros, time.nonzero) {
 
   t.gams <- list(
-    t.gam <- spsUtil::quiet(
-      gamlss::gamlss(
+    t.gam <- quiet(
+      gamlss(
         rain.week.nozeros ~ 1,
         family = GA,
         mu.link = "log",
         sigma.link = "log"
       )
     ),
-    t.gam.ns10 <- spsUtil::quiet(
-      gamlss::gamlss(
+    t.gam.ns10 <- quiet(
+      gamlss(
         rain.week.nozeros ~ time.nonzero,
         family = GA,
         mu.link = "log",
         sigma.link = "log"
       )
     ),
-    t.gam.ns01 <- spsUtil::quiet(
-      gamlss::gamlss(
+    t.gam.ns01 <- quiet(
+      gamlss(
         rain.week.nozeros ~ 1,
         sigma.formula =  ~ time.nonzero,
         family = GA,
@@ -290,8 +291,8 @@ Fit.linears <- function(rain.week.nozeros, time.nonzero) {
         sigma.link = "log"
       )
     ),
-    t.gam.ns11 <- spsUtil::quiet(
-      gamlss::gamlss(
+    t.gam.ns11 <- quiet(
+      gamlss(
         rain.week.nozeros ~ time.nonzero,
         sigma.formula =  ~ time.nonzero,
         family = GA,
@@ -301,7 +302,7 @@ Fit.linears <- function(rain.week.nozeros, time.nonzero) {
     )
   )
 
-  best <- which.min(lapply(t.gams, MuMIn::AICc, k = 4.4))
+  best <- which.min(lapply(t.gams, AICc, k = 4.4))
 
   selected.model <- switch(best, t.gam, t.gam.ns10, t.gam.ns01, t.gam.ns11)
 
@@ -319,24 +320,24 @@ Fit.linears <- function(rain.week.nozeros, time.nonzero) {
 Fit.Nonlinears <- function(rain.week.nozeros, time.nonzero) {
 
   t.gams <- list(
-    t.gam <- spsUtil::quiet(
-      gamlss::gamlss(
+    t.gam <- quiet(
+      gamlss(
         rain.week.nozeros ~ 1,
         family = GA,
         mu.link = "log",
         sigma.link = "log"
       )
     ),
-    t.gam.ns10 <- spsUtil::quiet(
-      gamlss::gamlss(
+    t.gam.ns10 <- quiet(
+      gamlss(
         rain.week.nozeros ~ time.nonzero,
         family = GA,
         mu.link = "log",
         sigma.link = "log"
       )
     ),
-    t.gam.ns01 <- spsUtil::quiet(
-      gamlss::gamlss(
+    t.gam.ns01 <- quiet(
+      gamlss(
         rain.week.nozeros ~ 1,
         sigma.formula = ~ time.nonzero,
         family = GA,
@@ -344,8 +345,8 @@ Fit.Nonlinears <- function(rain.week.nozeros, time.nonzero) {
         sigma.link = "log"
       )
     ),
-    t.gam.ns11 <- spsUtil::quiet(
-      gamlss::gamlss(
+    t.gam.ns11 <- quiet(
+      gamlss(
         rain.week.nozeros ~ time.nonzero,
         sigma.formula = ~ time.nonzero,
         family = GA,
@@ -353,16 +354,16 @@ Fit.Nonlinears <- function(rain.week.nozeros, time.nonzero) {
         sigma.link = "log"
       )
     ),
-    t.gam.ns20 <- spsUtil::quiet(
-      gamlss::gamlss(
+    t.gam.ns20 <- quiet(
+      gamlss(
         rain.week.nozeros ~ time.nonzero + I(time.nonzero ^ 2),
         family = GA,
         mu.link = "log",
         sigma.link = "log"
       )
     ),
-    t.gam.ns02 <- spsUtil::quiet(
-      gamlss::gamlss(
+    t.gam.ns02 <- quiet(
+      gamlss(
         rain.week.nozeros ~ 1,
         family = GA,
         mu.link = "log",
@@ -371,8 +372,8 @@ Fit.Nonlinears <- function(rain.week.nozeros, time.nonzero) {
         sigma.link = "log"
       )
     ),
-    t.gam.ns21 <- spsUtil::quiet(
-      gamlss::gamlss(
+    t.gam.ns21 <- quiet(
+      gamlss(
         rain.week.nozeros ~ time.nonzero + I(time.nonzero ^ 2),
         sigma.formula = ~ time.nonzero,
         family = GA,
@@ -380,8 +381,8 @@ Fit.Nonlinears <- function(rain.week.nozeros, time.nonzero) {
         sigma.link = "log"
       )
     ),
-    t.gam.ns12 <- spsUtil::quiet(
-      gamlss::gamlss(
+    t.gam.ns12 <- quiet(
+      gamlss(
         rain.week.nozeros ~ time.nonzero,
         sigma.formula = ~ time.nonzero + I(time.nonzero ^ 2),
         family = GA,
@@ -389,8 +390,8 @@ Fit.Nonlinears <- function(rain.week.nozeros, time.nonzero) {
         sigma.link = "log"
       )
     ),
-    t.gam.ns22 <- spsUtil::quiet(
-      gamlss::gamlss(
+    t.gam.ns22 <- quiet(
+      gamlss(
         rain.week.nozeros ~ time.nonzero + I(time.nonzero ^ 2),
         sigma.formula = ~ time.nonzero + I(time.nonzero ^ 2),
         family = GA,
@@ -398,8 +399,8 @@ Fit.Nonlinears <- function(rain.week.nozeros, time.nonzero) {
         sigma.link = "log"
       )
     ),
-    t.gam.ns30 <- spsUtil::quiet(
-      gamlss::gamlss(
+    t.gam.ns30 <- quiet(
+      gamlss(
         rain.week.nozeros ~ time.nonzero +
           I(time.nonzero ^ 2) +
           I(time.nonzero ^ 3),
@@ -408,8 +409,8 @@ Fit.Nonlinears <- function(rain.week.nozeros, time.nonzero) {
         sigma.link = "log"
       )
     ),
-    t.gam.ns03 <- spsUtil::quiet(
-      gamlss::gamlss(
+    t.gam.ns03 <- quiet(
+      gamlss(
         rain.week.nozeros ~ 1,
         family = GA,
         mu.link = "log",
@@ -419,8 +420,8 @@ Fit.Nonlinears <- function(rain.week.nozeros, time.nonzero) {
         sigma.link = "log"
       )
     ),
-    t.gam.ns31 <- spsUtil::quiet(
-      gamlss::gamlss(
+    t.gam.ns31 <- quiet(
+      gamlss(
         rain.week.nozeros ~ time.nonzero +
           I(time.nonzero ^ 2) +
           I(time.nonzero ^ 3),
@@ -430,8 +431,8 @@ Fit.Nonlinears <- function(rain.week.nozeros, time.nonzero) {
         sigma.link = "log"
       )
     ),
-    t.gam.ns13 <- spsUtil::quiet(
-      gamlss::gamlss(
+    t.gam.ns13 <- quiet(
+      gamlss(
         rain.week.nozeros ~ time.nonzero,
         sigma.formula = ~ time.nonzero +
           I(time.nonzero ^ 2) +
@@ -441,8 +442,8 @@ Fit.Nonlinears <- function(rain.week.nozeros, time.nonzero) {
         sigma.link = "log"
       )
     ),
-    t.gam.ns32 <- spsUtil::quiet(
-      gamlss::gamlss(
+    t.gam.ns32 <- quiet(
+      gamlss(
         rain.week.nozeros ~ time.nonzero +
           I(time.nonzero ^ 2) +
           I(time.nonzero ^ 3),
@@ -453,8 +454,8 @@ Fit.Nonlinears <- function(rain.week.nozeros, time.nonzero) {
         sigma.link = "log"
       )
     ),
-    t.gam.ns23 <- spsUtil::quiet(
-      gamlss::gamlss(
+    t.gam.ns23 <- quiet(
+      gamlss(
         rain.week.nozeros ~ time.nonzero +
           I(time.nonzero ^ 2),
         sigma.formula = ~ time.nonzero +
@@ -465,8 +466,8 @@ Fit.Nonlinears <- function(rain.week.nozeros, time.nonzero) {
         sigma.link = "log"
       )
     ),
-    t.gam.ns33 <- spsUtil::quiet(
-      gamlss::gamlss(
+    t.gam.ns33 <- quiet(
+      gamlss(
         rain.week.nozeros ~ time.nonzero +
           I(time.nonzero ^ 2) +
           I(time.nonzero ^ 3),
@@ -480,7 +481,7 @@ Fit.Nonlinears <- function(rain.week.nozeros, time.nonzero) {
     )
   )
 
-  best <- which.min(lapply(t.gams, MuMIn::AICc, k = 4.4))
+  best <- which.min(lapply(t.gams, AICc, k = 4.4))
 
   selected.model <- switch(
     best,
