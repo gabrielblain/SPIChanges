@@ -78,6 +78,18 @@
     },
     {
       "@type": "SoftwareApplication",
+      "identifier": "roxyglobals",
+      "name": "roxyglobals",
+      "provider": {
+        "@id": "https://cran.r-project.org",
+        "@type": "Organization",
+        "name": "Comprehensive R Archive Network (CRAN)",
+        "url": "https://cran.r-project.org"
+      },
+      "sameAs": "https://CRAN.R-project.org/package=roxyglobals"
+    },
+    {
+      "@type": "SoftwareApplication",
       "identifier": "testthat",
       "name": "testthat",
       "version": ">= 3.0.0",
@@ -188,7 +200,7 @@
     },
     "SystemRequirements": null
   },
-  "fileSize": "174.923KB",
+  "fileSize": "173.383KB",
   "releaseNotes": "https://github.com/gabrielblain/SPIChanges/blob/master/NEWS.md",
   "readme": "https://github.com/gabrielblain/SPIChanges/blob/master/README.md",
   "contIntegration": "https://github.com/gabrielblain/SPIChanges/actions/workflows/R-CMD-check.yaml"

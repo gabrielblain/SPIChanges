@@ -49,6 +49,7 @@
 #' @importFrom spsUtil quiet
 #' @importFrom MuMIn AICc
 #' @importFrom rlang arg_match
+#' @autoglobal
 #' @export
 
 SPIChanges <- function(rain.at.TS, only.linear = "Yes"){
@@ -182,7 +183,7 @@ SPIChanges <- function(rain.at.TS, only.linear = "Yes"){
       ),
       calc.stat.rain,
       t.gam
-    ), .GlobalEnv)
+    ), envir = environment())
 
     if (model.selection[a,1]==1){
       quasiprob.ns <- as.matrix(data.week[initial.row:last.row, 6])
