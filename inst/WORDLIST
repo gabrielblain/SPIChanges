@@ -32,7 +32,6 @@ da
 definied
 dist’
 doi
-dplyr
 et
 frac
 gamlss
@@ -46,6 +45,7 @@ nd
 nonstationary
 quasiWeek
 quasiWeeks
+rlang
 spsUtil
 th
 µ
