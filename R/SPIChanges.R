@@ -59,29 +59,31 @@ SPIChanges <- function(rain.at.TS, only.linear = "Yes"){
     warning("Less than 30 years of rainfall records. Longer periods are highly recommended.")
   }
 
-  if (length(rain.at.TS[rain.at.TS[,2] < 1]) != 0 ||
-      length(rain.at.TS[rain.at.TS[,2] > 12]) != 0 ||
-      length(rain.at.TS[rain.at.TS[,2] == 1]) < 32 ||
-      length(rain.at.TS[rain.at.TS[,2] == 2]) < 32 ||
-      length(rain.at.TS[rain.at.TS[,2] == 3]) < 32 ||
-      length(rain.at.TS[rain.at.TS[,2] == 4]) < 32 ||
-      length(rain.at.TS[rain.at.TS[,2] == 5]) < 32 ||
-      length(rain.at.TS[rain.at.TS[,2] == 6]) < 32 ||
-      length(rain.at.TS[rain.at.TS[,2] == 7]) < 32 ||
-      length(rain.at.TS[rain.at.TS[,2] == 8]) < 32 ||
-      length(rain.at.TS[rain.at.TS[,2] == 9]) < 32 ||
-      length(rain.at.TS[rain.at.TS[,2] == 10]) < 32 ||
-      length(rain.at.TS[rain.at.TS[,2] == 11]) < 32 ||
-      length(rain.at.TS[rain.at.TS[,2] == 12]) < 32) {
-    stop("Column Month in rain.at.TS is probably malformed.")}
+  if (length(rain.at.TS[rain.at.TS[, 2] < 1]) != 0 ||
+      length(rain.at.TS[rain.at.TS[, 2] > 12]) != 0 ||
+      length(rain.at.TS[rain.at.TS[, 2] == 1]) < 32 ||
+      length(rain.at.TS[rain.at.TS[, 2] == 2]) < 32 ||
+      length(rain.at.TS[rain.at.TS[, 2] == 3]) < 32 ||
+      length(rain.at.TS[rain.at.TS[, 2] == 4]) < 32 ||
+      length(rain.at.TS[rain.at.TS[, 2] == 5]) < 32 ||
+      length(rain.at.TS[rain.at.TS[, 2] == 6]) < 32 ||
+      length(rain.at.TS[rain.at.TS[, 2] == 7]) < 32 ||
+      length(rain.at.TS[rain.at.TS[, 2] == 8]) < 32 ||
+      length(rain.at.TS[rain.at.TS[, 2] == 9]) < 32 ||
+      length(rain.at.TS[rain.at.TS[, 2] == 10]) < 32 ||
+      length(rain.at.TS[rain.at.TS[, 2] == 11]) < 32 ||
+      length(rain.at.TS[rain.at.TS[, 2] == 12]) < 32) {
+    stop("Column Month in rain.at.TS is probably malformed.")
+  }
 
-  if (length(rain.at.TS[rain.at.TS[,3] < 1]) != 0 ||
-      length(rain.at.TS[rain.at.TS[,3] > 4]) != 0 ||
-      length(rain.at.TS[rain.at.TS[,3] == 1]) < 96 ||
-      length(rain.at.TS[rain.at.TS[,3] == 2]) < 96 ||
-      length(rain.at.TS[rain.at.TS[,3] == 3]) < 96 ||
-      length(rain.at.TS[rain.at.TS[,3] == 4]) < 96) {
-    stop("Column quasiWeek in rain.at.TS is probably malformed.")}
+  if (length(rain.at.TS[rain.at.TS[, 3] < 1]) != 0 ||
+      length(rain.at.TS[rain.at.TS[, 3] > 4]) != 0 ||
+      length(rain.at.TS[rain.at.TS[, 3] == 1]) < 96 ||
+      length(rain.at.TS[rain.at.TS[, 3] == 2]) < 96 ||
+      length(rain.at.TS[rain.at.TS[, 3] == 3]) < 96 ||
+      length(rain.at.TS[rain.at.TS[, 3] == 4]) < 96) {
+    stop("Column quasiWeek in rain.at.TS is probably malformed.")
+  }
 
   arg_match(only.linear,
                    c("yes", "no", "Yes", "No", "YES", "NO", "yEs", "nO", "yeS"))

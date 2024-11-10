@@ -47,8 +47,8 @@ TSaggreg <- function(daily.rain,start.date,TS=4){
   years <- year(all.period)
   months <- month(all.period)
   days <- day(all.period)
-  rain <- matrix(NA,n,4)
-  rain[,1:4] <- c(years,months,days,daily.rain)
+  rain <- matrix(NA, n, 4)
+  rain[, 1:4] <- c(years, months, days, daily.rain)
   a <- 1
   b <- 2
   c <- 3
@@ -79,10 +79,10 @@ TSaggreg <- function(daily.rain,start.date,TS=4){
                                    year &
                                    rain[,2] == month &
                                    rain[,3] > 21),4])
-    data.week[a,1:4] <- c(year, month, 1,data.week1)
-    data.week[b,1:4] <- c(year, month, 2,data.week2)
-    data.week[c,1:4] <- c(year, month, 3,data.week3)
-    data.week[d,1:4] <- c(year, month, 4,data.week4)
+    data.week[a, 1:4] <- c(year, month, 1, data.week1)
+    data.week[b, 1:4] <- c(year, month, 2, data.week2)
+    data.week[c, 1:4] <- c(year, month, 3, data.week3)
+    data.week[d, 1:4] <- c(year, month, 4, data.week4)
     month <- month + 1
     if (year == final.year & month > final.month) {
       break
