@@ -172,7 +172,7 @@ SPIChanges <- function(rain.at.TS, only.linear = "Yes"){
       ),
       calc.stat.rain,
       t.gam
-    ), .GlobalEnv)
+    ), environment())
 
     if (model.selection[a,1]==1){
       quasiprob.ns <- as.matrix(data.week[initial.row:last.row, 6])
