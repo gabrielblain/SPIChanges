@@ -22,6 +22,16 @@ Default is \code{Yes}.}
 \value{
 A \code{list} object with:
 \describe{
+\item{data.week}{The Rainfall amounts, SPI, cumulative probability of the SPI values under the stationary
+approach, cumulative probability of the SPI values under the non-stationary approach,
+and the changes in the frequency of below zero SPI values caused by the changes in rainfall patterns.}
+\item{model.selection}{The generalized additive model that best fits the rainfall series}
+\item{Changes.Freq.Drought}{changes in the frequency of zero precipitation, moderate to extreme,
+severe to extreme and extreme drought events,as categorized by the SPI classification system,
+caused by the changes in rainfall patterns.
+Changes in the precipitation amounts associated describing normal conditions is also shown.}
+\item{Statistics}{Year to year changes in the expected frequency of moderate to extreme, severe to extreme
+and extreme drought events.}
 \item{data.week}{The Rainfall amounts, \acronym{SPI}, cumulative
 probability of the \acronym{SPI} values under the stationary approach,
 cumulative probability of the \acronym{SPI} values under the non-stationary
