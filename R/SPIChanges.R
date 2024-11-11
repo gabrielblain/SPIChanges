@@ -299,7 +299,7 @@ SPIChanges <- function(rain.at.TS, only.linear = "Yes"){
 
 calc.probzero <- function(rain.week,time) {
   zero_rain <- ifelse(rain.week == 0, 1, 0)
-  modelo <- quiet(gamlss(zero_rain~poly(time,1), family = BI))
+  modelo <- quiet(gamlss(zero_rain~time, family = BI))
   prob_zero_rain <- fitted(modelo, "mu")
   return(prob_zero_rain)
 }
