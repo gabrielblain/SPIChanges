@@ -24,6 +24,6 @@ A matrix with 4 columns and 2109 rows:
 rainTS4
 }
 \description{
-Rainfall amounts aggregated using \code{TSaggreg}. Campinas state of Sao Paulo, Brazil.
+Rainfall amounts aggregated using \code{TSaggreg()}. Campinas state of Sao Paulo, Brazil.
 }
 \keyword{datasets}

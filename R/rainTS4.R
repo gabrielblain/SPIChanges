@@ -1,6 +1,6 @@
 #'  Rainfall Aggregated at TS equal to four
 #'
-#' Rainfall amounts aggregated using `TSaggreg`. Campinas state of Sao Paulo, Brazil.
+#' Rainfall amounts aggregated using `TSaggreg()`. Campinas state of Sao Paulo, Brazil.
 #'
 #' @format ## `rainTS4`
 #' A matrix with 4 columns and 2109 rows:
