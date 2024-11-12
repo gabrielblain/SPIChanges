@@ -3,7 +3,7 @@
 \docType{data}
 \name{rainTS4}
 \alias{rainTS4}
-\title{Rainfall Aggregated at TS equal to four}
+\title{Rainfall Aggregated at the 4-quasi week time scale}
 \format{
 \subsection{\code{rainTS4}}{
 

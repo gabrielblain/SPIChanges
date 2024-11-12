@@ -1,4 +1,4 @@
-#'  Rainfall Aggregated at TS equal to four
+#'  Rainfall Aggregated at the 4-quasi week time scale
 #'
 #' Rainfall amounts aggregated using `TSaggreg()`. Campinas state of Sao Paulo, Brazil.
 #'
