@@ -24,8 +24,8 @@
 
 TSaggreg <- function(daily.rain, start.date, TS = 4L) {
 
-  daily.rain = as.matrix(daily.rain)
-  if (!is.numeric(daily.rain) || any(is.na(daily.rain)) ||
+  daily.rain <- as.matrix(daily.rain)
+  if (!is.numeric(daily.rain) || anyNA(daily.rain) ||
       length(daily.rain[daily.rain < 0]) != 0 ||
       ncol(daily.rain) != 1) {
     stop("Physically impossible or missing rain values.")
