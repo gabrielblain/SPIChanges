@@ -17,11 +17,25 @@ knitr::opts_chunk$set(
 
 # Introduction
 
-The standardized precipitation index (SPI) (@Mckee1993) is a probability-based drought indicator that categorizes dry and wet events as a function of their probability of occurrence or expected frequencies. This widely used drought index was initially developed as a stationary method in which the parameters of the parametric distribution used to estimate the cumulative probability of its unique input variable (rainfall), do not vary over time (@Blain2022). However, there have been observed changes in drought frequency and intensity worldwide (@Strzepek2010, @Dai2013, @Spinoni2019, @Stagge2022, and @Blain2022), which violate the assumption of stationarity (@Coles2001, @Zhang2004, @Cheng2014).
+The standardized precipitation index (SPI) (@Mckee1993) is a probability-based drought indicator that categorizes dry and wet events as a function of their probability of occurrence or expected frequencies.
+This widely used drought index was initially developed as a stationary method in which the parameters of the parametric distribution used to estimate the cumulative probability of its unique input variable (rainfall), do not vary over time (@Blain2022).
+However, there have been observed changes in drought frequency and intensity worldwide (@Strzepek2010, @Dai2013, @Spinoni2019, @Stagge2022, and @Blain2022), which violate the assumption of stationarity (@Coles2001, @Zhang2004, @Cheng2014).
 
-In the context of the current climate changes, studies such as (@Russo2013, @Li2015, and @Rashid2019) proposed the nonstationary standardized precipitation index (NSPI), which incorporates several indices (e.g. time) as external covariates. Therefore, the NSPI was designed to capture nonstationary characteristics of rainfall and, thereby, to capture drought signals under transient rainfall distribution patterns (@Blain2022). However, the use of the NSPI is not a straightforward task (@Blain2022). Because time-varying parametric distributions account for temporal changes in rainfall distributions, they remove the effect of rainfall trends on the NSPI estimates (@Shiau2020). For instance, by applying the NSPI to rainfall series presenting significant increasing trends, (@Shiau2020) noted that the NSPI indicated an increase in the frequency and severity of drought events. Similar results were observed by (@Park2018) that found that, in the presence of decreasing rainfall trends, the use of time-varying distribution leads to an increase in the cumulative probability of a particular rainfall event over time, also increasing the corresponding NSPI estimate. Although this contradictory behavior (@Shiau2020) may be algebraically explained by the NSPI calculation algorithm (@Blain2022), it potentially prevents widespread acceptance of nonstationary distributions for calculating standardized drought indices such as the SPI. This statement particularly holds for the operational use of these indices.
+In the context of the current climate changes, studies such as (@Russo2013, @Li2015, and @Rashid2019) proposed the nonstationary standardized precipitation index (NSPI), which incorporates several indices (e.g. time) as external covariates.
+Therefore, the NSPI was designed to capture nonstationary characteristics of rainfall and, thereby, to capture drought signals under transient rainfall distribution patterns (@Blain2022).
+However, the use of the NSPI is not a straightforward task (@Blain2022).
+Because time-varying parametric distributions account for temporal changes in rainfall distributions, they remove the effect of rainfall trends on the NSPI estimates (@Shiau2020).
+For instance, by applying the NSPI to rainfall series presenting significant increasing trends, (@Shiau2020) noted that the NSPI indicated an increase in the frequency and severity of drought events.
+Similar results were observed by (@Park2018) that found that, in the presence of decreasing rainfall trends, the use of time-varying distribution leads to an increase in the cumulative probability of a particular rainfall event over time, also increasing the corresponding NSPI estimate.
+Although this contradictory behavior (@Shiau2020) may be algebraically explained by the NSPI calculation algorithm (@Blain2022), it potentially prevents widespread acceptance of nonstationary distributions for calculating standardized drought indices such as the SPI.
+This statement particularly holds for the operational use of these indices.
 
-In spite of the above-mentioned limitation, the nonstationary approach adopted by the NSPI algorithm is capable of modelling how the probabilities of rainfall events have changed over a time series. In addition, the use of nonstationary distributions enables isolate the effect of trends on the central tendency and on the dispersion of the rainfall frequency distributions. In this context, the {SPIChanges} package demonstrates that the challenge of interpreting SPI estimates under changing climatic conditions can be overcome by using information generated by the NSPI calculation algorithm. This package uses nonstationary distributions to detect trends in rainfall patterns and quantify their effect on the occurrence of any SPI estimate. In other words, the {SPIChanges} package leverages the nonstationary approach of the NSPI algorithm to detect trends in rainfall series and enhance the understanding of how changes in rainfall patterns affect the expected frequency of drought occurrence. See Theoretical Background for further information on the {SPIChanges} package.
+In spite of the above-mentioned limitation, the nonstationary approach adopted by the NSPI algorithm is capable of modelling how the probabilities of rainfall events have changed over a time series.
+In addition, the use of nonstationary distributions enables isolate the effect of trends on the central tendency and on the dispersion of the rainfall frequency distributions.
+In this context, the {SPIChanges} package demonstrates that the challenge of interpreting SPI estimates under changing climatic conditions can be overcome by using information generated by the NSPI calculation algorithm.
+This package uses nonstationary distributions to detect trends in rainfall patterns and quantify their effect on the occurrence of any SPI estimate.
+In other words, the {SPIChanges} package leverages the nonstationary approach of the NSPI algorithm to detect trends in rainfall series and enhance the understanding of how changes in rainfall patterns affect the expected frequency of drought occurrence.
+See Theoretical Background for further information on the {SPIChanges} package.
 
 # Getting Started
 
@@ -33,14 +47,25 @@ library(SPIChanges)
 
 ## Data
 
-As described in the introduction, the SPI requires only rainfall data as its input variable. The {SPIChanges} package includes daily rainfall data (`CampinasRain`) to provide use case for its functions. The daily rainfall amounts were measured in millimetres, and recorded in Campinas state of Sao Paulo, Brazil (1980-2023). This data series were obtained from the CPC Global Unified Gauge-Based Analysis of Daily Precipitation, provided by the NOAA/OAR/ESRL PSL, Boulder, CO <https://psl.noaa.gov/>. The data is included in the package as a dataframe with 2 columns and 16071 rows, where the first and second columns are the Date and rainfall amounts, respectively.
+As described in the introduction, the SPI requires only rainfall data as its input variable.
+The {SPIChanges} package includes daily rainfall data (`CampinasRain`) to provide use case for its functions.
+The daily rainfall amounts were measured in millimetres, and recorded in Campinas state of Sao Paulo, Brazil (1980-2023).
+This data series were obtained from the CPC Global Unified Gauge-Based Analysis of Daily Precipitation, provided by the NOAA/OAR/ESRL PSL, Boulder, CO <https://psl.noaa.gov/>.
+The data is included in the package as a dataframe with 2 columns and 16071 rows, where the first and second columns are the Date and rainfall amounts, respectively.
 
 ## Function `TSaggreg()`
 
 Aggregates or accumulates daily rainfall totals at quasiWeek time scales.
 
-As a multi-scalar index, the SPI accumulates rainfall totals (often recorded at the daily scale) at any time scale selected by the users. The {SPIChanges} package employs a basic time scale (quasiWeek) that splits each month into four sub-periods. Therefore, a quasiWeek time scale (TS) equal to 4 corresponds to a moving window with a 1-month length. TS equal to 48 corresponds to a moving window with a 1-year length. TS equals to 1 corresponds 1-quasiWeek time scale.\
-At this point, it is worth emphasizing that the use of calendar weeks as a basic time scales may pose challenges since the SPI is a relative metric that require homogeneous periods (@Vicente-Serrano2022). The first day of each year can fall on different weekdays, causing inconsistency throughout the year. Leap years may also complicate this comparison in routine drought monitoring (@Vicente-Serrano2022). Additionally, the 4-quasiWeek time scale aligns with the widely used 1-month time scale.
+As a multi-scalar index, the SPI accumulates rainfall totals (often recorded at the daily scale) at any time scale selected by the users.
+The {SPIChanges} package employs a basic time scale (quasiWeek) that splits each month into four sub-periods.
+Therefore, a quasiWeek time scale (TS) equal to 4 corresponds to a moving window with a 1-month length.
+TS equal to 48 corresponds to a moving window with a 1-year length.
+TS equals to 1 corresponds 1-quasiWeek time scale.\
+At this point, it is worth emphasizing that the use of calendar weeks as a basic time scales may pose challenges since the SPI is a relative metric that require homogeneous periods (@Vicente-Serrano2022).
+The first day of each year can fall on different weekdays, causing inconsistency throughout the year.
+Leap years may also complicate this comparison in routine drought monitoring (@Vicente-Serrano2022).
+Additionally, the 4-quasiWeek time scale aligns with the widely used 1-month time scale.
 
 \## Usage
 
@@ -86,7 +111,9 @@ The `SPIChanges()` is the central function of the package is based on the follow
 
 4.  The package compares the probabilities estimated in steps 1 and 3 to indicate whether the frequency of drought or wet events, quantified by the SPI, has increased or decreased over time.
 
-The gamma distributions are fitted to rainfall data using Generalized Additive Models (GAMLSS) with time as a covariate. This fitting process is based on the maximum likelihood method (@McCullagh2018) and considers the following increasingly complex functions (candidate models). Further information on GAMLSS can be found in (@Rigby2005).
+The gamma distributions are fitted to rainfall data using Generalized Additive Models (GAMLSS) with time as a covariate.
+This fitting process is based on the maximum likelihood method (@McCullagh2018) and considers the following increasingly complex functions (candidate models).
+Further information on GAMLSS can be found in (@Rigby2005).
 
 Model 1 (stationary): The mean (µ) and dispersion (δ) of the distribution are constant over time.
 
@@ -120,7 +147,8 @@ Model 15: µ is allowed to vary over time non-linearly with a quadratic polynomi
 
 Model 16: µ is allowed to vary over time non-linearly with a cubic polynomial function; δ is allowed to vary over time non-linearly with a cubic polynomial function.
 
-The gamma distribution has two parameters: the shape and scale. Their relationships with the mean (mu) and dispersion (sigma) are given by equations 1 and 2.
+The gamma distribution has two parameters: the shape and scale.
+Their relationships with the mean (mu) and dispersion (sigma) are given by equations 1 and 2.
 
 $$
 mu = shape*scale      \tag{1}
@@ -156,7 +184,9 @@ Statistics: Year to year changes in the expected frequency of moderate, severe a
 
 ## Example 2
 
-Using only linear nonstationary parametric models to assess the probability of rainfall amounts. The models are based on the two-parameter gamma distribution with parameters estimated by the maximum likelihood method. The packages `gamlss` and `gamlss.dist` are used for such estimations.
+Using only linear nonstationary parametric models to assess the probability of rainfall amounts.
+The models are based on the two-parameter gamma distribution with parameters estimated by the maximum likelihood method.
+The packages `gamlss` and `gamlss.dist` are used for such estimations.
 
 ```{r example 2}
 library(SPIChanges)
@@ -171,7 +201,9 @@ head(Changes.in.the.SPI$Changes.Freq.Drought)
 
 ## Example 3
 
-Using linear and non-linear nonstationary parametric models to assess the probability of rainfall amounts. The models are based on the two-parameter gamma distribution with parameters estimated by the maximum likelihood method. The packages `gamlss` and `gamlss.dist` are used for such estimations.
+Using linear and non-linear nonstationary parametric models to assess the probability of rainfall amounts.
+The models are based on the two-parameter gamma distribution with parameters estimated by the maximum likelihood method.
+The packages `gamlss` and `gamlss.dist` are used for such estimations.
 
 ```{r example 3}
 library(SPIChanges)
