@@ -2,7 +2,7 @@
 title: "Introduction to SPIChanges"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{vignette}
+  %\VignetteIndexEntry{SPIChanges}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
    bibliography: bibliography.bib
@@ -46,8 +46,9 @@ At this point, it is worth emphasizing that the use of calendar weeks as a basic
 
 ```{r, eval=FALSE}
 TSaggreg(daily.rain,
-       start.date,
-       TS=4)
+  start.date,
+  TS = 4
+)
 ```
 
 ## Arguments
@@ -66,9 +67,9 @@ Aggregating daily rainfall values at 4-quasiWeek time scale, which corresponds t
 
 ```{r example 1}
 library(SPIChanges)
-daily.rain <- CampinasRain[,2]
-RainTS4 <- TSaggreg(daily.rain=daily.rain,start.date="1980-01-01",TS=4)
-plot(RainTS4[,1],RainTS4[,4])
+daily.rain <- CampinasRain[, 2]
+RainTS4 <- TSaggreg(daily.rain = daily.rain, start.date = "1980-01-01", TS = 4)
+plot(RainTS4[, 1], RainTS4[, 4])
 ```
 
 ## Function `SPIChanges()`
@@ -130,8 +131,10 @@ $$
 ## Usage
 
 ```{r, eval=FALSE}
-SPIChanges(rain.at.TS,
-         only.linear)
+SPIChanges(
+  rain.at.TS,
+  only.linear
+)
 ```
 
 ## Arguments
@@ -157,9 +160,9 @@ Using only linear nonstationary parametric models to assess the probability of r
 
 ```{r example 2}
 library(SPIChanges)
-daily.rain <- CampinasRain[,2]
-rainTS4 <- TSaggreg(daily.rain=daily.rain,start.date="1980-01-01",TS=4)
-Changes.in.the.SPI <- SPIChanges(rain.at.TS=rainTS4, only.linear = "Yes")
+daily.rain <- CampinasRain[, 2]
+rainTS4 <- TSaggreg(daily.rain = daily.rain, start.date = "1980-01-01", TS = 4)
+Changes.in.the.SPI <- SPIChanges(rain.at.TS = rainTS4, only.linear = "Yes")
 head(Changes.in.the.SPI$data.week)
 head(Changes.in.the.SPI$Statistics)
 head(Changes.in.the.SPI$model.selection)
@@ -172,9 +175,9 @@ Using linear and non-linear nonstationary parametric models to assess the probab
 
 ```{r example 3}
 library(SPIChanges)
-daily.rain <- CampinasRain[,2]
-rainTS4 <- TSaggreg(daily.rain=daily.rain,start.date="1980-01-01",TS=4)
-Changes.in.the.SPI <- SPIChanges(rain.at.TS=rainTS4, only.linear = "No")
+daily.rain <- CampinasRain[, 2]
+rainTS4 <- TSaggreg(daily.rain = daily.rain, start.date = "1980-01-01", TS = 4)
+Changes.in.the.SPI <- SPIChanges(rain.at.TS = rainTS4, only.linear = "No")
 head(Changes.in.the.SPI$data.week)
 head(Changes.in.the.SPI$Statistics)
 head(Changes.in.the.SPI$model.selection)
