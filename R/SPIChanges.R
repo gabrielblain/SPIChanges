@@ -40,8 +40,7 @@
 #'  }
 #' @examples
 #'
-#' daily.rain <- CampinasRain[,2]
-#' rainTS4 <- TSaggreg(daily.rain=daily.rain,start.date="1980-01-01",TS=4)
+#' rainTS4 <- rainTS4
 #' Changes.in.the.SPI <- SPIChanges(rain.at.TS=rainTS4, only.linear = "yes")
 #' @importFrom gamlss gamlss GAIC
 #' @importFrom gamlss.dist GA pGA qGA BI
@@ -299,7 +298,7 @@ SPIChanges <- function(rain.at.TS, only.linear = "Yes"){
 
 calc.probzero <- function(rain.week,time) {
   zero_rain <- ifelse(rain.week == 0, 1, 0)
-  modelo <- quiet(gamlss(zero_rain~poly(time,1), family = BI))
+  modelo <- quiet(gamlss(zero_rain~time, family = BI))
   prob_zero_rain <- fitted(modelo, "mu")
   return(prob_zero_rain)
 }
