@@ -1,5 +1,5 @@
 ---
-title: "Introduction to SPIChanges"
+title: "SPIChanges"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{SPIChanges}

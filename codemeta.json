@@ -200,7 +200,7 @@
     },
     "SystemRequirements": null
   },
-  "fileSize": "191.576KB",
+  "fileSize": "191.56KB",
   "releaseNotes": "https://github.com/gabrielblain/SPIChanges/blob/master/NEWS.md",
   "readme": "https://github.com/gabrielblain/SPIChanges/blob/master/README.md",
   "contIntegration": "https://github.com/gabrielblain/SPIChanges/actions/workflows/R-CMD-check.yaml"
