@@ -10,7 +10,7 @@ test_that("TSaggreg() works as expected in example", {
   The last day of your series is 31 and TS is 4"
   )
   expect_s3_class(tes, c("TSaggreg", "matrix", "array"))
-  expect_identical(dim(tes), c(2109, 4))
+  expect_identical(dim(tes), c(2109L, 4L))
   expect_identical(colnames(tes), c(
       "Year",
       "Month",
@@ -39,7 +39,7 @@ test_that("TSaggreg() works as expected when rainfall records is short", {
   The last day of your series is 22 and TS is 4"
   )
   expect_s3_class(tes, c("TSaggreg", "matrix", "array"))
-  expect_identical(dim(tes), c(1437, 4))
+  expect_identical(dim(tes), c(1437L, 4L))
   expect_identical(colnames(tes), c("Year", "Month", "quasiWeek", "rain.at.TS4"))
   expect_equal(tes[1:4, "Year"], c(1980, 1980, 1980, 1980), tolerance = 0.00)
   expect_equal(tes[1:4, "Month"], c(1, 2, 2, 2), tolerance = 0.00)
