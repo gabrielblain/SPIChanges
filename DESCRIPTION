@@ -33,6 +33,7 @@ Imports:
     stats,
     zoo
 Suggests: 
+    curl,
     knitr,
     rmarkdown,
     roxyglobals,
