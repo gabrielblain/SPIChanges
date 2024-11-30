@@ -151,6 +151,8 @@ Oxford.Changes.linear$Changes.Freq.Drought
 ### Case Study 2 - Brazil Drought Events
 
 <!--- @gabrielblaine, can you please add the code for the Brazil case study model fits and figure 8 here?
+
+We'll need to fetch the data, assuming it's freely available? 
 --->
 
 ## References
