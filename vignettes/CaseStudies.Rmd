@@ -1,0 +1,156 @@
+---
+title: "SPIChanges Monte Carlo Experiment Case Studies"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{SPIChanges Monte Carlo Experiment Case Studies}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+  %\VignetteDepends{curl}
+  bibliography: bibliography.bib
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+## Introduction
+
+To validate this package, we applied the package's functions to two distinct datasets.
+The first (Dataset 1) is from a long-running weather station in the UK, located at 51.7608°N and 1.2639°W (Radcliffe Observatory site in Oxford, covering the period from January 1827 to January 2020) [Burt2019].
+These invaluable precipitation records are available at  <https://doi.org/10.6084/m9.figshare.11956239.v1> [@Burt2020] under a Creative Commons 4.0 License via FigShare.
+The percentage of missing data is less than 1%.
+Following the approach of @Wu2006, we replaced all gaps in the series with zero, as this is the most probable value for a single day.
+We used this dataset to provide detailed information on the package’s outputs.
+
+## Case Study 1 -- Oxford Rainfall
+
+### Fetch the Oxford Data
+
+To use them in this case study, we will use `curl::curl_download()` to download the data to our R sessions temporary directory, `tempdir()` and read the CSV file from there.
+This allows us to gracefully handle issues with connection timeouts and other instability when downloading this large dataset.
+
+```{r get-oxford-rain}
+# The {curl} library is used to handle possible download issues with timeouts
+library(curl)
+
+h <- new_handle()
+handle_setopt(h, timeout = 360L)
+
+rain_file <- file.path(tempdir(), "oxford_rain.csv")
+
+curl::curl_download(url = "https://figshare.com/ndownloader/files/21950895",
+              destfile = rain_file,
+              mode = "wb",
+              quiet = FALSE,
+              handle = h)
+Oxford <- read.csv(rain_file)
+summary(Oxford)
+```
+
+Replace all the gaps with "0" in the `Rainfall.mm.1.dpl.no.traces` column.
+This column is defined in the README as follows:
+
+  >Rainfall mm 1 dpl no traces - daily precipitation total, mm and tenths: any 'trace' entries set to zero. Includes melted snowfall, at least from 1853. For statistical operations it is advisable to use this column (i.e. excluding traces), as text entries can result in errors in statistical operations performed on the data. First record 1 Jan 1827
+
+```{r replace-gaps}
+# create a new vector of rain to work with
+OxfordRain <- Oxford$Rainfall.mm.1.dpl.no.traces
+
+# set to 0
+OxfordRain[is.na(OxfordRain)] <- 0
+
+# ensure no NAs
+summary(OxfordRain)
+```
+
+## Analyse Data Looking for Changes
+
+Apply the {SPIChanges} package's `SPIChanges()` to daily precipitation data (`OxfordRain`) derived from @Burt2020.
+
+
+```{r apply-spichanges-oxford}
+library(SPIChanges)
+
+rainTS4 <- TSaggreg(daily.rain = OxfordRain,
+                    start.date = "1827-01-01",
+                    TS = 4)
+```
+
+### Fit All Models, Linear and Nonlinear
+
+```
+Oxford.Changes <- SPIChanges(rain.at.TS = rainTS4, only.linear = "No")
+```
+
+### Check All Model Fits
+
+```{r model-selection}
+Oxford.Changes$model.selection
+```
+
+<!--- @GabrielBlaine, can you please add details here about how to interpret these outputs?
+What are you looking for as a user of the package to evaluate these values from the models in this section, here?
+--->
+
+```{r evaluate-model-fits, eval=FALSE}
+# note that this chunk is not run due to long outputs
+Oxford.Changes$data.week
+
+Oxford.Changes$Statistics
+
+Oxford.Changes$Changes.Freq.Drought
+```
+
+<!--- @GabrielBlaine, can you please add details here about how to interpret these outputs?
+What are you looking for as a user of the package to evaluate these values from the models in this section, here?
+
+Can we somehow shorten the outputs to highlight what's important for users to understand how to use the package?
+--->
+
+### Refit With Only Linear Models
+
+```{r only-linear}
+Oxford.Changes.linear <- SPIChanges(rain.at.TS = rainTS4, only.linear = "Yes")
+```
+
+### Check Linear Model Fits
+
+```{r check-linear-models}
+Oxford.Changes.linear$model.selection
+```
+
+```{r evaulate-linear-model-fits, eval=FALSE}
+# note that this chunk is not run due to long outputs
+Oxford.Changes.linear$data.week
+
+Oxford.Changes.linear$Statistics
+```
+
+<!--- @GabrielBlaine, can you please add details here about how to interpret these outputs?
+What are you looking for as a user of the package to evaluate these values from the models in this section, here?
+
+Can we somehow shorten the outputs to highlight what's important for users to understand how to use the package?
+--->
+
+### Results
+
+Changes in Drought Frequency
+
+```{r changes-in-drought}
+Oxford.Changes.linear$Changes.Freq.Drought
+```
+
+<!--- @GabrielBlaine, can you please add details here about how to interpret these outputs? --->
+
+<!--- @GabrielBlaine, can you please add the code for the figures, 5, 6, 7 and Table 6 from the paper here?
+--->
+
+### Case Study 2 - Brazil Drought Events
+
+<!--- @GabrielBlaine, can you please add the code for the Brazil case study model fits and figure 8 here?
+--->
+
+## References
