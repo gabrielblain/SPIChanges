@@ -81,7 +81,7 @@ rainTS4 <- TSaggreg(daily.rain = OxfordRain,
 
 ### Fit All Models, Linear and Nonlinear
 
-```
+```{r fit-all-models}
 Oxford.Changes <- SPIChanges(rain.at.TS = rainTS4, only.linear = "No")
 ```
 
