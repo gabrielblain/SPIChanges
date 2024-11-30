@@ -91,7 +91,7 @@ Oxford.Changes <- SPIChanges(rain.at.TS = rainTS4, only.linear = "No")
 Oxford.Changes$model.selection
 ```
 
-<!--- @GabrielBlaine, can you please add details here about how to interpret these outputs?
+<!--- @gabrielblaine, can you please add details here about how to interpret these outputs?
 What are you looking for as a user of the package to evaluate these values from the models in this section, here?
 --->
 
@@ -104,7 +104,7 @@ Oxford.Changes$Statistics
 Oxford.Changes$Changes.Freq.Drought
 ```
 
-<!--- @GabrielBlaine, can you please add details here about how to interpret these outputs?
+<!--- @gabrielblaine, can you please add details here about how to interpret these outputs?
 What are you looking for as a user of the package to evaluate these values from the models in this section, here?
 
 Can we somehow shorten the outputs to highlight what's important for users to understand how to use the package?
@@ -129,7 +129,7 @@ Oxford.Changes.linear$data.week
 Oxford.Changes.linear$Statistics
 ```
 
-<!--- @GabrielBlaine, can you please add details here about how to interpret these outputs?
+<!--- @gabrielblaine, can you please add details here about how to interpret these outputs?
 What are you looking for as a user of the package to evaluate these values from the models in this section, here?
 
 Can we somehow shorten the outputs to highlight what's important for users to understand how to use the package?
@@ -143,14 +143,14 @@ Changes in Drought Frequency
 Oxford.Changes.linear$Changes.Freq.Drought
 ```
 
-<!--- @GabrielBlaine, can you please add details here about how to interpret these outputs? --->
+<!--- @gabrielblaine, can you please add details here about how to interpret these outputs? --->
 
-<!--- @GabrielBlaine, can you please add the code for the figures, 5, 6, 7 and Table 6 from the paper here?
+<!--- @gabrielblaine, can you please add the code for the figures, 5, 6, 7 and Table 6 from the paper here?
 --->
 
 ### Case Study 2 - Brazil Drought Events
 
-<!--- @GabrielBlaine, can you please add the code for the Brazil case study model fits and figure 8 here?
+<!--- @gabrielblaine, can you please add the code for the Brazil case study model fits and figure 8 here?
 --->
 
 ## References
