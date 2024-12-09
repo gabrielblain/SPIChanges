@@ -6,8 +6,7 @@ rainTS4 <- TSaggreg(daily.rain=daily.rain,start.date="1980-01-01",TS=4),
 test_that("SPIChanges() works as expected in example", {
   expect_warning(
   Changes <- SPIChanges(rain.at.TS=rainTS4, only.linear = "yes"),
-  "rainfall series Month 9 Week 1 has more than 6.7% of zeros. In this situation
-             the SPI cannot assume values lower than -1.5")
+  "rainfall series Month 9 Week 1 has more than 6.7% of zeros. In this situation the SPI cannot assume values lower than -1.5")
   expect_type(Changes, "list")
   expect_length(Changes, 4)
   expect_named(Changes, c("data.week", "model.selection", "Changes.Freq.Drought","Statistics"))
@@ -38,8 +37,7 @@ test_that("SPIChanges() works as expected in example", {
 test_that("SPIChanges() works when only.linear = no", {
   expect_warning(
     Changes <- SPIChanges(rain.at.TS=rainTS4, only.linear = "No"),
-    "rainfall series Month 9 Week 1 has more than 6.7% of zeros. In this situation
-             the SPI cannot assume values lower than -1.5")
+    "rainfall series Month 9 Week 1 has more than 6.7% of zeros. In this situation the SPI cannot assume values lower than -1.5")
   expect_type(Changes, "list")
   expect_length(Changes, 4)
   expect_named(Changes, c("data.week", "model.selection", "Changes.Freq.Drought","Statistics"))
@@ -78,8 +76,7 @@ test_that("SPIChanges() works as expected in example", {
   expect_warning(
   Changes <- SPIChanges(rain.at.TS=rainTS4.warning, only.linear = "yes"),
   "Less than 30 years of rainfall records. Longer periods are highly recommended."),
-  "rainfall series Month 9 Week 1 has more than 6.7% of zeros. In this situation
-             the SPI cannot assume values lower than -1.5")
+  "rainfall series Month 9 Week 1 has more than 6.7% of zeros. In this situation the SPI cannot assume values lower than -1.5")
   expect_type(Changes, "list")
   expect_length(Changes, 4)
   expect_named(Changes, c("data.week", "model.selection", "Changes.Freq.Drought","Statistics"))

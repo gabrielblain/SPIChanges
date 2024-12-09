@@ -95,8 +95,9 @@ SPIChanges <- function(rain.at.TS, only.linear = "Yes"){
     stop("Column quasiWeek in rain.at.TS is probably malformed.")
   }
 
-  arg_match(only.linear,
-                   c("yes", "no", "Yes", "No", "YES", "NO", "yEs", "nO", "yeS"))
+
+  only.linear <- tolower(arg_match(only.linear,
+                   c("yes", "no", "Yes", "No", "YES", "NO", "yEs", "nO", "yeS")))
 
   years <- rain.at.TS[,1]
   months <- rain.at.TS[,2]
@@ -124,15 +125,32 @@ SPIChanges <- function(rain.at.TS, only.linear = "Yes"){
     time <- as.matrix(seq(1:n.week))
     probzero.st <- calc.probzero.st(rain.week)
     if (probzero.st[1] >= 0.50) {
-      warning("rainfall series Month ", paste(month), " Week ", paste(week),
-              " has more than 50% of zeros. In this situation
-             the SPI cannot assume values lower than 0")} else if (probzero.st[1] > 0.159) {
-               warning("rainfall series Month ", paste(month), " Week ", paste(week),
-                       " has more than 15.9% of zeros. In this situation
-             the SPI cannot assume values lower than -1")} else if (probzero.st[1] > 0.067) {
-               warning("rainfall series Month ", paste(month), " Week ", paste(week),
-              " has more than 6.7% of zeros. In this situation
-             the SPI cannot assume values lower than -1.5")}
+      warning(
+        "rainfall series Month ",
+        month,
+        " Week ",
+        week,
+        "has more than 50% of zeros. In this situation ",
+        "the SPI cannot assume values lower than 0"
+      )} else if (probzero.st[1] > 0.159) {
+        warning(
+          "rainfall series Month ",
+          month,
+          " Week ",
+          week,
+          " has more than 15.9% of zeros. In this situation ",
+          "the SPI cannot assume values lower than -1"
+        )
+      } else if (probzero.st[1] > 0.067) {
+        warning(
+          "rainfall series Month ",
+          month,
+          " Week ",
+          week,
+          " has more than 6.7% of zeros. In this situation ",
+          "the SPI cannot assume values lower than -1.5"
+        )
+      }
     id <- which(rain.week>0)
     time.nonzero <- as.vector(time[id])
     n.time.nonzero <- length(time.nonzero)
@@ -297,7 +315,7 @@ SPIChanges <- function(rain.at.TS, only.linear = "Yes"){
 #' @keywords Internal
 
 calc.probzero <- function(rain.week,time) {
-  zero_rain <- ifelse(rain.week == 0, 1, 0)
+  zero_rain <- as.integer(rain.week == 0)
   modelo <- quiet(gamlss(zero_rain~time, family = BI))
   prob_zero_rain <- fitted(modelo, "mu")
   return(prob_zero_rain)
@@ -314,7 +332,7 @@ calc.probzero <- function(rain.week,time) {
 #' @keywords Internal
 
 calc.probzero.st <- function(rain.week) {
-  zero_rain <- ifelse(rain.week == 0, 1, 0)
+  zero_rain <- as.integer(rain.week == 0)
   modelo <- quiet(gamlss(zero_rain~1, family = BI))
   prob_zero_rain <- fitted(modelo, "mu")
   return(prob_zero_rain)
