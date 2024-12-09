@@ -125,15 +125,32 @@ SPIChanges <- function(rain.at.TS, only.linear = "Yes"){
     time <- as.matrix(seq(1:n.week))
     probzero.st <- calc.probzero.st(rain.week)
     if (probzero.st[1] >= 0.50) {
-      warning("rainfall series Month ", paste(month), " Week ", paste(week),
-              " has more than 50% of zeros. In this situation
-             the SPI cannot assume values lower than 0")} else if (probzero.st[1] > 0.159) {
-               warning("rainfall series Month ", paste(month), " Week ", paste(week),
-                       " has more than 15.9% of zeros. In this situation
-             the SPI cannot assume values lower than -1")} else if (probzero.st[1] > 0.067) {
-               warning("rainfall series Month ", paste(month), " Week ", paste(week),
-              " has more than 6.7% of zeros. In this situation
-             the SPI cannot assume values lower than -1.5")}
+      warning(
+        "rainfall series Month ",
+        month,
+        " Week ",
+        week,
+        "has more than 50% of zeros. In this situation ",
+        "the SPI cannot assume values lower than 0"
+      )} else if (probzero.st[1] > 0.159) {
+        warning(
+          "rainfall series Month ",
+          month,
+          " Week ",
+          week,
+          " has more than 15.9% of zeros. In this situation ",
+          "the SPI cannot assume values lower than -1"
+        )
+      } else if (probzero.st[1] > 0.067) {
+        warning(
+          "rainfall series Month ",
+          month,
+          " Week ",
+          week,
+          " has more than 6.7% of zeros. In this situation ",
+          "the SPI cannot assume values lower than -1.5"
+        )
+      }
     id <- which(rain.week>0)
     time.nonzero <- as.vector(time[id])
     n.time.nonzero <- length(time.nonzero)
