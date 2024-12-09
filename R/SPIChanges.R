@@ -95,8 +95,9 @@ SPIChanges <- function(rain.at.TS, only.linear = "Yes"){
     stop("Column quasiWeek in rain.at.TS is probably malformed.")
   }
 
-  arg_match(only.linear,
-                   c("yes", "no", "Yes", "No", "YES", "NO", "yEs", "nO", "yeS"))
+
+  only.linear <- tolower(arg_match(only.linear,
+                   c("yes", "no", "Yes", "No", "YES", "NO", "yEs", "nO", "yeS")))
 
   years <- rain.at.TS[,1]
   months <- rain.at.TS[,2]
@@ -297,7 +298,7 @@ SPIChanges <- function(rain.at.TS, only.linear = "Yes"){
 #' @keywords Internal
 
 calc.probzero <- function(rain.week,time) {
-  zero_rain <- ifelse(rain.week == 0, 1, 0)
+  zero_rain <- as.integer(rain.week == 0)
   modelo <- quiet(gamlss(zero_rain~time, family = BI))
   prob_zero_rain <- fitted(modelo, "mu")
   return(prob_zero_rain)
@@ -314,7 +315,7 @@ calc.probzero <- function(rain.week,time) {
 #' @keywords Internal
 
 calc.probzero.st <- function(rain.week) {
-  zero_rain <- ifelse(rain.week == 0, 1, 0)
+  zero_rain <- as.integer(rain.week == 0)
   modelo <- quiet(gamlss(zero_rain~1, family = BI))
   prob_zero_rain <- fitted(modelo, "mu")
   return(prob_zero_rain)
