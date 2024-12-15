@@ -5,3 +5,7 @@
 ^\.github$
 ^cran-comments\.md$
 ^codemeta\.json$
+
+
+# flint files
+^flint$
