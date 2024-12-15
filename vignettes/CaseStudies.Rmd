@@ -46,7 +46,8 @@ curl::curl_download(url = "https://figshare.com/ndownloader/files/21950895",
               mode = "wb",
               quiet = FALSE,
               handle = h)
-Oxford <- read.csv(rain_file)
+Oxford.1815 <- read.csv(rain_file)
+Oxford <- Oxford.1815[which(Oxford.1815$YYY >= 1827),] #Rainfall records, including traces (NA), started in 1827
 summary(Oxford)
 ```
 
