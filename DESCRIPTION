@@ -37,6 +37,10 @@ Suggests:
     knitr,
     rmarkdown,
     roxyglobals,
+    ggplot2,
+    dplyr,
+    patchwork,
+    tidyr,
     testthat (>= 3.0.0)
 VignetteBuilder: 
     knitr
