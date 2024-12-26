@@ -41,6 +41,8 @@ Suggests:
     dplyr,
     patchwork,
     tidyr,
+    foreach,
+    doParallel,
     testthat (>= 3.0.0)
 VignetteBuilder: 
     knitr
