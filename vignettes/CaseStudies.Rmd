@@ -25,6 +25,9 @@ The percentage of missing data is less than 1%.
 Following the approach of @Wu2006, we replaced all gaps in the series with zero, as this is the most probable value for a single day.
 We used this dataset to provide detailed information on the package’s outputs.
 
+The second dataset (Dataset 2) comprises data from the CPC Global Unified Gauge-Based Analysis of Daily Precipitation (CPC data; NOAA/PSL) <https://psl.noaa.gov/data/gridded/data.cpc.globalprecip.html> for the entire country of Brazil.
+Brazil, the largest tropical country in the world, features a wide range of climates, from arid regions in the Northeast to equatorial climates, such as the Amazon Rainforest.
+
 ## Case Study 1 -- Oxford Rainfall
 
 ## Uploading required packages
@@ -702,7 +705,7 @@ Similar results are observed in the 3rd quasi-week period of September (Table 2)
 
 ## Case Study 2 - Brazil Drought Events
 
-- In this case study we apply the SPIChanges package for entire Brazil (1980-2024)
+-   In this case study we apply the SPIChanges package for entire Brazil (1980-2024)
 
 ###Downloading data from CPC Global Unified Gauge-Based Analysis of Daily Precipitation data provided by the NOAA PSL, Boulder, Colorado, USA, from their website at <https://psl.noaa.gov>
 
@@ -2036,9 +2039,9 @@ pdata1 <- rbind(pdata1980,pdata1981,pdata1982,pdata1983,pdata1984,pdata1985,
                 pdata2020,pdata2021,pdata2022,pdata2023,pdata2024)
 ```
 
-## Aggregating daily data into a specified time scale: 
+## Aggregating daily data into a specified time scale:
 
-- Using the SPIChanges::TSaggreg() to aggregate daily precipitation that at the 12-quasiWeek time scale, which corresponds to 3-month.
+-   For this analysis, we set the 'TS' argument in the TSaggreg() function to 12, which corresponds to a moving window of three months. Shorter time scales may result in precipitation frequency distributions where the percentage of zeros exceeds 80%, particularly in Brazil's semi-arid regions.
 
 ```{r aggregate-CPC-rain, eval=FALSE}
 pdata1[is.na(pdata1)] <- 0 #replacing NA by zero.
@@ -2053,5 +2056,70 @@ rainTS12.bank[,(i+3)] <- TS12[,4]
 }
 ```
 
+## Applying the SPIChanges::SPIChanges() for entire Brazil
+
+-   As previously descried, we applied the `SPIChanges` package to the entire country of Brazil. At the 12-quasi-week time scale, the 4th quasi-week of February, May, August, and November correspond to precipitation data accumulated over the Austral Summer, Autumn, Winter, and Spring seasons, respectively. Regarding changes in severe to extreme drought events (SPI ≤ -1.5), the results of the chunk below are consistent with previous studies indicating that Brazil, like other regions in South America, may become a drought hotspot due to its potential to respond drastically to excessive drying and warming.
+
+```{r SPIChanges for entire Brazil, eval=FALSE}
+# trying to speed up the things
+library(foreach)
+library(doParallel)
+numCores <- detectCores() - 1  # Use one less core than the total available
+cl <- makeCluster(numCores)
+registerDoParallel(cl)
+##############################
+rain <- matrix(NA, N, 4)
+rain[, 1:3] <- as.matrix(rainTS12.bank[, 1:3])
+final <- ncol(rainTS12.bank)
+Map <- matrix(NA, n, 18)
+model <- matrix(NA, n, 3)
+Map[, 1:2] <- as.matrix(lonlat)
+model[, 1:2] <- as.matrix(lonlat)
+changes <- matrix(NA,1,16)
+# Perform parallel processing
+results <- foreach(i = 4:final, .combine = rbind, .packages = 'SPIChanges') %dopar% {
+  rain[, 4] <- rainTS12.bank[, i]
+  Local.Changes <- SPIChanges(rain.at.TS = rain, only.linear = "no")
+  changes[1,1:3] <- Local.Changes$Changes.Freq.Drought[which(Local.Changes$Changes.Freq.Drought[, 1] == 2 &
+                                                               Local.Changes$Changes.Freq.Drought[, 2] == 4), 7:9]
+  changes[1,4] <- Local.Changes$model.selection[which(Local.Changes$model.selection[, 1] == 2 &
+                                                        Local.Changes$model.selection[, 2] == 4), 3]
+  changes[1,5:7] <- Local.Changes$Changes.Freq.Drought[which(Local.Changes$Changes.Freq.Drought[, 1] == 5 &
+                                                               Local.Changes$Changes.Freq.Drought[, 2] == 4), 7:9]
+  changes[1,8] <- Local.Changes$model.selection[which(Local.Changes$model.selection[, 1] == 5 &
+                                                        Local.Changes$model.selection[, 2] == 4), 3]
+  changes[1,9:11] <- Local.Changes$Changes.Freq.Drought[which(Local.Changes$Changes.Freq.Drought[, 1] == 8 &
+                                                                Local.Changes$Changes.Freq.Drought[, 2] == 4), 7:9]
+  changes[1,12] <- Local.Changes$model.selection[which(Local.Changes$model.selection[, 1] == 8 &
+                                                         Local.Changes$model.selection[, 2] == 4), 3]
+  changes[1,13:15] <- Local.Changes$Changes.Freq.Drought[which(Local.Changes$Changes.Freq.Drought[, 1] == 11 &
+                                                                 Local.Changes$Changes.Freq.Drought[, 2] == 4), 7:9]
+  changes[1,16] <- Local.Changes$model.selection[which(Local.Changes$model.selection[, 1] == 11 &
+                                                         Local.Changes$model.selection[, 2] == 4), 3]
+  return(changes)
+}
+# Combine results into the Map matrix
+a <- 1
+for (i in 1:nrow(results)) {
+  Map[a, 3:18] <- results[i, ]
+  a <- a + 1
+}
+
+# Assign column names and save the results
+colnames(Map) <- c("lon", "lat", "SummerModerate", "SummerSevere", "SummerExtreme","SummerModel",
+                                  "OutomnModerate", "OutomnSevere", "OutomnExtreme","OutomnModel",
+                                  "WinterModerate", "WinterSevere", "WinterExtreme","WinterModel",
+                                  "SpringModerate", "SpringSevere", "SpringExtreme","SpringModel")
+# Stop the cluster
+stopCluster(cl)
+head(Map)
+```
+
+-   The analysis of Figure 5 indicated that 46.6 (Summer), 42.8 (Autumn), 27.7 (Winter), and 45.5% (Spring) of Brazil experienced changes toward drier conditions between 1980 and 2024 as indicated by the red colours of Figure 5. This change toward more severe to extreme drought events in almost half of Brazil is in line with the widespread occurrence of unprecedented drought events in the country after 2000.
+
+### ToDo:
+
+-   Dataset 2 is about to be updated (include 2024): Correct/update percentages above.
+-   Here, Figure 5 is manuscript's Figure 8. Still don't known how to insert map here (how to add the shape files).
 
 ## References
