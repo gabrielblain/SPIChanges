@@ -43,6 +43,9 @@ Suggests:
     tidyr,
     foreach,
     doParallel,
+    archive,
+    RColorBrewer,
+    sf,
     testthat (>= 3.0.0)
 VignetteBuilder: 
     knitr
