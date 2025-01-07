@@ -119,7 +119,7 @@ The *\$model.selection* output field identifies the gamma-based models selected 
 In summary, the *\$model.selection* output highlights the prevalence of stationary models while also capturing specific periods with notable changes in mean or dispersion of the rainfall frequency distributions.
 Figure 1 depicts the selected models for each quasi-week period.
 
-```{r selected models  }
+```{r selected models, fig.width=8, fig.height=5}
 eixo.x.Month <- Oxford.Changes$model.selection[,1]
 eixo.y.quasiWeek <- Oxford.Changes$model.selection[,2]
 valores <- Oxford.Changes$model.selection[,3]
@@ -176,7 +176,7 @@ Specifically, *\$Statistics* illustrates the year-to-year changes in the magnitu
         -   **Late 1960s to 2019:** Decreased again.\
     -   Over the entire series (1827–2019), the δ parameter experienced an overall decline, particularly from the middle of the series (approximately 1923) to 2019.
 
-```{r year-to-year changes  }
+```{r year-to-year changes, fig.width=10, fig.height=5}
 eixo.x.years <-1827L: 2019L
 jan1 <- Oxford.Changes$Statistics[which(Oxford.Changes$Statistics$Month == 1 & Oxford.Changes$Statistics$quasiWeek == 1),4]
 jan2 <- Oxford.Changes$Statistics[which(Oxford.Changes$Statistics$Month == 1 & Oxford.Changes$Statistics$quasiWeek == 2),4]
@@ -401,7 +401,7 @@ The *\$Changes.Freq.Drought* output field evaluates how temporal changes in the 
 The *\$Changes.Freq.Drought* field provides valuable insights into the temporal dynamics of drought probabilities in Oxford.
 It highlights specific quasi-weekly periods with notable changes toward either rainier or drier conditions, emphasizing the importance of adopting nonstationary approaches for understanding change changes impacts over drought frequency.
 
-```{r  changes in drought frequency  }
+```{r  changes in drought frequency, fig.width=8, fig.height=5}
 eixo.x <- c("1st - Jan","2nd - Jan","3rd - Jan","4th - Jan",
             "2nd - Mar", "3rd - Mar", "4th - Jun",
             "1st - Jul","2nd - Jul","3rd - Jul","4th - Jul",
@@ -607,7 +607,7 @@ The interpretation of the output data fields **\$model.selection**, **\$Statisti
 However, since “Oxford.Changes.linear” was calculated with the argument `only.linear` of the `SPIChanges()` function set to `"Yes"`, only 4 models (a stationary and three linear gamma-based models) were considered to describe changes in the rainfall patterns in Oxford (Figure 4), UK.
 As with the output data fields of the "Oxford.Changes" data frame, the outputs of “Oxford.Changes.linear” also indicate that most of the quasi-weekly periods did not exhibit significant changes in the frequency of meteorological droughts, see below.
 
-```{r selected linear models  }
+```{r selected linear models, fig.width=8, fig.height=5}
 eixo.x.Month <- Oxford.Changes.linear$model.selection[,1]
 eixo.y.quasiWeek <- Oxford.Changes.linear$model.selection[,2]
 valores <- Oxford.Changes.linear$model.selection[,3]
@@ -2115,11 +2115,89 @@ stopCluster(cl)
 head(Map)
 ```
 
--   The analysis of Figure 5 indicated that 46.6 (Summer), 42.8 (Autumn), 27.7 (Winter), and 45.5% (Spring) of Brazil experienced changes toward drier conditions between 1980 and 2024 as indicated by the red colours of Figure 5. This change toward more severe to extreme drought events in almost half of Brazil is in line with the widespread occurrence of unprecedented drought events in the country after 2000.
+## Assessing changes in severe to moderate drought events 
 
-### ToDo:
+-   This next chunk uses the file Map (from the previous chunk) to plot the changes in the expected frequency of severe to moderate drought events (SPI ≤ −1.5), calculated at 12- quasi-week (3-month) time scale in Brazil. The analysis of this map indicated that 50.8 (Summer), 45.5 (Autumn), 35.6 (Winter), and 49.2% (Spring) of Brazil experienced changes toward drier conditions between 1980 and 2024 as indicated by the red colours of the map. This change toward more severe to extreme drought events in almost half of Brazil is in line with the widespread occurrence of unprecedented drought events in the country after 2000.
 
--   Dataset 2 is about to be updated (include 2024): Correct/update percentages above.
--   Here, Figure 5 is manuscript's Figure 8. Still don't known how to insert map here (how to add the shape files).
+```{r map, fig.width=8, fig.height=5}
+library(ggplot2)
+library(sf)
+library(RColorBrewer)
+library(tidyr)
+library(dplyr)
+library(archive)
+# Loading data
+url <- "https://raw.githubusercontent.com/gabrielblain/Grid_Brazil/refs/heads/main/Map.csv"
+Map <- read.csv(url,sep=",", header = TRUE)
+rar_url <- "https://github.com/gabrielblain/Grid_Brazil/raw/main/regioes_2010.rar" 
+temp_file <- tempfile(fileext = ".rar")
+temp_dir <- tempdir()
+download.file(rar_url, temp_file, mode = "wb")
+archive_extract(temp_file, dir = temp_dir)
+shp_path <- file.path(temp_dir, "regioes_2010.shp") # Adjust if files are extracted into a subdirectory
+limitere <- st_read(shp_path)
+#Tidding the data
+df <- Map %>%
+  select(lat, lon, SpringSevere, OutomnSevere, WinterSevere, SummerSevere) %>%
+  pivot_longer(cols = c(SpringSevere, OutomnSevere, WinterSevere, SummerSevere),
+               names_to = "Station", values_to = "Change")
+df_ok<- df %>%
+  mutate(
+    Station = recode(Station,
+                        "SpringSevere" = "Spring - Severe",
+                        "SummerSevere" = "Summer - Severe",
+                        "OutomnSevere"  =  "Autumm - Severe",
+                       "WinterSevere" =  "Winter - Severe"))
+# Turning into sf
+limitere_sf <- st_as_sf(limitere)
+dados.sf <- st_as_sf(df_ok, coords = c('lon', 'lat'), crs = 4326)
+# Fixing possible errors
+limitere_sf <- st_make_valid(limitere_sf)
+# Finding centroides
+limitere_centroids <- st_centroid(limitere_sf)
+# Adding siglas (annacron)
+limitere_centroids$sigla <- limitere$sigla
+#Finding coordenates
+coords <- st_coordinates(limitere_centroids)
+limitere_centroids$lon <- coords[, 1]
+limitere_centroids$lat <- coords[, 2]
+dados.sf$Station<- factor(dados.sf$Station, levels= c('Spring - Severe','Summer - Severe','Autumm - Severe','Winter - Severe'))
+cores_roxo_branco_vermelho <- colorRampPalette(c("purple", "white", "red"))(n = 100)
+cores5 <- colorRampPalette(c("purple", "white", "red"))(7)
+# The Map
+map <- ggplot() +
+  geom_sf(data = dados.sf, aes(color = Change), shape= 15,size = 3) +
+  geom_sf(data = limitere_sf, fill = NA, color = "black", size = 1) +
+  scale_colour_gradient2(low = "#6B238E", mid = "white", high = "red", 
+                         midpoint = 0, limits = c(-30, 80)) +
+  theme_light() +
+  labs(color = "Change (%)"
+       
+  ) +
+  facet_wrap(vars(Station)) +
+  theme(
+    title = element_text(size = 12, face = "bold", color = "black"),
+    text = element_text(size = 12, color = "black"),
+    axis.text.x = element_text(size = 9, color = "black"),
+    axis.text.y = element_text(size = 9, color = "black"),
+    legend.position = "right",  
+    legend.direction = "vertical", 
+    legend.key.height = unit(.6, "cm"),
+    legend.key.width = unit(0.5, "cm"),
+    legend.title = element_text(size = 11, face = "bold"),
+    legend.text = element_text(size = 11),
+    axis.title.x = element_blank(),  # Remove o rotulo do eixo x
+    axis.title.y = element_blank(),  # Remove o rotulo do eixo y
+    strip.text = element_text(size = 11, face = "bold", color = "black")
+  )
+map <- map + 
+  geom_text(data = limitere_centroids, aes(x = lon, y = lat, label = sigla), 
+            color = "black", size = 3, 
+            fontface = "bold", 
+            position = position_nudge(y = 0.01), show.legend = FALSE)
+
+print(map)
+```
+
 
 ## References
