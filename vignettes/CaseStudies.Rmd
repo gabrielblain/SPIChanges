@@ -1,8 +1,8 @@
 ---
-title: "SPIChanges Monte Carlo Experiment Case Studies"
+title: "SPIChanges package: Monte Carlo Experiments and Case Studies"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{SPIChanges Monte Carlo Experiment Case Studies}
+  %\VignetteIndexEntry{SPIChanges package: Monte Carlo Experiments and Case Studies}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
   %\VignetteDepends{curl}
@@ -18,7 +18,316 @@ knitr::opts_chunk$set(
 
 ## Introduction
 
-To validate this package, we applied the package's functions to two distinct datasets.
+To validate this package, we first evaluated its ability to select the appropriate model for modeling precipitation series. This evaluation was conducted using two Monte Carlo experiments. Subsequently, as case study applications, we applied the package's functions to two distinct datasets (Datasets 1 and 2). The simulation experiment and case studies are described below. 
+
+## Monte Carlo Experiments
+
+Selecting the best model from the 16 candidates considered by the package is crucial for its performance. The chosen model must be sufficiently complex to capture significant changes in precipitation frequency distribution, yet simple enough to avoid overfitting. Therefore, the guiding principle in model selection is parsimony: the simplest model that explains the most variation in the data should be selected @Coles2001. The SPIChanges package adheres to this principle by employing the second-order Akaike Information Criterion (AICc). An analysis of the AICc equations reveals that its performance is significantly influenced by the value of the penalty factor (k). The `SPIChanges` package determines the optimal value for k through Monte Carlo two experiments, as described below.
+
+### Monte Carlo Experiment 1 (trend-free rainfall series)
+
+In the first Monte Carlo experiment, we generated 10000 trend-free synthetic precipitation series for three different sample sizes (n=30, 60, and 90) using the stationary gamma-based model (Model 1). These sample sizes correspond to data records spanning 1, 2, and 3 normal periods, respectively. For each series, we calculated the AICc using different values for the k factor (ranging from 2 to 7 in steps of 0.2) for each of the 16 candidate models. In each simulation round, and for each k value, we recorded the number of times the 'correct' model (i.e., the stationary model) was selected and divided it by 10000. This ratio is referred to as the success rate. Acknowledging that the performance of AICc tends to decline as the number and complexity of candidate models increase @Xavier2019 and considering that the original four-step algorithm proposed by @Blain2022 only included stationary and linear models, we re-ran the selection process using only models 1 to 4. We then compared the results of these two selection processes (16 and 4 candidate models) to evaluate whether the AICc-based selection process effectively prevented overfitting.
+
+```{r monte carlo 1, message=FALSE, warning=FALSE, eval=FALSE}
+library(gamlss)
+library(gamlss.dist)
+library(MuMIn)
+library(spsUtil)
+#Designing the selection function based on the AICc
+select.model <- function(rain.week) {
+  best <- matrix(NA,1,2)
+  colnames(best) <- c("NonLinear","Linear")
+    t.gam <- quiet(gamlss(
+        rain.week ~ 1,
+        family = GA,
+        mu.link = "log",
+        sigma.link = "log"
+      )
+    )
+    t.gam.ns10 <- quiet(gamlss(
+        rain.week ~ time,
+        family = GA,
+        mu.link = "log",
+        sigma.link = "log"
+      )
+    )
+    t.gam.ns01 <- quiet(gamlss(
+        rain.week ~ 1,
+        sigma.formula = ~ time,
+        family = GA,
+        mu.link = "log",
+        sigma.link = "log"
+      )
+    )
+    t.gam.ns11 <- quiet(gamlss(
+        rain.week ~ time,
+        sigma.formula = ~ time,
+        family = GA,
+        mu.link = "log",
+        sigma.link = "log"
+      )
+    )
+    t.gam.ns20 <- quiet(gamlss(
+        rain.week ~ time + I(time ^ 2),
+        family = GA,
+        mu.link = "log",
+        sigma.link = "log"
+      )
+    )
+    t.gam.ns02 <- quiet(gamlss(
+        rain.week ~ 1,
+        family = GA,
+        mu.link = "log",
+        sigma.formula = ~ time +
+          I(time ^ 2),
+        sigma.link = "log"
+      )
+    )
+    t.gam.ns21 <- quiet(gamlss(
+        rain.week ~ time + I(time ^ 2),
+        sigma.formula = ~ time,
+        family = GA,
+        mu.link = "log",
+        sigma.link = "log"
+      )
+    )
+    t.gam.ns12 <- quiet(gamlss(
+        rain.week ~ time,
+        sigma.formula = ~ time + I(time ^ 2),
+        family = GA,
+        mu.link = "log",
+        sigma.link = "log"
+      )
+    )
+    t.gam.ns22 <- quiet(gamlss(
+        rain.week ~ time + I(time ^ 2),
+        sigma.formula = ~ time + I(time ^ 2),
+        family = GA,
+        mu.link = "log",
+        sigma.link = "log"
+      )
+    )
+    t.gam.ns30 <- quiet(gamlss(
+        rain.week ~ time +
+          I(time ^ 2) +
+          I(time ^ 3),
+        family = GA,
+        mu.link = "log",
+        sigma.link = "log"
+      )
+    )
+    t.gam.ns03 <- quiet(gamlss(
+        rain.week ~ 1,
+        family = GA,
+        mu.link = "log",
+        sigma.formula = ~ time +
+          I(time ^ 2) +
+          I(time ^ 3),
+        sigma.link = "log"
+      )
+    )
+    t.gam.ns31 <- quiet(gamlss(
+        rain.week ~ time +
+          I(time ^ 2) +
+          I(time ^ 3),
+        sigma.formula = ~ time,
+        family = GA,
+        mu.link = "log",
+        sigma.link = "log"
+      )
+    )
+    t.gam.ns13 <- quiet(gamlss(
+        rain.week ~ time,
+        sigma.formula = ~ time +
+          I(time ^ 2) +
+          I(time ^ 3),
+        family = GA,
+        mu.link = "log",
+        sigma.link = "log"
+      )
+    )
+    t.gam.ns32 <- quiet(gamlss(
+        rain.week ~ time +
+          I(time ^ 2) +
+          I(time ^ 3),
+        sigma.formula = ~ time +
+          I(time ^ 2),
+        family = GA,
+        mu.link = "log",
+        sigma.link = "log"
+      )
+    )
+    t.gam.ns23 <- quiet(gamlss(
+        rain.week ~ time +
+          I(time ^ 2),
+        sigma.formula = ~ time +
+          I(time ^ 2) +
+          I(time ^ 3),
+        family = GA,
+        mu.link = "log",
+        sigma.link = "log"
+      )
+    )
+    t.gam.ns33 <- quiet(gamlss(
+        rain.week ~ time +
+          I(time ^ 2) +
+          I(time ^ 3),
+        sigma.formula = ~ time +
+          I(time ^ 2) +
+          I(time ^ 3),
+        family = GA,
+        mu.link = "log",
+        sigma.link = "log"
+      )
+    )
+#Selection among all 16 models  
+  best[1,1] <- which.min(list(
+    MuMIn::AICc(t.gam, k = k),
+    MuMIn::AICc(t.gam.ns10, k = k),
+    MuMIn::AICc(t.gam.ns01, k = k),
+    MuMIn::AICc(t.gam.ns11, k = k),
+    MuMIn::AICc(t.gam.ns20, k = k),
+    MuMIn::AICc(t.gam.ns02, k = k),
+    MuMIn::AICc(t.gam.ns21, k = k),
+    MuMIn::AICc(t.gam.ns12, k = k),
+    MuMIn::AICc(t.gam.ns22, k = k),
+    MuMIn::AICc(t.gam.ns30, k = k),
+    MuMIn::AICc(t.gam.ns03, k = k),
+    MuMIn::AICc(t.gam.ns31, k = k),
+    MuMIn::AICc(t.gam.ns13, k = k),
+    MuMIn::AICc(t.gam.ns32, k = k),
+    MuMIn::AICc(t.gam.ns23, k = k),
+    MuMIn::AICc(t.gam.ns33, k = k)
+  ))
+#Selection among the stationary and linear models (models 1 to 4) 
+  best[1,2] <- which.min(list(
+    MuMIn::AICc(t.gam, k = k),
+    MuMIn::AICc(t.gam.ns10, k = k),
+    MuMIn::AICc(t.gam.ns01, k = k),
+    MuMIn::AICc(t.gam.ns11, k = k)
+  ))
+  
+  return(best)
+}
+library(gamlss)
+library(gamlss.dist)
+library(MuMIn)
+library(spsUtil)
+# Monte Carlo Simulation with three Sample Sizes
+sample_sizes <- c(30, 60, 90)  # Define the sample sizes
+ns <- 10000  # Number of simulations
+k.seq <- seq(from = 2, to = 7, by = 0.2)
+penalty <- length(k.seq)
+
+results_list <- list()
+selected_nonlinear_list <- list()
+selected_linear_list <- list()
+
+for (n in sample_sizes) {
+  time <- 1L:n
+  rain.week <- matrix(NA, nrow = n, ncol = ns)
+  
+  sigma0 <- 0.22
+  mu0 <- 809
+  slope.mu <- 0  # trend-free
+  slope.sigma <- 0  # trend-free
+  sigma <- sigma0 + slope.sigma * time
+  mu <- mu0 + slope.mu * time
+  
+  # Simulating precipitation data
+  rain.week <- replicate(ns, sapply(1:n, function(t) rGA(1, mu = mu[t], sigma = sigma[t])))
+  
+  result <- matrix(NA, nrow = ns, ncol = 2 * penalty)
+  selected.nonlinear <- matrix(NA, 16, penalty)
+  selected.linear <- matrix(NA, 4, penalty)
+  
+  # Calculating loop for each k
+  for (j in seq_along(k.seq)) {
+    k <- k.seq[j]
+    result1 <- apply(rain.week, 2, select.model)
+    result[, (2*j - 1):(2*j)] <- t(result1)
+    
+    for (model in 1:16) {
+      selected.nonlinear[model, j] <- 100 * (sum(result[, 2*j - 1] == model) / ns)
+      if (model <= 4) {
+        selected.linear[model, j] <- 100 * (sum(result[, 2*j] == model) / ns)
+      }
+    }
+  }
+  rownames(selected.nonlinear) <- paste0("Model", 1:16)
+  rownames(selected.linear) <- paste0("Model", 1:4)
+  colnames(selected.nonlinear) <- as.character(k.seq)
+  colnames(selected.linear) <- as.character(k.seq)
+  
+  results_list[[as.character(n)]] <- result
+  selected_nonlinear_list[[as.character(n)]] <- selected.nonlinear
+  selected_linear_list[[as.character(n)]] <- selected.linear
+}
+
+for (n in sample_sizes) {
+  cat("\nSample Size:", n, "\n")
+  cat("\nSelected Nonlinear Models:\n")
+  print(selected_nonlinear_list[[as.character(n)]])
+  cat("\nSelected Linear Models:\n")
+  print(selected_linear_list[[as.character(n)]])
+}
+```
+
+For the three sample sizes and two selection processes (16 and four candidate models) considered in the above Monte Carlo experiment, the AICc calculated with values of the k factor equal to or greater than 4.0 resulted in success rates of 90% or higher. By analogy, we can state that whenever the k factor was set to values equal to or greater than 4.0, the selection criteria adopted by the SPIChanges package failed to reject the null hypothesis that there was no change in precipitation patterns at rates smaller than 10%. This rate of failures is comparable to those found in formal hypothesis tests performed at the 10% significance level, where the probability of falsely rejecting a true null hypothesis is 10%. Particularly for k > 4, the success rates obtained when the selection process considered all 16 candidate models were almost as high as those obtained when only models 1 to 4 were considered. This suggests that the AICc (k > 4) avoided overfitting even when a relatively high number of candidate models (16) was considered by the SPIChanges function. At this point it is worth mentioning that the selection process that considered all 16 candidate models corresponds to `only.linear = No` in the SPIChanges() function. The selection process that considered only models 1 to 4 corresponds to `only.linear = Yes`.
+
+### Monte Carlo Experiment 2 (super-imposed trend)
+
+The second Monte Carlo experiment followed a similar approach to that outlined in experiment 1, but it consisted of four distinct simulation rounds, where we imposed different trend slopes on the parameters of the gamma-based models. Specifically, in round 1, we imposed a linear trend on the μ parameter given by the following equation: μ=809-3.2time. The δ parameter remained constant at 0.22. In round 2, we imposed a linear trend on the δ parameter given by the equation: δ=0.22+0.0044time, while the μ parameter remained constant at 410. In Round 3, we imposed linear trends on both μ and δ parameters: μ=695-2.8time and δ=0.22+0.0036time. In round 4, we imposed a nonlinear trend on the μ parameter and a linear trend on the δ parameter, according to the following equations: μ=0.0104(time^3)-1.3206(time^2)+38.314time+758.58 and δ=0.22+0.0036time. The sample size for all four simulation rounds was set to 90, with time varying from 1 to 90. The 'correct models' for each round were Model 2, Model 3, Model 4, and Model 12, respectively. In round 4, we applied only the selection process based on 16 models, as the synthetic series, by construction, had a non-linear trend. As in the first experiment, the rates at which the correct model was selected were referred to as success rates. The chunk below exemplifies this experiment considering round 1. The other rounds can be easily replicated by changing the **slope.mu** parameter. Note that this chunk (monte carlo 2) requires the packages and the select.model() function loaded/defined in monte carlo 1.
+
+```{r monte carlo 2, message=FALSE, warning=FALSE, eval=FALSE}
+## Monte Carlo Simulation
+n <- 90  
+ns <- 10000  
+time <- 1L:n
+
+rain.week <- matrix(NA, nrow = n, ncol = ns)
+sigma0 <- 0.22
+mu0 <- 809
+slope.mu <- (-0.004*mu0) # super-imposed trend
+slope.sigma <- 0 # trend-free
+sigma <- sigma0 + slope.sigma * time
+mu <- mu0 + slope.mu * time
+k.seq <- seq(from = 2, to = 7, by = 0.2)
+penalty <- length(k.seq)
+
+result <- matrix(NA, nrow = ns, ncol = 2 * penalty)
+selected.nonlinear <- matrix(NA, 16, penalty)
+selected.linear <- matrix(NA, 4, penalty)
+#simulating again
+rain.week <- replicate(ns, sapply(1:n, function(t) rGA(1, mu = mu[t], sigma = sigma[t])))
+
+for (j in seq_along(k.seq)) {
+  k <- k.seq[j]
+  result1 <- apply(rain.week, 2, select.model)
+  result[, (2*j - 1):(2*j)] <- t(result1)
+  
+  for (model in 1:16) {
+    selected.nonlinear[model, j] <- 100 * (sum(result[, 2*j - 1] == model) / ns)
+    if (model <= 4) {
+      selected.linear[model, j] <- 100 * (sum(result[, 2*j] == model) / ns)
+    }
+  }
+}
+
+rownames(selected.nonlinear) <- paste0("Model", 1:16)
+rownames(selected.linear) <- paste0("Model", 1:4)
+colnames(selected.nonlinear) <- as.character(k.seq)
+colnames(selected.linear) <- as.character(k.seq)
+
+print(selected.nonlinear)
+print(selected.linear)
+```
+
+As observed in the first Monte Carlo experiment, the success rates obtained when the selection process of this second experiment considered all 16 candidate models were only slightly lower than those found when it considered models 1 to 4. For both selection processes, the success rates for all simulation rounds remained close to 90% for k values greater than 4. As in the first experiment, this suggests that the AICc (k > 4) avoided overfitting. The results of the two Monte Carlo experiments led us to select 4.4 as the optimal penalty factor for calculating the AICc within the SPIChanges() function.
+
+## Case Studies Applications
+
+To further validate this package, we also applied the package's functions to two distinct datasets.
 The first (Dataset 1) is from a long-running weather station in the UK, located at 51.7608°N and 1.2639°W (Radcliffe Observatory site in Oxford, covering the period from January 1827 to January 2020) [Burt2019].
 These invaluable precipitation records are available at <https://doi.org/10.6084/m9.figshare.11956239.v1> [@Burt2020] under a Creative Commons 4.0 License via FigShare.
 The percentage of missing data is less than 1%.
