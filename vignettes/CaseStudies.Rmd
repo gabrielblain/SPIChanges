@@ -18,15 +18,29 @@ knitr::opts_chunk$set(
 
 ## Introduction
 
-To validate this package, we first evaluated its ability to select the appropriate model for modeling precipitation series. This evaluation was conducted using two Monte Carlo experiments. Subsequently, as case study applications, we applied the package's functions to two distinct datasets (Datasets 1 and 2). The simulation experiment and case studies are described below. 
+To validate this package, we first evaluated its ability to select the appropriate model for modeling precipitation series.
+This evaluation was conducted using two Monte Carlo experiments.
+Subsequently, as case study applications, we applied the package's functions to two distinct datasets (Datasets 1 and 2).
+The simulation experiment and case studies are described below.
 
 ## Monte Carlo Experiments
 
-Selecting the best model from the 16 candidates considered by the package is crucial for its performance. The chosen model must be sufficiently complex to capture significant changes in precipitation frequency distribution, yet simple enough to avoid overfitting. Therefore, the guiding principle in model selection is parsimony: the simplest model that explains the most variation in the data should be selected @Coles2001. The SPIChanges package adheres to this principle by employing the second-order Akaike Information Criterion (AICc). An analysis of the AICc equations reveals that its performance is significantly influenced by the value of the penalty factor (k). The `SPIChanges` package determines the optimal value for k through Monte Carlo two experiments, as described below.
+Selecting the best model from the 16 candidates considered by the package is crucial for its performance.
+The chosen model must be sufficiently complex to capture significant changes in precipitation frequency distribution, yet simple enough to avoid overfitting.
+Therefore, the guiding principle in model selection is parsimony: the simplest model that explains the most variation in the data should be selected @Coles2001.
+The SPIChanges package adheres to this principle by employing the second-order Akaike Information Criterion (AICc).
+An analysis of the AICc equations reveals that its performance is significantly influenced by the value of the penalty factor (k).
+The `SPIChanges` package determines the optimal value for k through Monte Carlo two experiments, as described below.
 
 ### Monte Carlo Experiment 1 (trend-free rainfall series)
 
-In the first Monte Carlo experiment, we generated 10000 trend-free synthetic precipitation series for three different sample sizes (n=30, 60, and 90) using the stationary gamma-based model (Model 1). These sample sizes correspond to data records spanning 1, 2, and 3 normal periods, respectively. For each series, we calculated the AICc using different values for the k factor (ranging from 2 to 7 in steps of 0.2) for each of the 16 candidate models. In each simulation round, and for each k value, we recorded the number of times the 'correct' model (i.e., the stationary model) was selected and divided it by 10000. This ratio is referred to as the success rate. Acknowledging that the performance of AICc tends to decline as the number and complexity of candidate models increase @Xavier2019 and considering that the original four-step algorithm proposed by @Blain2022 only included stationary and linear models, we re-ran the selection process using only models 1 to 4. We then compared the results of these two selection processes (16 and 4 candidate models) to evaluate whether the AICc-based selection process effectively prevented overfitting.
+In the first Monte Carlo experiment, we generated 10000 trend-free synthetic precipitation series for three different sample sizes (n=30, 60, and 90) using the stationary gamma-based model (Model 1).
+These sample sizes correspond to data records spanning 1, 2, and 3 normal periods, respectively.
+For each series, we calculated the AICc using different values for the k factor (ranging from 2 to 7 in steps of 0.2) for each of the 16 candidate models.
+In each simulation round, and for each k value, we recorded the number of times the 'correct' model (i.e., the stationary model) was selected and divided it by 10000.
+This ratio is referred to as the success rate.
+Acknowledging that the performance of AICc tends to decline as the number and complexity of candidate models increase @Xavier2019 and considering that the original four-step algorithm proposed by @Blain2022 only included stationary and linear models, we re-ran the selection process using only models 1 to 4.
+We then compared the results of these two selection processes (16 and 4 candidate models) to evaluate whether the AICc-based selection process effectively prevented overfitting.
 
 ```{r monte carlo 1, message=FALSE, warning=FALSE, eval=FALSE}
 library(gamlss)
@@ -273,11 +287,29 @@ for (n in sample_sizes) {
 }
 ```
 
-For the three sample sizes and two selection processes (16 and four candidate models) considered in the above Monte Carlo experiment, the AICc calculated with values of the k factor equal to or greater than 4.0 resulted in success rates of 90% or higher. By analogy, we can state that whenever the k factor was set to values equal to or greater than 4.0, the selection criteria adopted by the SPIChanges package failed to reject the null hypothesis that there was no change in precipitation patterns at rates smaller than 10%. This rate of failures is comparable to those found in formal hypothesis tests performed at the 10% significance level, where the probability of falsely rejecting a true null hypothesis is 10%. Particularly for k > 4, the success rates obtained when the selection process considered all 16 candidate models were almost as high as those obtained when only models 1 to 4 were considered. This suggests that the AICc (k > 4) avoided overfitting even when a relatively high number of candidate models (16) was considered by the SPIChanges function. At this point it is worth mentioning that the selection process that considered all 16 candidate models corresponds to `only.linear = No` in the SPIChanges() function. The selection process that considered only models 1 to 4 corresponds to `only.linear = Yes`.
+For the three sample sizes and two selection processes (16 and four candidate models) considered in the above Monte Carlo experiment, the AICc calculated with values of the k factor equal to or greater than 4.0 resulted in success rates of 90% or higher.
+By analogy, we can state that whenever the k factor was set to values equal to or greater than 4.0, the selection criteria adopted by the SPIChanges package failed to reject the null hypothesis that there was no change in precipitation patterns at rates smaller than 10%.
+This rate of failures is comparable to those found in formal hypothesis tests performed at the 10% significance level, where the probability of falsely rejecting a true null hypothesis is 10%.
+Particularly for k \> 4, the success rates obtained when the selection process considered all 16 candidate models were almost as high as those obtained when only models 1 to 4 were considered.
+This suggests that the AICc (k \> 4) avoided overfitting even when a relatively high number of candidate models (16) was considered by the SPIChanges function.
+At this point it is worth mentioning that the selection process that considered all 16 candidate models corresponds to `only.linear = No` in the SPIChanges() function.
+The selection process that considered only models 1 to 4 corresponds to `only.linear = Yes`.
 
 ### Monte Carlo Experiment 2 (super-imposed trend)
 
-The second Monte Carlo experiment followed a similar approach to that outlined in experiment 1, but it consisted of four distinct simulation rounds, where we imposed different trend slopes on the parameters of the gamma-based models. Specifically, in round 1, we imposed a linear trend on the μ parameter given by the following equation: μ=809-3.2time. The δ parameter remained constant at 0.22. In round 2, we imposed a linear trend on the δ parameter given by the equation: δ=0.22+0.0044time, while the μ parameter remained constant at 410. In Round 3, we imposed linear trends on both μ and δ parameters: μ=695-2.8time and δ=0.22+0.0036time. In round 4, we imposed a nonlinear trend on the μ parameter and a linear trend on the δ parameter, according to the following equations: μ=0.0104(time^3)-1.3206(time^2)+38.314time+758.58 and δ=0.22+0.0036time. The sample size for all four simulation rounds was set to 90, with time varying from 1 to 90. The 'correct models' for each round were Model 2, Model 3, Model 4, and Model 12, respectively. In round 4, we applied only the selection process based on 16 models, as the synthetic series, by construction, had a non-linear trend. As in the first experiment, the rates at which the correct model was selected were referred to as success rates. The chunk below exemplifies this experiment considering round 1. The other rounds can be easily replicated by changing the **slope.mu** parameter. Note that this chunk (monte carlo 2) requires the packages and the select.model() function loaded/defined in monte carlo 1.
+The second Monte Carlo experiment followed a similar approach to that outlined in experiment 1, but it consisted of four distinct simulation rounds, where we imposed different trend slopes on the parameters of the gamma-based models.
+Specifically, in round 1, we imposed a linear trend on the μ parameter given by the following equation: μ=809-3.2time.
+The δ parameter remained constant at 0.22.
+In round 2, we imposed a linear trend on the δ parameter given by the equation: δ=0.22+0.0044time, while the μ parameter remained constant at 410.
+In Round 3, we imposed linear trends on both μ and δ parameters: μ=695-2.8time and δ=0.22+0.0036time.
+In round 4, we imposed a nonlinear trend on the μ parameter and a linear trend on the δ parameter, according to the following equations: μ=0.0104(time^3)-1.3206(time^2)+38.314time+758.58 and δ=0.22+0.0036time.
+The sample size for all four simulation rounds was set to 90, with time varying from 1 to 90.
+The 'correct models' for each round were Model 2, Model 3, Model 4, and Model 12, respectively.
+In round 4, we applied only the selection process based on 16 models, as the synthetic series, by construction, had a non-linear trend.
+As in the first experiment, the rates at which the correct model was selected were referred to as success rates.
+The chunk below exemplifies this experiment considering round 1.
+The other rounds can be easily replicated by changing the **slope.mu** parameter.
+Note that this chunk (monte carlo 2) requires the packages and the select.model() function loaded/defined in monte carlo 1.
 
 ```{r monte carlo 2, message=FALSE, warning=FALSE, eval=FALSE}
 ## Monte Carlo Simulation
@@ -323,7 +355,10 @@ print(selected.nonlinear)
 print(selected.linear)
 ```
 
-As observed in the first Monte Carlo experiment, the success rates obtained when the selection process of this second experiment considered all 16 candidate models were only slightly lower than those found when it considered models 1 to 4. For both selection processes, the success rates for all simulation rounds remained close to 90% for k values greater than 4. As in the first experiment, this suggests that the AICc (k > 4) avoided overfitting. The results of the two Monte Carlo experiments led us to select 4.4 as the optimal penalty factor for calculating the AICc within the SPIChanges() function.
+As observed in the first Monte Carlo experiment, the success rates obtained when the selection process of this second experiment considered all 16 candidate models were only slightly lower than those found when it considered models 1 to 4.
+For both selection processes, the success rates for all simulation rounds remained close to 90% for k values greater than 4.
+As in the first experiment, this suggests that the AICc (k \> 4) avoided overfitting.
+The results of the two Monte Carlo experiments led us to select 4.4 as the optimal penalty factor for calculating the AICc within the SPIChanges() function.
 
 ## Case Studies Applications
 
@@ -1153,7 +1188,7 @@ stopCluster(cl)
 head(Map)
 ```
 
-## Assessing changes in severe to moderate drought events 
+## Assessing changes in severe to moderate drought events
 
 -   This next chunk uses the file Map (from the previous chunk) to plot the changes in the expected frequency of severe to moderate drought events (SPI ≤ −1.5), calculated at 12- quasi-week (3-month) time scale in Brazil. The analysis of this map indicated that 50.8 (Summer), 45.5 (Autumn), 35.6 (Winter), and 49.2% (Spring) of Brazil experienced changes toward drier conditions between 1980 and 2024 as indicated by the red colours of the map. This change toward more severe to extreme drought events in almost half of Brazil is in line with the widespread occurrence of unprecedented drought events in the country after 2000.
 
@@ -1236,6 +1271,5 @@ map <- map +
 
 print(map)
 ```
-
 
 ## References
