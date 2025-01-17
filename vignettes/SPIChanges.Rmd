@@ -5,7 +5,7 @@ vignette: >
   %\VignetteIndexEntry{SPIChanges}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
-   bibliography: bibliography.bib
+bibliography: bibliography.bib
 ---
 
 ```{r, include = FALSE}
@@ -178,7 +178,7 @@ data.week: The precipitation amounts, SPI, cumulative probability of the SPI val
 
 model.selection: The generalized additive model that best fits the precipitation series.
 
-Changes.Freq.Drought: changes in the frequency of moderate, severe and extreme drought events, as definied by the SPI classification system (Table 1), caused by the changes in precipitation patterns.
+Changes.Freq.Drought: changes in the frequency of moderate, severe and extreme drought events, as defined by the SPI classification system (Table 1), caused by the changes in precipitation patterns.
 
 Statistics: Year to year changes in the expected frequency of moderate, severe and extreme drought events.
 
