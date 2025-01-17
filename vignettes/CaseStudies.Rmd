@@ -9,7 +9,6 @@ vignette: >
   %\VignetteDepends{gamlss}
   %\VignetteDepends{gamlsss.dist}
   %\VignetteDepends{MuMIn}
-  %\VignetteDepends{spsUtil}
   %\VignetteDepends{ggplot2}
   %\VignetteDepends{sf}
   %\VignetteDepends{RColorBrewer}
