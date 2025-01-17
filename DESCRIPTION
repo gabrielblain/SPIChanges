@@ -35,22 +35,26 @@ Imports:
 Suggests: 
     archive,
     curl,
-    doParallel,
     dplyr,
-    foreach,
-    ggplot2,
     knitr,
-    patchwork,
-    RColorBrewer,
     rmarkdown,
     roxyglobals,
+    ggplot2,
+    grid,
+    dplyr,
+    patchwork,
+    tidyr,
+    ncdf4,
+    patchwork,
+    foreach,
+    doParallel,
+    archive,
+    RColorBrewer,
     sf,
-    testthat (>= 3.0.0),
-    tidyr
+    tidyr,
+    testthat (>= 3.0.0)
 VignetteBuilder: 
     knitr
-Config/roxyglobals/filename: globals.R
-Config/roxyglobals/unique: FALSE
 Config/testthat/edition: 3
 Encoding: UTF-8
 Language: en-US
@@ -58,3 +62,5 @@ LazyData: true
 Roxygen: list(markdown = TRUE, roclets = c("collate", "namespace", "rd",
     "roxyglobals::global_roclet"))
 RoxygenNote: 7.3.2
+Config/roxyglobals/filename: globals.R
+Config/roxyglobals/unique: FALSE
