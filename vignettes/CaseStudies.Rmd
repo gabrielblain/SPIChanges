@@ -41,7 +41,7 @@ The simulation experiment and case studies are described below.
 ## Monte Carlo Experiments
 
 Selecting the best model from the 16 candidates considered by the package is crucial for its performance.
-The chosen model must be sufficiently complex to capture significant changes in precipitation frequency distribution, yet simple enough to avoid overfitting.
+The chosen model must be sufficiently complex to capture significant changes in precipitation frequency distribution, yet simple enough to avoid over fitting.
 Therefore, the guiding principle in model selection is parsimony: the simplest model that explains the most variation in the data should be selected [@Coles2001].
 The SPIChanges package adheres to this principle by employing the second-order Akaike Information Criterion (AICc).
 An analysis of the AICc equations reveals that its performance is significantly influenced by the value of the penalty factor (k).
@@ -55,7 +55,7 @@ For each series, we calculated the AICc using different values for the k factor 
 In each simulation round, and for each k value, we recorded the number of times the 'correct' model (i.e., the stationary model) was selected and divided it by 10000.
 This ratio is referred to as the success rate.
 Acknowledging that the performance of AICc tends to decline as the number and complexity of candidate models increase @Xavier2019 and considering that the original four-step algorithm proposed by @Blain2022 only included stationary and linear models, we re-ran the selection process using only models 1 to 4.
-We then compared the results of these two selection processes (16 and 4 candidate models) to evaluate whether the AICc-based selection process effectively prevented overfitting.
+We then compared the results of these two selection processes (16 and 4 candidate models) to evaluate whether the AICc-based selection process effectively prevented over fitting.
 
 ```{r monte carlo 1, message=FALSE, warning=FALSE, eval=FALSE}
 library(gamlss)
@@ -290,7 +290,7 @@ For the three sample sizes and two selection processes (16 and four candidate mo
 By analogy, we can state that whenever the k factor was set to values equal to or greater than 4.0, the selection criteria adopted by the SPIChanges package failed to reject the null hypothesis that there was no change in precipitation patterns at rates smaller than 10%.
 This rate of failures is comparable to those found in formal hypothesis tests performed at the 10% significance level, where the probability of falsely rejecting a true null hypothesis is 10%.
 Particularly for k \> 4, the success rates obtained when the selection process considered all 16 candidate models were almost as high as those obtained when only models 1 to 4 were considered.
-This suggests that the AICc (k \> 4) avoided overfitting even when a relatively high number of candidate models (16) was considered by the SPIChanges function.
+This suggests that the AICc (k \> 4) avoided over fitting even when a relatively high number of candidate models (16) was considered by the SPIChanges function.
 At this point it is worth mentioning that the selection process that considered all 16 candidate models corresponds to `only.linear = No` in the SPIChanges() function.
 The selection process that considered only models 1 to 4 corresponds to `only.linear = Yes`.
 
@@ -301,14 +301,14 @@ Specifically, in round 1, we imposed a linear trend on the μ parameter given by
 The δ parameter remained constant at 0.22.
 In round 2, we imposed a linear trend on the δ parameter given by the equation: δ=0.22+0.0044time, while the μ parameter remained constant at 410.
 In Round 3, we imposed linear trends on both μ and δ parameters: μ=695-2.8time and δ=0.22+0.0036time.
-In round 4, we imposed a nonlinear trend on the μ parameter and a linear trend on the δ parameter, according to the following equations: μ=0.0104(time^3)-1.3206(time^2)+38.314time+758.58 and δ=0.22+0.0036time.
+In round 4, we imposed a non-linear trend on the μ parameter and a linear trend on the δ parameter, according to the following equations: μ=0.0104(time^3)-1.3206(time^2)+38.314time+758.58 and δ=0.22+0.0036time.
 The sample size for all four simulation rounds was set to 90, with time varying from 1 to 90.
 The 'correct models' for each round were Model 2, Model 3, Model 4, and Model 12, respectively.
 In round 4, we applied only the selection process based on 16 models, as the synthetic series, by construction, had a non-linear trend.
 As in the first experiment, the rates at which the correct model was selected were referred to as success rates.
 The chunk below exemplifies this experiment considering round 1.
 The other rounds can be easily replicated by changing the **slope.mu** parameter.
-Note that this chunk (monte carlo 2) requires the packages and the select.model() function loaded/defined in monte carlo 1.
+Note that this chunk (monte carlo 2) requires the packages and the `select.model()` function loaded/defined in monte carlo 1.
 
 ```{r monte carlo 2, message=FALSE, warning=FALSE, eval=FALSE}
 ## Monte Carlo Simulation
@@ -356,7 +356,7 @@ print(selected.linear)
 
 As observed in the first Monte Carlo experiment, the success rates obtained when the selection process of this second experiment considered all 16 candidate models were only slightly lower than those found when it considered models 1 to 4.
 For both selection processes, the success rates for all simulation rounds remained close to 90% for k values greater than 4.
-As in the first experiment, this suggests that the AICc (k \> 4) avoided overfitting.
+As in the first experiment, this suggests that the AICc (k \> 4) avoided over fitting.
 The results of the two Monte Carlo experiments led us to select 4.4 as the optimal penalty factor for calculating the AICc within the SPIChanges() function.
 
 ## Case Studies Applications
@@ -366,7 +366,7 @@ The first (Dataset 1) is from a long-running weather station in the UK, located 
 These invaluable precipitation records are available at <https://doi.org/10.6084/m9.figshare.11956239.v1> [@Burt2020] under a Creative Commons 4.0 License via FigShare.
 The percentage of missing data is less than 1%.
 Following the approach of @Wu2006, we replaced all gaps in the series with zero, as this is the most probable value for a single day.
-We used this dataset to provide detailed information on the package’s outputs.
+We used this dataset to provide detailed information on the package's outputs.
 
 The second dataset (Dataset 2) comprises data from the CPC Global Unified Gauge-Based Analysis of Daily Precipitation (CPC data; NOAA/PSL) <https://psl.noaa.gov/data/gridded/data.cpc.globalprecip.html> for the entire country of Brazil.
 Brazil, the largest tropical country in the world, features a wide range of climates, from arid regions in the Northeast to equatorial climates, such as the Amazon Rainforest.
@@ -1039,7 +1039,7 @@ In other words, different nonstationary models were selected for the 3rd quasi-w
 -   When `only.linear = Yes`, model 3 was selected for both periods.
 
 It is important to note that these three models (11, 6, and 3) all assume that only the δ parameter changes over time.
-However, setting `only.linear = No` provided a more complete (nonlinear) description of how the dispersion of the precipitation frequency distributions changed from 1827 to 2019.
+However, setting `only.linear = No` provided a more complete (non-linear) description of how the dispersion of the precipitation frequency distributions changed from 1827 to 2019.
 
 The major difference between using `only.linear = No` and `only.linear = Yes` is observed in the 2nd quasi-week of March.
 With `only.linear = No`, the `SPIChanges()` function selected model 11, indicating changes toward drier conditions.
@@ -1050,7 +1050,7 @@ This discrepancy highlights that when only stationary and linear models are cons
 **\$data.week**
 
 As described above, the output data field, *\$data.week* contains the precipitation amounts (rain.at.TS), SPI values, expected frequencies of the SPI estimates calculated under both the stationary approach (Exp.Acum.Prob) and the non-stationary approach (Actual.Acum.Prob), as well as the changes in the frequency of dry events (SPI \< 0) caused by the changes in the precipitation patterns (ChangeDryFreq; in percentage).
-This output data field allowed us to assess the impact of the linear changes in the parameters of the gamma-based models (as demontrated by *\$Statistics*) on the expected frequency of dry events over the entire data record (1827–2020).
+This output data field allowed us to assess the impact of the linear changes in the parameters of the gamma-based models (as demonstrated by *\$Statistics*) on the expected frequency of dry events over the entire data record (1827–2020).
 
 Once again, let's evaluate this output data field for the last year of the series (2019; Table 2).
 
@@ -1245,7 +1245,7 @@ download.file(rar_url, temp_file, mode = "wb")
 archive_extract(temp_file, dir = temp_dir)
 shp_path <- file.path(temp_dir, "regioes_2010.shp") # Adjust if files are extracted into a subdirectory
 limitere <- st_read(shp_path)
-# Tidding the data
+# Tidying the data
 df <- Map %>%
   select(lat, lon, SpringSevere, OutomnSevere, WinterSevere, SummerSevere) %>%
   pivot_longer(
@@ -1266,11 +1266,11 @@ limitere_sf <- st_as_sf(limitere)
 dados.sf <- st_as_sf(df_ok, coords = c("lon", "lat"), crs = 4326)
 # Fixing possible errors
 limitere_sf <- st_make_valid(limitere_sf)
-# Finding centroides
+# Finding centroids
 limitere_centroids <- st_centroid(limitere_sf)
 # Adding siglas (annacron)
 limitere_centroids$sigla <- limitere$sigla
-# Finding coordenates
+# Finding coordinates
 coords <- st_coordinates(limitere_centroids)
 limitere_centroids$lon <- coords[, 1]
 limitere_centroids$lat <- coords[, 2]
