@@ -5,7 +5,7 @@ vignette: >
   %\VignetteIndexEntry{SPIChanges}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
-   bibliography: bibliography.bib
+bibliography: bibliography.bib
 ---
 
 ```{r, include = FALSE}
