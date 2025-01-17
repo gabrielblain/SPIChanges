@@ -1080,12 +1080,9 @@ In this case study we apply the SPIChanges package for entire Brazil (1980-2024)
 # Load necessary libraries
 library(ncdf4)
 library(curl)
+library(SPIChanges)
 
-# Set up
-url <- "https://raw.githubusercontent.com/gabrielblain/Grid_Brazil/refs/heads/main/grid_Br.csv"
-lonlat <- read.csv(url, sep = ",", header = TRUE)
 n <- nrow(lonlat)
-
 # Configure curl with a longer timeout
 h <- new_handle()
 handle_setopt(h, timeout = 10800L)
@@ -1175,6 +1172,7 @@ registerDoParallel(cl)
 rain <- matrix(NA, N, 4)
 rain[, 1:3] <- as.matrix(rainTS12.bank[, 1:3])
 final <- ncol(rainTS12.bank)
+n <- nrow(lonlat)
 Map <- matrix(NA, n, 18)
 model <- matrix(NA, n, 3)
 Map[, 1:2] <- as.matrix(lonlat)
@@ -1234,9 +1232,8 @@ library(RColorBrewer)
 library(tidyr)
 library(dplyr)
 library(archive)
+library(SPIChanges)
 # Loading data
-url <- "https://raw.githubusercontent.com/gabrielblain/Grid_Brazil/refs/heads/main/Map.csv"
-Map <- read.csv(url, sep = ",", header = TRUE)
 rar_url <- "https://github.com/gabrielblain/Grid_Brazil/raw/main/regioes_2010.rar"
 temp_file <- tempfile(fileext = ".rar")
 temp_dir <- tempdir()
@@ -1246,9 +1243,9 @@ shp_path <- file.path(temp_dir, "regioes_2010.shp") # Adjust if files are extrac
 limitere <- st_read(shp_path)
 # Tidying the data
 df <- Map %>%
-  select(lat, lon, SpringSevere, OutomnSevere, WinterSevere, SummerSevere) %>%
+  select(lat, lon, SpringSevere, AutomnSevere, WinterSevere, SummerSevere) %>%
   pivot_longer(
-    cols = c(SpringSevere, OutomnSevere, WinterSevere, SummerSevere),
+    cols = c(SpringSevere, AutomnSevere, WinterSevere, SummerSevere),
     names_to = "Station", values_to = "Change"
   )
 df_ok <- df %>%
@@ -1256,7 +1253,7 @@ df_ok <- df %>%
     Station = recode(Station,
       "SpringSevere" = "Spring - Severe",
       "SummerSevere" = "Summer - Severe",
-      "OutomnSevere" = "Autumm - Severe",
+      "AutomnSevere" = "Autumm - Severe",
       "WinterSevere" = "Winter - Severe"
     )
   )
