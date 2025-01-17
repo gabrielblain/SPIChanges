@@ -6,7 +6,22 @@ vignette: >
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
   %\VignetteDepends{curl}
-  bibliography: bibliography.bib
+  %\VignetteDepends{gamlss}
+  %\VignetteDepends{gamlsss.dist}
+  %\VignetteDepends{MuMIn}
+  %\VignetteDepends{spsUtil}
+  %\VignetteDepends{ggplot2}
+  %\VignetteDepends{sf}
+  %\VignetteDepends{RColorBrewer}
+  %\VignetteDepends{tidyr}
+  %\VignetteDepends{dplyr}
+  %\VignetteDepends{archive}
+  %\VignetteDepends{ncdf4}
+  %\VignetteDepends{grid}
+  %\VignetteDepends{patchwork}
+  %\VignetteDepends{foreach}
+  %\VignetteDepends{doParallel}
+bibliography: bibliography.bib
 ---
 
 ```{r, include = FALSE}
@@ -27,7 +42,7 @@ The simulation experiment and case studies are described below.
 
 Selecting the best model from the 16 candidates considered by the package is crucial for its performance.
 The chosen model must be sufficiently complex to capture significant changes in precipitation frequency distribution, yet simple enough to avoid overfitting.
-Therefore, the guiding principle in model selection is parsimony: the simplest model that explains the most variation in the data should be selected @Coles2001.
+Therefore, the guiding principle in model selection is parsimony: the simplest model that explains the most variation in the data should be selected [@Coles2001].
 The SPIChanges package adheres to this principle by employing the second-order Akaike Information Criterion (AICc).
 An analysis of the AICc equations reveals that its performance is significantly influenced by the value of the penalty factor (k).
 The `SPIChanges` package determines the optimal value for k through Monte Carlo two experiments, as described below.
@@ -47,155 +62,139 @@ library(gamlss)
 library(gamlss.dist)
 library(MuMIn)
 library(spsUtil)
-#Designing the selection function based on the AICc
+# Designing the selection function based on the AICc
 select.model <- function(rain.week) {
-  best <- matrix(NA,1,2)
-  colnames(best) <- c("NonLinear","Linear")
-    t.gam <- quiet(gamlss(
-        rain.week ~ 1,
-        family = GA,
-        mu.link = "log",
-        sigma.link = "log"
-      )
-    )
-    t.gam.ns10 <- quiet(gamlss(
-        rain.week ~ time,
-        family = GA,
-        mu.link = "log",
-        sigma.link = "log"
-      )
-    )
-    t.gam.ns01 <- quiet(gamlss(
-        rain.week ~ 1,
-        sigma.formula = ~ time,
-        family = GA,
-        mu.link = "log",
-        sigma.link = "log"
-      )
-    )
-    t.gam.ns11 <- quiet(gamlss(
-        rain.week ~ time,
-        sigma.formula = ~ time,
-        family = GA,
-        mu.link = "log",
-        sigma.link = "log"
-      )
-    )
-    t.gam.ns20 <- quiet(gamlss(
-        rain.week ~ time + I(time ^ 2),
-        family = GA,
-        mu.link = "log",
-        sigma.link = "log"
-      )
-    )
-    t.gam.ns02 <- quiet(gamlss(
-        rain.week ~ 1,
-        family = GA,
-        mu.link = "log",
-        sigma.formula = ~ time +
-          I(time ^ 2),
-        sigma.link = "log"
-      )
-    )
-    t.gam.ns21 <- quiet(gamlss(
-        rain.week ~ time + I(time ^ 2),
-        sigma.formula = ~ time,
-        family = GA,
-        mu.link = "log",
-        sigma.link = "log"
-      )
-    )
-    t.gam.ns12 <- quiet(gamlss(
-        rain.week ~ time,
-        sigma.formula = ~ time + I(time ^ 2),
-        family = GA,
-        mu.link = "log",
-        sigma.link = "log"
-      )
-    )
-    t.gam.ns22 <- quiet(gamlss(
-        rain.week ~ time + I(time ^ 2),
-        sigma.formula = ~ time + I(time ^ 2),
-        family = GA,
-        mu.link = "log",
-        sigma.link = "log"
-      )
-    )
-    t.gam.ns30 <- quiet(gamlss(
-        rain.week ~ time +
-          I(time ^ 2) +
-          I(time ^ 3),
-        family = GA,
-        mu.link = "log",
-        sigma.link = "log"
-      )
-    )
-    t.gam.ns03 <- quiet(gamlss(
-        rain.week ~ 1,
-        family = GA,
-        mu.link = "log",
-        sigma.formula = ~ time +
-          I(time ^ 2) +
-          I(time ^ 3),
-        sigma.link = "log"
-      )
-    )
-    t.gam.ns31 <- quiet(gamlss(
-        rain.week ~ time +
-          I(time ^ 2) +
-          I(time ^ 3),
-        sigma.formula = ~ time,
-        family = GA,
-        mu.link = "log",
-        sigma.link = "log"
-      )
-    )
-    t.gam.ns13 <- quiet(gamlss(
-        rain.week ~ time,
-        sigma.formula = ~ time +
-          I(time ^ 2) +
-          I(time ^ 3),
-        family = GA,
-        mu.link = "log",
-        sigma.link = "log"
-      )
-    )
-    t.gam.ns32 <- quiet(gamlss(
-        rain.week ~ time +
-          I(time ^ 2) +
-          I(time ^ 3),
-        sigma.formula = ~ time +
-          I(time ^ 2),
-        family = GA,
-        mu.link = "log",
-        sigma.link = "log"
-      )
-    )
-    t.gam.ns23 <- quiet(gamlss(
-        rain.week ~ time +
-          I(time ^ 2),
-        sigma.formula = ~ time +
-          I(time ^ 2) +
-          I(time ^ 3),
-        family = GA,
-        mu.link = "log",
-        sigma.link = "log"
-      )
-    )
-    t.gam.ns33 <- quiet(gamlss(
-        rain.week ~ time +
-          I(time ^ 2) +
-          I(time ^ 3),
-        sigma.formula = ~ time +
-          I(time ^ 2) +
-          I(time ^ 3),
-        family = GA,
-        mu.link = "log",
-        sigma.link = "log"
-      )
-    )
-#Selection among all 16 models  
-  best[1,1] <- which.min(list(
+  best <- matrix(NA, 1, 2)
+  colnames(best) <- c("NonLinear", "Linear")
+  t.gam <- quiet(gamlss(
+    rain.week ~ 1,
+    family = GA,
+    mu.link = "log",
+    sigma.link = "log"
+  ))
+  t.gam.ns10 <- quiet(gamlss(
+    rain.week ~ time,
+    family = GA,
+    mu.link = "log",
+    sigma.link = "log"
+  ))
+  t.gam.ns01 <- quiet(gamlss(
+    rain.week ~ 1,
+    sigma.formula = ~time,
+    family = GA,
+    mu.link = "log",
+    sigma.link = "log"
+  ))
+  t.gam.ns11 <- quiet(gamlss(
+    rain.week ~ time,
+    sigma.formula = ~time,
+    family = GA,
+    mu.link = "log",
+    sigma.link = "log"
+  ))
+  t.gam.ns20 <- quiet(gamlss(
+    rain.week ~ time + I(time^2),
+    family = GA,
+    mu.link = "log",
+    sigma.link = "log"
+  ))
+  t.gam.ns02 <- quiet(gamlss(
+    rain.week ~ 1,
+    family = GA,
+    mu.link = "log",
+    sigma.formula = ~ time +
+      I(time^2),
+    sigma.link = "log"
+  ))
+  t.gam.ns21 <- quiet(gamlss(
+    rain.week ~ time + I(time^2),
+    sigma.formula = ~time,
+    family = GA,
+    mu.link = "log",
+    sigma.link = "log"
+  ))
+  t.gam.ns12 <- quiet(gamlss(
+    rain.week ~ time,
+    sigma.formula = ~ time + I(time^2),
+    family = GA,
+    mu.link = "log",
+    sigma.link = "log"
+  ))
+  t.gam.ns22 <- quiet(gamlss(
+    rain.week ~ time + I(time^2),
+    sigma.formula = ~ time + I(time^2),
+    family = GA,
+    mu.link = "log",
+    sigma.link = "log"
+  ))
+  t.gam.ns30 <- quiet(gamlss(
+    rain.week ~ time +
+      I(time^2) +
+      I(time^3),
+    family = GA,
+    mu.link = "log",
+    sigma.link = "log"
+  ))
+  t.gam.ns03 <- quiet(gamlss(
+    rain.week ~ 1,
+    family = GA,
+    mu.link = "log",
+    sigma.formula = ~ time +
+      I(time^2) +
+      I(time^3),
+    sigma.link = "log"
+  ))
+  t.gam.ns31 <- quiet(gamlss(
+    rain.week ~ time +
+      I(time^2) +
+      I(time^3),
+    sigma.formula = ~time,
+    family = GA,
+    mu.link = "log",
+    sigma.link = "log"
+  ))
+  t.gam.ns13 <- quiet(gamlss(
+    rain.week ~ time,
+    sigma.formula = ~ time +
+      I(time^2) +
+      I(time^3),
+    family = GA,
+    mu.link = "log",
+    sigma.link = "log"
+  ))
+  t.gam.ns32 <- quiet(gamlss(
+    rain.week ~ time +
+      I(time^2) +
+      I(time^3),
+    sigma.formula = ~ time +
+      I(time^2),
+    family = GA,
+    mu.link = "log",
+    sigma.link = "log"
+  ))
+  t.gam.ns23 <- quiet(gamlss(
+    rain.week ~ time +
+      I(time^2),
+    sigma.formula = ~ time +
+      I(time^2) +
+      I(time^3),
+    family = GA,
+    mu.link = "log",
+    sigma.link = "log"
+  ))
+  t.gam.ns33 <- quiet(gamlss(
+    rain.week ~ time +
+      I(time^2) +
+      I(time^3),
+    sigma.formula = ~ time +
+      I(time^2) +
+      I(time^3),
+    family = GA,
+    mu.link = "log",
+    sigma.link = "log"
+  ))
+  # Selection among all 16 models
+  best[1, 1] <- which.min(list(
     MuMIn::AICc(t.gam, k = k),
     MuMIn::AICc(t.gam.ns10, k = k),
     MuMIn::AICc(t.gam.ns01, k = k),
@@ -213,14 +212,14 @@ select.model <- function(rain.week) {
     MuMIn::AICc(t.gam.ns23, k = k),
     MuMIn::AICc(t.gam.ns33, k = k)
   ))
-#Selection among the stationary and linear models (models 1 to 4) 
-  best[1,2] <- which.min(list(
+  # Selection among the stationary and linear models (models 1 to 4)
+  best[1, 2] <- which.min(list(
     MuMIn::AICc(t.gam, k = k),
     MuMIn::AICc(t.gam.ns10, k = k),
     MuMIn::AICc(t.gam.ns01, k = k),
     MuMIn::AICc(t.gam.ns11, k = k)
   ))
-  
+
   return(best)
 }
 library(gamlss)
@@ -228,8 +227,8 @@ library(gamlss.dist)
 library(MuMIn)
 library(spsUtil)
 # Monte Carlo Simulation with three Sample Sizes
-sample_sizes <- c(30, 60, 90)  # Define the sample sizes
-ns <- 10000  # Number of simulations
+sample_sizes <- c(30, 60, 90) # Define the sample sizes
+ns <- 10000 # Number of simulations
 k.seq <- seq(from = 2, to = 7, by = 0.2)
 penalty <- length(k.seq)
 
@@ -240,31 +239,31 @@ selected_linear_list <- list()
 for (n in sample_sizes) {
   time <- 1L:n
   rain.week <- matrix(NA, nrow = n, ncol = ns)
-  
+
   sigma0 <- 0.22
   mu0 <- 809
-  slope.mu <- 0  # trend-free
-  slope.sigma <- 0  # trend-free
+  slope.mu <- 0 # trend-free
+  slope.sigma <- 0 # trend-free
   sigma <- sigma0 + slope.sigma * time
   mu <- mu0 + slope.mu * time
-  
+
   # Simulating precipitation data
   rain.week <- replicate(ns, sapply(1:n, function(t) rGA(1, mu = mu[t], sigma = sigma[t])))
-  
+
   result <- matrix(NA, nrow = ns, ncol = 2 * penalty)
   selected.nonlinear <- matrix(NA, 16, penalty)
   selected.linear <- matrix(NA, 4, penalty)
-  
+
   # Calculating loop for each k
   for (j in seq_along(k.seq)) {
     k <- k.seq[j]
     result1 <- apply(rain.week, 2, select.model)
-    result[, (2*j - 1):(2*j)] <- t(result1)
-    
+    result[, (2 * j - 1):(2 * j)] <- t(result1)
+
     for (model in 1:16) {
-      selected.nonlinear[model, j] <- 100 * (sum(result[, 2*j - 1] == model) / ns)
+      selected.nonlinear[model, j] <- 100 * (sum(result[, 2 * j - 1] == model) / ns)
       if (model <= 4) {
-        selected.linear[model, j] <- 100 * (sum(result[, 2*j] == model) / ns)
+        selected.linear[model, j] <- 100 * (sum(result[, 2 * j] == model) / ns)
       }
     }
   }
@@ -272,7 +271,7 @@ for (n in sample_sizes) {
   rownames(selected.linear) <- paste0("Model", 1:4)
   colnames(selected.nonlinear) <- as.character(k.seq)
   colnames(selected.linear) <- as.character(k.seq)
-  
+
   results_list[[as.character(n)]] <- result
   selected_nonlinear_list[[as.character(n)]] <- selected.nonlinear
   selected_linear_list[[as.character(n)]] <- selected.linear
@@ -313,14 +312,14 @@ Note that this chunk (monte carlo 2) requires the packages and the select.model(
 
 ```{r monte carlo 2, message=FALSE, warning=FALSE, eval=FALSE}
 ## Monte Carlo Simulation
-n <- 90  
-ns <- 10000  
+n <- 90
+ns <- 10000
 time <- 1L:n
 
 rain.week <- matrix(NA, nrow = n, ncol = ns)
 sigma0 <- 0.22
 mu0 <- 809
-slope.mu <- (-0.004*mu0) # super-imposed trend
+slope.mu <- (-0.004 * mu0) # super-imposed trend
 slope.sigma <- 0 # trend-free
 sigma <- sigma0 + slope.sigma * time
 mu <- mu0 + slope.mu * time
@@ -330,18 +329,18 @@ penalty <- length(k.seq)
 result <- matrix(NA, nrow = ns, ncol = 2 * penalty)
 selected.nonlinear <- matrix(NA, 16, penalty)
 selected.linear <- matrix(NA, 4, penalty)
-#simulating again
+# simulating again
 rain.week <- replicate(ns, sapply(1:n, function(t) rGA(1, mu = mu[t], sigma = sigma[t])))
 
 for (j in seq_along(k.seq)) {
   k <- k.seq[j]
   result1 <- apply(rain.week, 2, select.model)
-  result[, (2*j - 1):(2*j)] <- t(result1)
-  
+  result[, (2 * j - 1):(2 * j)] <- t(result1)
+
   for (model in 1:16) {
-    selected.nonlinear[model, j] <- 100 * (sum(result[, 2*j - 1] == model) / ns)
+    selected.nonlinear[model, j] <- 100 * (sum(result[, 2 * j - 1] == model) / ns)
     if (model <= 4) {
-      selected.linear[model, j] <- 100 * (sum(result[, 2*j] == model) / ns)
+      selected.linear[model, j] <- 100 * (sum(result[, 2 * j] == model) / ns)
     }
   }
 }
@@ -390,13 +389,15 @@ handle_setopt(h, timeout = 360L)
 
 rain_file <- file.path(tempdir(), "oxford_rain.csv")
 
-curl::curl_download(url = "https://figshare.com/ndownloader/files/21950895",
-              destfile = rain_file,
-              mode = "wb",
-              quiet = FALSE,
-              handle = h)
+curl::curl_download(
+  url = "https://figshare.com/ndownloader/files/21950895",
+  destfile = rain_file,
+  mode = "wb",
+  quiet = FALSE,
+  handle = h
+)
 Oxford.1815 <- read.csv(rain_file)
-Oxford <- Oxford.1815[which(Oxford.1815$YYY >= 1827),] #Rainfall records, including traces (NA), started in 1827
+Oxford <- Oxford.1815[which(Oxford.1815$YYY >= 1827), ] # Rainfall records, including traces (NA), started in 1827
 summary(Oxford)
 ```
 
@@ -425,7 +426,7 @@ Apply the {SPIChanges} package's `SPIChanges()` to daily precipitation data (`Ox
 
 ```{r Case Study 1 }
 library(SPIChanges)
-rainTS4 <- TSaggreg(daily.rain = OxfordRain,start.date = "1827-01-01",TS = 4)
+rainTS4 <- TSaggreg(daily.rain = OxfordRain, start.date = "1827-01-01", TS = 4)
 
 ### Fit All Models: Stationary, Linear and Nonlinear
 
@@ -464,23 +465,25 @@ In summary, the *\$model.selection* output highlights the prevalence of stationa
 Figure 1 depicts the selected models for each quasi-week period.
 
 ```{r selected models, fig.width=8, fig.height=5}
-eixo.x.Month <- Oxford.Changes$model.selection[,1]
-eixo.y.quasiWeek <- Oxford.Changes$model.selection[,2]
-valores <- Oxford.Changes$model.selection[,3]
-dados <- cbind(eixo.x.Month,eixo.y.quasiWeek, valores )
+eixo.x.Month <- Oxford.Changes$model.selection[, 1]
+eixo.y.quasiWeek <- Oxford.Changes$model.selection[, 2]
+valores <- Oxford.Changes$model.selection[, 3]
+dados <- cbind(eixo.x.Month, eixo.y.quasiWeek, valores)
 df <- as.data.frame(dados)
 
 library(ggplot2)
 df$valores <- as.factor(df$valores)
-fig1 = ggplot(df) +
-  aes(x = eixo.x.Month, y = eixo.y.quasiWeek , fill = valores) +
+fig1 <- ggplot(df) +
+  aes(x = eixo.x.Month, y = eixo.y.quasiWeek, fill = valores) +
   geom_tile() +
-  scale_fill_manual(values = c("1" = "#D3D3D3",  
-                               "2" = "#ADD8E6", 
-                               "3" = "#87CEEB",  
-                               "4" = "#4682B4", 
-                               "6" = "#FA8072",   
-                               "11" = "#FF8C00"))+
+  scale_fill_manual(values = c(
+    "1" = "#D3D3D3",
+    "2" = "#ADD8E6",
+    "3" = "#87CEEB",
+    "4" = "#4682B4",
+    "6" = "#FA8072",
+    "11" = "#FF8C00"
+  )) +
   theme_bw() +
   labs(x = "Months", y = "quasi-week", fill = NULL, title = "only.linear = 'No'", caption = ("Figure 1. Gamma-based models selected by the SPIChanges package. The plot corresponds to setting \n the `only.linear`  argument of the SPIChanges() function to `No`. Monthly precipitation series recorded \n at the Radcliffe Observatory site  in Oxford-UK (January 1827 to January 2020).")) +
   scale_x_continuous(breaks = 1:12, labels = c("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec")) +
@@ -489,11 +492,12 @@ fig1 = ggplot(df) +
     strip.text = element_text(color = "black", face = "bold"),
     axis.text.x = element_text(size = 10, color = "black"),
     axis.text.y = element_text(size = 10, color = "black"),
-    axis.title.x = element_text(size = 10, face = 'bold', color = "black"),
-    axis.title.y = element_text(size = 10, face = 'bold', color = "black"),
+    axis.title.x = element_text(size = 10, face = "bold", color = "black"),
+    axis.title.y = element_text(size = 10, face = "bold", color = "black"),
     plot.title = element_text(face = "bold", size = 14, color = "black"),
     plot.caption = element_text(hjust = 0, size = 10, color = "black", lineheight = 1.0),
-    plot.margin = margin(10, 10, 20, 10))
+    plot.margin = margin(10, 10, 20, 10)
+  )
 
 fig1
 ```
@@ -521,200 +525,209 @@ Specifically, *\$Statistics* illustrates the year-to-year changes in the magnitu
     -   Over the entire series (1827–2019), the δ parameter experienced an overall decline, particularly from the middle of the series (approximately 1923) to 2019.
 
 ```{r year-to-year changes, fig.width=10, fig.height=5}
-eixo.x.years <-1827L: 2019L
-jan1 <- Oxford.Changes$Statistics[which(Oxford.Changes$Statistics$Month == 1 & Oxford.Changes$Statistics$quasiWeek == 1),4]
-jan2 <- Oxford.Changes$Statistics[which(Oxford.Changes$Statistics$Month == 1 & Oxford.Changes$Statistics$quasiWeek == 2),4]
-jan3 <- Oxford.Changes$Statistics[which(Oxford.Changes$Statistics$Month == 1 & Oxford.Changes$Statistics$quasiWeek == 3),4]
-jan4 <- Oxford.Changes$Statistics[which(Oxford.Changes$Statistics$Month == 1 & Oxford.Changes$Statistics$quasiWeek == 4),4]
-jul3 <- Oxford.Changes$Statistics[which(Oxford.Changes$Statistics$Month == 7 & Oxford.Changes$Statistics$quasiWeek == 3),4]
-jul4 <- Oxford.Changes$Statistics[which(Oxford.Changes$Statistics$Month == 7 & Oxford.Changes$Statistics$quasiWeek == 4),4]
-dec4mu <- Oxford.Changes$Statistics[which(Oxford.Changes$Statistics$Month == 12 & Oxford.Changes$Statistics$quasiWeek == 4),4] 
-jun4 <- Oxford.Changes$Statistics[which(Oxford.Changes$Statistics$Month == 6 & Oxford.Changes$Statistics$quasiWeek == 4),5]
-jul1 <- Oxford.Changes$Statistics[which(Oxford.Changes$Statistics$Month == 7 & Oxford.Changes$Statistics$quasiWeek == 1),5]
-jul2 <- Oxford.Changes$Statistics[which(Oxford.Changes$Statistics$Month == 7 & Oxford.Changes$Statistics$quasiWeek == 2),5]
-sep3 <- Oxford.Changes$Statistics[which(Oxford.Changes$Statistics$Month == 9 & Oxford.Changes$Statistics$quasiWeek == 3),5]
-dec2 <- Oxford.Changes$Statistics[which(Oxford.Changes$Statistics$Month == 12 & Oxford.Changes$Statistics$quasiWeek == 2),5]
-dec4 <- Oxford.Changes$Statistics[which(Oxford.Changes$Statistics$Month == 12 & Oxford.Changes$Statistics$quasiWeek == 4),5]
-mar2 <- Oxford.Changes$Statistics[which(Oxford.Changes$Statistics$Month == 3 & Oxford.Changes$Statistics$quasiWeek == 2),5]
-mar3 <- Oxford.Changes$Statistics[which(Oxford.Changes$Statistics$Month == 3 & Oxford.Changes$Statistics$quasiWeek == 3),5]
-sep1 <- Oxford.Changes$Statistics[which(Oxford.Changes$Statistics$Month == 9 & Oxford.Changes$Statistics$quasiWeek == 1),5]
+eixo.x.years <- 1827L:2019L
+jan1 <- Oxford.Changes$Statistics[which(Oxford.Changes$Statistics$Month == 1 & Oxford.Changes$Statistics$quasiWeek == 1), 4]
+jan2 <- Oxford.Changes$Statistics[which(Oxford.Changes$Statistics$Month == 1 & Oxford.Changes$Statistics$quasiWeek == 2), 4]
+jan3 <- Oxford.Changes$Statistics[which(Oxford.Changes$Statistics$Month == 1 & Oxford.Changes$Statistics$quasiWeek == 3), 4]
+jan4 <- Oxford.Changes$Statistics[which(Oxford.Changes$Statistics$Month == 1 & Oxford.Changes$Statistics$quasiWeek == 4), 4]
+jul3 <- Oxford.Changes$Statistics[which(Oxford.Changes$Statistics$Month == 7 & Oxford.Changes$Statistics$quasiWeek == 3), 4]
+jul4 <- Oxford.Changes$Statistics[which(Oxford.Changes$Statistics$Month == 7 & Oxford.Changes$Statistics$quasiWeek == 4), 4]
+dec4mu <- Oxford.Changes$Statistics[which(Oxford.Changes$Statistics$Month == 12 & Oxford.Changes$Statistics$quasiWeek == 4), 4]
+jun4 <- Oxford.Changes$Statistics[which(Oxford.Changes$Statistics$Month == 6 & Oxford.Changes$Statistics$quasiWeek == 4), 5]
+jul1 <- Oxford.Changes$Statistics[which(Oxford.Changes$Statistics$Month == 7 & Oxford.Changes$Statistics$quasiWeek == 1), 5]
+jul2 <- Oxford.Changes$Statistics[which(Oxford.Changes$Statistics$Month == 7 & Oxford.Changes$Statistics$quasiWeek == 2), 5]
+sep3 <- Oxford.Changes$Statistics[which(Oxford.Changes$Statistics$Month == 9 & Oxford.Changes$Statistics$quasiWeek == 3), 5]
+dec2 <- Oxford.Changes$Statistics[which(Oxford.Changes$Statistics$Month == 12 & Oxford.Changes$Statistics$quasiWeek == 2), 5]
+dec4 <- Oxford.Changes$Statistics[which(Oxford.Changes$Statistics$Month == 12 & Oxford.Changes$Statistics$quasiWeek == 4), 5]
+mar2 <- Oxford.Changes$Statistics[which(Oxford.Changes$Statistics$Month == 3 & Oxford.Changes$Statistics$quasiWeek == 2), 5]
+mar3 <- Oxford.Changes$Statistics[which(Oxford.Changes$Statistics$Month == 3 & Oxford.Changes$Statistics$quasiWeek == 3), 5]
+sep1 <- Oxford.Changes$Statistics[which(Oxford.Changes$Statistics$Month == 9 & Oxford.Changes$Statistics$quasiWeek == 1), 5]
 
 jan4 <- head(jan4, -1)
 
-valores <- c(jan1, jan2, jan3, jan4, jul3, jul4, dec4mu, 
-             jun4, jul1, jul2, sep3, dec2, dec4, 
-             mar2, mar3, sep1)
-line <- c(rep("Jan (1st quasi-week)", length(jan1)),
-          rep("Jan (2nd quasi-week)", length(jan2)),
-          rep("Jan (3rd quasi-week)", length(jan3)),
-          rep("Jan (4th quasi-week)", length(jan4)),
-          rep("Jul (3rd quasi-week)", length(jul3)),
-          rep("Jul (4th quasi-week)", length(jul4)),
-          rep("Dec (4th quasi-week)", length(dec4mu)),
-          rep("Jun (4th quasi-week)", length(jun4)),
-          rep("Jul (1st quasi-week)", length(jul1)),
-          rep("Jul (2nd quasi-week)", length(jul2)),
-          rep("Sep (3rd quasi-week)", length(sep3)),
-          rep("Dec (2nd quasi-week)", length(dec2)),
-          rep("Dec (4th quasi-week)", length(dec4)),
-          rep("Mar (2nd quasi-week)", length(mar2)),
-          rep("Mar (3rd quasi-week)", length(mar3)),
-          rep("Sep (1st quasi-week)", length(sep1)))
+valores <- c(
+  jan1, jan2, jan3, jan4, jul3, jul4, dec4mu,
+  jun4, jul1, jul2, sep3, dec2, dec4,
+  mar2, mar3, sep1
+)
+line <- c(
+  rep("Jan (1st quasi-week)", length(jan1)),
+  rep("Jan (2nd quasi-week)", length(jan2)),
+  rep("Jan (3rd quasi-week)", length(jan3)),
+  rep("Jan (4th quasi-week)", length(jan4)),
+  rep("Jul (3rd quasi-week)", length(jul3)),
+  rep("Jul (4th quasi-week)", length(jul4)),
+  rep("Dec (4th quasi-week)", length(dec4mu)),
+  rep("Jun (4th quasi-week)", length(jun4)),
+  rep("Jul (1st quasi-week)", length(jul1)),
+  rep("Jul (2nd quasi-week)", length(jul2)),
+  rep("Sep (3rd quasi-week)", length(sep3)),
+  rep("Dec (2nd quasi-week)", length(dec2)),
+  rep("Dec (4th quasi-week)", length(dec4)),
+  rep("Mar (2nd quasi-week)", length(mar2)),
+  rep("Mar (3rd quasi-week)", length(mar3)),
+  rep("Sep (1st quasi-week)", length(sep1))
+)
 
-letra <- c(rep("a", length(jan1) + length(jan2) + length(jan3) + length(jan4) + length(jul3) + length(jul4) + length(dec4mu)),
-           rep("b", length(jun4) + length(jul1) + length(jul2) + length(sep3) + length(dec2) + length(dec4)),
-           rep("c", length(mar2) + length(mar3) + length(sep1)))
+letra <- c(
+  rep("a", length(jan1) + length(jan2) + length(jan3) + length(jan4) + length(jul3) + length(jul4) + length(dec4mu)),
+  rep("b", length(jun4) + length(jul1) + length(jul2) + length(sep3) + length(dec2) + length(dec4)),
+  rep("c", length(mar2) + length(mar3) + length(sep1))
+)
 
 df2 <- data.frame(
-  ano = rep(eixo.x.years, length.out = length(valores)),  
-  valores = valores,  
-  line = line,        
-  letra = letra )     
+  ano = rep(eixo.x.years, length.out = length(valores)),
+  valores = valores,
+  line = line,
+  letra = letra
+)
 
 library(ggplot2)
 library(patchwork)
-library(grid)  
+library(grid)
 library(dplyr)
 
 df2 <- df2 %>%
   mutate(
     line = recode(line,
-                  "dec4" = "Dec (4th quasi-week)",
-                  "jan1" = "Jan (1st quasi-week)",
-                  "jan4" = "Jan (4th quasi-week)",
-                  "jul2" = "Jul (2nd quasi-week)",
-                  "mar2" = "Mar (2nd quasi-week)",
-                  "jan2" = "Jan (2nd quasi-week)",
-                  "jul3" = "Jul (3rd quasi-week)",
-                  "jun4" = "Jun (4th quasi-week)",
-                  "mar3" = "Mar (3rd quasi-week)",
-                  "sep3" = "Sep (3rd quasi-week)",
-                  "dec2" = "Dec (2nd quasi-week)",
-                  "jan3" = "Jan (3rd quasi-week)",
-                  "jul1" = "Jul (1st quasi-week)",
-                  "jul4" = "Jul (4th quasi-week)",
-                  "sep1" = "Sep (1st quasi-week)"
+      "dec4" = "Dec (4th quasi-week)",
+      "jan1" = "Jan (1st quasi-week)",
+      "jan4" = "Jan (4th quasi-week)",
+      "jul2" = "Jul (2nd quasi-week)",
+      "mar2" = "Mar (2nd quasi-week)",
+      "jan2" = "Jan (2nd quasi-week)",
+      "jul3" = "Jul (3rd quasi-week)",
+      "jun4" = "Jun (4th quasi-week)",
+      "mar3" = "Mar (3rd quasi-week)",
+      "sep3" = "Sep (3rd quasi-week)",
+      "dec2" = "Dec (2nd quasi-week)",
+      "jan3" = "Jan (3rd quasi-week)",
+      "jul1" = "Jul (1st quasi-week)",
+      "jul4" = "Jul (4th quasi-week)",
+      "sep1" = "Sep (1st quasi-week)"
     )
   )
 
-cores <- c("Jan (1st quasi-week)" = "blue",
-           "Jan (2nd quasi-week)" = "gold",
-           "Jan (3rd quasi-week)" = "firebrick",
-           "Jan (4th quasi-week)" = "black",
-           "Jul (3rd quasi-week)" = "cyan",
-           "Jul (4th quasi-week)" = "red",
-           "Dec (4th quasi-week)" = "#1f77b4",
-           "Jun (4th quasi-week)" = "#7f7f7f", 
-           "Jul (1st quasi-week)" = "#008080",
-           "Jul (2nd quasi-week)" = "#8B4513",
-           "Sep (3rd quasi-week)" = "#4B0082",
-           "Dec (2nd quasi-week)" = "#ffbb78", 
-           "Mar (2nd quasi-week)" = "#9467bd",
-           "Mar (3rd quasi-week)" = "#bcbd22",
-           "Sep (1st quasi-week)" = "#c49c94")
+cores <- c(
+  "Jan (1st quasi-week)" = "blue",
+  "Jan (2nd quasi-week)" = "gold",
+  "Jan (3rd quasi-week)" = "firebrick",
+  "Jan (4th quasi-week)" = "black",
+  "Jul (3rd quasi-week)" = "cyan",
+  "Jul (4th quasi-week)" = "red",
+  "Dec (4th quasi-week)" = "#1f77b4",
+  "Jun (4th quasi-week)" = "#7f7f7f",
+  "Jul (1st quasi-week)" = "#008080",
+  "Jul (2nd quasi-week)" = "#8B4513",
+  "Sep (3rd quasi-week)" = "#4B0082",
+  "Dec (2nd quasi-week)" = "#ffbb78",
+  "Mar (2nd quasi-week)" = "#9467bd",
+  "Mar (3rd quasi-week)" = "#bcbd22",
+  "Sep (1st quasi-week)" = "#c49c94"
+)
 
 plot_a <- ggplot(df2 %>% filter(letra == "a")) +
   aes(x = ano, y = valores, colour = line) +
-  geom_line(linewidth = 1.0, lineend = "round") +  
+  geom_line(linewidth = 1.0, lineend = "round") +
   scale_color_manual(values = cores) +
   theme_bw() +
   theme(
-    legend.position.inside = c(0.9, 0.3), ######  
-    legend.title = element_blank(),  
-    legend.key.size = unit(0.1, "cm"),  ##
-    legend.box.spacing = unit(0.1, "cm"),  
-    legend.direction = "horizontal",   
-    legend.box = "horizontal", 
+    legend.position.inside = c(0.9, 0.3), ######
+    legend.title = element_blank(),
+    legend.key.size = unit(0.1, "cm"), ##
+    legend.box.spacing = unit(0.1, "cm"),
+    legend.direction = "horizontal",
+    legend.box = "horizontal",
     legend.background = element_blank(),
-    legend.text = element_text(size = 9),  
-    legend.key.width = unit(1, "cm"),  
-    axis.title.y = element_text(size = 9, face = "bold"),  
-    strip.text = element_text(face = "bold", size = 12), 
+    legend.text = element_text(size = 9),
+    legend.key.width = unit(1, "cm"),
+    axis.title.y = element_text(size = 9, face = "bold"),
+    strip.text = element_text(face = "bold", size = 12),
     plot.margin = margin(3, 3, 3, 3),
-    axis.title.x = element_blank(), 
+    axis.title.x = element_blank(),
     axis.text.x = element_blank()
   ) +
   scale_x_continuous(
-    breaks = seq(1827, 2019, by = 25),  
-    name = ""  
+    breaks = seq(1827, 2019, by = 25),
+    name = ""
   ) +
   scale_y_continuous(
-    limits = c(0, 100),   
+    limits = c(0, 100),
     breaks = seq(0, 100, by = 20)
   ) +
   ylab("mean parameter \n (μ) GAMLSS") +
-  ggtitle("A")+
+  ggtitle("A") +
   guides(colour = guide_legend(ncol = 2))
 
 plot_b <- ggplot(df2 %>% filter(letra == "b")) +
   aes(x = ano, y = valores, colour = line) +
-  geom_line(linewidth = 1.0) +  
+  geom_line(linewidth = 1.0) +
   scale_color_manual(values = cores) +
   theme_bw() +
   theme(
-    legend.position.inside = c(0.9, 0.3),   
-    legend.title = element_blank(),  
-    legend.key.size = unit(0.1, "cm"),  
-    legend.box.spacing = unit(0.1, "cm"),  
-    legend.direction = "horizontal",   
-    legend.box = "horizontal", 
+    legend.position.inside = c(0.9, 0.3),
+    legend.title = element_blank(),
+    legend.key.size = unit(0.1, "cm"),
+    legend.box.spacing = unit(0.1, "cm"),
+    legend.direction = "horizontal",
+    legend.box = "horizontal",
     legend.background = element_blank(),
-    legend.text = element_text(size = 9), 
-    legend.key.width = unit(1, "cm"),  
-    axis.title.y = element_text(size = 9, face = "bold"),  
-    strip.text = element_text(face = "bold", size = 12), 
+    legend.text = element_text(size = 9),
+    legend.key.width = unit(1, "cm"),
+    axis.title.y = element_text(size = 9, face = "bold"),
+    strip.text = element_text(face = "bold", size = 12),
     plot.margin = margin(3, 3, 3, 3),
-    axis.title.x = element_blank(), 
+    axis.title.x = element_blank(),
     axis.text.x = element_blank()
   ) +
   scale_x_continuous(
-    breaks = seq(1827, 2019, by = 25),  
-    name = ""  # Título do eixo X
+    breaks = seq(1827, 2019, by = 25),
+    name = "" # Título do eixo X
   ) +
   scale_y_continuous(
-    limits = c(0, 1),   
+    limits = c(0, 1),
     breaks = seq(0, 1, by = 0.2)
   ) +
   ylab("dispersion parameter  \n(δ) GAMLSS") +
-  ggtitle("B")+
+  ggtitle("B") +
   guides(colour = guide_legend(ncol = 2))
 
 
 plot_c <- ggplot(df2 %>% filter(letra == "c")) +
   aes(x = ano, y = valores, colour = line) +
-  geom_line(linewidth = 1.0) +  
+  geom_line(linewidth = 1.0) +
   scale_color_manual(values = cores) +
   theme_bw() +
   labs(caption = ("Figure 2.Year-to-year changes in the dispersion parameter of gamma-based models estimated \n from monthly precipitation records of the Radcliffe Observatory site in Oxford-UK. (A) linear changes \n in the μ parameter, (B) linear changes in the δ parameter and, (C) nonlinear changes in the \n δ parameter.")) +
   theme(
-    legend.position.inside = c(0.9, 0.8),   
-    legend.title = element_blank(),  
-    legend.key.size = unit(0.1, "cm"),  
-    legend.box.spacing = unit(0.1, "cm"),  
-    legend.direction = "horizontal",   
-    legend.box = "horizontal", 
+    legend.position.inside = c(0.9, 0.8),
+    legend.title = element_blank(),
+    legend.key.size = unit(0.1, "cm"),
+    legend.box.spacing = unit(0.1, "cm"),
+    legend.direction = "horizontal",
+    legend.box = "horizontal",
     legend.background = element_blank(),
-    legend.text = element_text(size = 9),  
-    legend.key.width = unit(1, "cm"),  
-    axis.title.y = element_text(size = 9, face = "bold"), 
-    axis.title.x = element_text(size = 10, face = "bold"), 
-    strip.text = element_text(face = "bold", size = 12), 
+    legend.text = element_text(size = 9),
+    legend.key.width = unit(1, "cm"),
+    axis.title.y = element_text(size = 9, face = "bold"),
+    axis.title.x = element_text(size = 10, face = "bold"),
+    strip.text = element_text(face = "bold", size = 12),
     plot.caption = element_text(hjust = 0, size = 10, color = "black", lineheight = 1.0),
     plot.margin = margin(3, 3, 3, 3)
   ) +
   scale_x_continuous(
-    breaks = seq(1827, 2019, by = 25),  
-    name = "Years"  
+    breaks = seq(1827, 2019, by = 25),
+    name = "Years"
   ) +
   scale_y_continuous(
-    limits = c(0, 2),   
+    limits = c(0, 2),
     breaks = seq(0, 2, by = 0.4)
   ) +
   ylab("dispersion parameter  \n(δ) GAMLSS") +
-  ggtitle("C")+
+  ggtitle("C") +
   guides(colour = guide_legend(ncol = 2))
 
-fig2 = plot_a + plot_b + plot_c + plot_layout(ncol = 1,heights = c(1.3, 1.3, 1))
+fig2 <- plot_a + plot_b + plot_c + plot_layout(ncol = 1, heights = c(1.3, 1.3, 1))
 fig2
 ```
 
@@ -746,113 +759,121 @@ The *\$Changes.Freq.Drought* field provides valuable insights into the temporal 
 It highlights specific quasi-weekly periods with notable changes toward either rainier or drier conditions, emphasizing the importance of adopting nonstationary approaches for understanding change changes impacts over drought frequency.
 
 ```{r  changes in drought frequency, fig.width=8, fig.height=5}
-eixo.x <- c("1st - Jan","2nd - Jan","3rd - Jan","4th - Jan",
-            "2nd - Mar", "3rd - Mar", "4th - Jun",
-            "1st - Jul","2nd - Jul","3rd - Jul","4th - Jul",
-            "1st - Sep","3rd - Sep","2nd - Dec", "3rd - Dec")
-jan1.mod <- Oxford.Changes$Changes.Freq.Drought[which(Oxford.Changes$Changes.Freq.Drought[,1] == 1 & Oxford.Changes$Changes.Freq.Drought[,2] == 1),7]
-jan2.mod <- Oxford.Changes$Changes.Freq.Drought[which(Oxford.Changes$Changes.Freq.Drought[,1] == 1 & Oxford.Changes$Changes.Freq.Drought[,2] == 2),7]
-jan3.mod <- Oxford.Changes$Changes.Freq.Drought[which(Oxford.Changes$Changes.Freq.Drought[,1] == 1 & Oxford.Changes$Changes.Freq.Drought[,2] == 3),7]
-jan4.mod <- Oxford.Changes$Changes.Freq.Drought[which(Oxford.Changes$Changes.Freq.Drought[,1] == 1 & Oxford.Changes$Changes.Freq.Drought[,2] == 4),7]
-jul3.mod <- Oxford.Changes$Changes.Freq.Drought[which(Oxford.Changes$Changes.Freq.Drought[,1] == 7 & Oxford.Changes$Changes.Freq.Drought[,2] == 3),7]
-jul4.mod <- Oxford.Changes$Changes.Freq.Drought[which(Oxford.Changes$Changes.Freq.Drought[,1] == 7 & Oxford.Changes$Changes.Freq.Drought[,2] == 4),7]
-jun4.mod <- Oxford.Changes$Changes.Freq.Drought[which(Oxford.Changes$Changes.Freq.Drought[,1] == 6 & Oxford.Changes$Changes.Freq.Drought[,2] == 4),7]
-jul1.mod <- Oxford.Changes$Changes.Freq.Drought[which(Oxford.Changes$Changes.Freq.Drought[,1] == 7 & Oxford.Changes$Changes.Freq.Drought[,2] == 1),7]
-jul2.mod <- Oxford.Changes$Changes.Freq.Drought[which(Oxford.Changes$Changes.Freq.Drought[,1] == 7 & Oxford.Changes$Changes.Freq.Drought[,2] == 2),7]
-sep3.mod <- Oxford.Changes$Changes.Freq.Drought[which(Oxford.Changes$Changes.Freq.Drought[,1] == 9 & Oxford.Changes$Changes.Freq.Drought[,2] == 3),7]
-dec2.mod <- Oxford.Changes$Changes.Freq.Drought[which(Oxford.Changes$Changes.Freq.Drought[,1] == 12 & Oxford.Changes$Changes.Freq.Drought[,2] == 2),7]
-mar2.mod <- Oxford.Changes$Changes.Freq.Drought[which(Oxford.Changes$Changes.Freq.Drought[,1] == 3 & Oxford.Changes$Changes.Freq.Drought[,2] == 2),7]
-mar3.mod <- Oxford.Changes$Changes.Freq.Drought[which(Oxford.Changes$Changes.Freq.Drought[,1] == 3 & Oxford.Changes$Changes.Freq.Drought[,2] == 3),7]
-sep1.mod <- Oxford.Changes$Changes.Freq.Drought[which(Oxford.Changes$Changes.Freq.Drought[,1] == 9 & Oxford.Changes$Changes.Freq.Drought[,2] == 1),7]
-dec4.mod <- Oxford.Changes$Changes.Freq.Drought[which(Oxford.Changes$Changes.Freq.Drought[,1] == 12 & Oxford.Changes$Changes.Freq.Drought[,2] == 4),7]
-jan1.sev <- Oxford.Changes$Changes.Freq.Drought[which(Oxford.Changes$Changes.Freq.Drought[,1] == 1 & Oxford.Changes$Changes.Freq.Drought[,2] == 1),8]
-jan2.sev <- Oxford.Changes$Changes.Freq.Drought[which(Oxford.Changes$Changes.Freq.Drought[,1] == 1 & Oxford.Changes$Changes.Freq.Drought[,2] == 2),8]
-jan3.sev <- Oxford.Changes$Changes.Freq.Drought[which(Oxford.Changes$Changes.Freq.Drought[,1] == 1 & Oxford.Changes$Changes.Freq.Drought[,2] == 3),8]
-jan4.sev <- Oxford.Changes$Changes.Freq.Drought[which(Oxford.Changes$Changes.Freq.Drought[,1] == 1 & Oxford.Changes$Changes.Freq.Drought[,2] == 4),8]
-jul3.sev <- Oxford.Changes$Changes.Freq.Drought[which(Oxford.Changes$Changes.Freq.Drought[,1] == 7 & Oxford.Changes$Changes.Freq.Drought[,2] == 3),8]
-jul4.sev <- Oxford.Changes$Changes.Freq.Drought[which(Oxford.Changes$Changes.Freq.Drought[,1] == 7 & Oxford.Changes$Changes.Freq.Drought[,2] == 4),8]
-jun4.sev <- Oxford.Changes$Changes.Freq.Drought[which(Oxford.Changes$Changes.Freq.Drought[,1] == 6 & Oxford.Changes$Changes.Freq.Drought[,2] == 4),8]
-jul1.sev <- Oxford.Changes$Changes.Freq.Drought[which(Oxford.Changes$Changes.Freq.Drought[,1] == 7 & Oxford.Changes$Changes.Freq.Drought[,2] == 1),8]
-jul2.sev <- Oxford.Changes$Changes.Freq.Drought[which(Oxford.Changes$Changes.Freq.Drought[,1] == 7 & Oxford.Changes$Changes.Freq.Drought[,2] == 2),8]
-sep3.sev <- Oxford.Changes$Changes.Freq.Drought[which(Oxford.Changes$Changes.Freq.Drought[,1] == 9 & Oxford.Changes$Changes.Freq.Drought[,2] == 3),8]
-dec2.sev <- Oxford.Changes$Changes.Freq.Drought[which(Oxford.Changes$Changes.Freq.Drought[,1] == 12 & Oxford.Changes$Changes.Freq.Drought[,2] == 2),8]
-mar2.sev <- Oxford.Changes$Changes.Freq.Drought[which(Oxford.Changes$Changes.Freq.Drought[,1] == 3 & Oxford.Changes$Changes.Freq.Drought[,2] == 2),8]
-mar3.sev <- Oxford.Changes$Changes.Freq.Drought[which(Oxford.Changes$Changes.Freq.Drought[,1] == 3 & Oxford.Changes$Changes.Freq.Drought[,2] == 3),8]
-sep1.sev <- Oxford.Changes$Changes.Freq.Drought[which(Oxford.Changes$Changes.Freq.Drought[,1] == 9 & Oxford.Changes$Changes.Freq.Drought[,2] == 1),8]
-dec4.sev <- Oxford.Changes$Changes.Freq.Drought[which(Oxford.Changes$Changes.Freq.Drought[,1] == 12 & Oxford.Changes$Changes.Freq.Drought[,2] == 4),8]
-jan1.ext <- Oxford.Changes$Changes.Freq.Drought[which(Oxford.Changes$Changes.Freq.Drought[,1] == 1 & Oxford.Changes$Changes.Freq.Drought[,2] == 1),9]
-jan2.ext <- Oxford.Changes$Changes.Freq.Drought[which(Oxford.Changes$Changes.Freq.Drought[,1] == 1 & Oxford.Changes$Changes.Freq.Drought[,2] == 2),9]
-jan3.ext <- Oxford.Changes$Changes.Freq.Drought[which(Oxford.Changes$Changes.Freq.Drought[,1] == 1 & Oxford.Changes$Changes.Freq.Drought[,2] == 3),9]
-jan4.ext <- Oxford.Changes$Changes.Freq.Drought[which(Oxford.Changes$Changes.Freq.Drought[,1] == 1 & Oxford.Changes$Changes.Freq.Drought[,2] == 4),9]
-jul3.ext <- Oxford.Changes$Changes.Freq.Drought[which(Oxford.Changes$Changes.Freq.Drought[,1] == 7 & Oxford.Changes$Changes.Freq.Drought[,2] == 3),9]
-jul4.ext <- Oxford.Changes$Changes.Freq.Drought[which(Oxford.Changes$Changes.Freq.Drought[,1] == 7 & Oxford.Changes$Changes.Freq.Drought[,2] == 4),9]
-jun4.ext <- Oxford.Changes$Changes.Freq.Drought[which(Oxford.Changes$Changes.Freq.Drought[,1] == 6 & Oxford.Changes$Changes.Freq.Drought[,2] == 4),9]
-jul1.ext <- Oxford.Changes$Changes.Freq.Drought[which(Oxford.Changes$Changes.Freq.Drought[,1] == 7 & Oxford.Changes$Changes.Freq.Drought[,2] == 1),9]
-jul2.ext <- Oxford.Changes$Changes.Freq.Drought[which(Oxford.Changes$Changes.Freq.Drought[,1] == 7 & Oxford.Changes$Changes.Freq.Drought[,2] == 2),9]
-sep3.ext <- Oxford.Changes$Changes.Freq.Drought[which(Oxford.Changes$Changes.Freq.Drought[,1] == 9 & Oxford.Changes$Changes.Freq.Drought[,2] == 3),9]
-dec2.ext <- Oxford.Changes$Changes.Freq.Drought[which(Oxford.Changes$Changes.Freq.Drought[,1] == 12 & Oxford.Changes$Changes.Freq.Drought[,2] == 2),9]
-mar2.ext <- Oxford.Changes$Changes.Freq.Drought[which(Oxford.Changes$Changes.Freq.Drought[,1] == 3 & Oxford.Changes$Changes.Freq.Drought[,2] == 2),9]
-mar3.ext <- Oxford.Changes$Changes.Freq.Drought[which(Oxford.Changes$Changes.Freq.Drought[,1] == 3 & Oxford.Changes$Changes.Freq.Drought[,2] == 3),9]
-sep1.ext <- Oxford.Changes$Changes.Freq.Drought[which(Oxford.Changes$Changes.Freq.Drought[,1] == 9 & Oxford.Changes$Changes.Freq.Drought[,2] == 1),9]
-dec4.ext <- Oxford.Changes$Changes.Freq.Drought[which(Oxford.Changes$Changes.Freq.Drought[,1] == 12 & Oxford.Changes$Changes.Freq.Drought[,2] == 4),9]
-jan1.stat <- Oxford.Changes$Changes.Freq.Drought[which(Oxford.Changes$Changes.Freq.Drought[,1] == 1 & Oxford.Changes$Changes.Freq.Drought[,2] == 1),5]
-jan2.stat <- Oxford.Changes$Changes.Freq.Drought[which(Oxford.Changes$Changes.Freq.Drought[,1] == 1 & Oxford.Changes$Changes.Freq.Drought[,2] == 2),5]
-jan3.stat <- Oxford.Changes$Changes.Freq.Drought[which(Oxford.Changes$Changes.Freq.Drought[,1] == 1 & Oxford.Changes$Changes.Freq.Drought[,2] == 3),5]
-jan4.stat <- Oxford.Changes$Changes.Freq.Drought[which(Oxford.Changes$Changes.Freq.Drought[,1] == 1 & Oxford.Changes$Changes.Freq.Drought[,2] == 4),5]
-mar2.stat <- Oxford.Changes$Changes.Freq.Drought[which(Oxford.Changes$Changes.Freq.Drought[,1] == 3 & Oxford.Changes$Changes.Freq.Drought[,2] == 2),5]
-mar3.stat <- Oxford.Changes$Changes.Freq.Drought[which(Oxford.Changes$Changes.Freq.Drought[,1] == 3 & Oxford.Changes$Changes.Freq.Drought[,2] == 3),5]
-jun4.stat <- Oxford.Changes$Changes.Freq.Drought[which(Oxford.Changes$Changes.Freq.Drought[,1] == 6 & Oxford.Changes$Changes.Freq.Drought[,2] == 4),5]
-jul1.stat <- Oxford.Changes$Changes.Freq.Drought[which(Oxford.Changes$Changes.Freq.Drought[,1] == 7 & Oxford.Changes$Changes.Freq.Drought[,2] == 1),5]
-jul2.stat <- Oxford.Changes$Changes.Freq.Drought[which(Oxford.Changes$Changes.Freq.Drought[,1] == 7 & Oxford.Changes$Changes.Freq.Drought[,2] == 2),5]
-jul3.stat <- Oxford.Changes$Changes.Freq.Drought[which(Oxford.Changes$Changes.Freq.Drought[,1] == 7 & Oxford.Changes$Changes.Freq.Drought[,2] == 3),5]
-jul4.stat <- Oxford.Changes$Changes.Freq.Drought[which(Oxford.Changes$Changes.Freq.Drought[,1] == 7 & Oxford.Changes$Changes.Freq.Drought[,2] == 4),5]
-sep1.stat <- Oxford.Changes$Changes.Freq.Drought[which(Oxford.Changes$Changes.Freq.Drought[,1] == 9 & Oxford.Changes$Changes.Freq.Drought[,2] == 1),5]
-sep3.stat <- Oxford.Changes$Changes.Freq.Drought[which(Oxford.Changes$Changes.Freq.Drought[,1] == 9 & Oxford.Changes$Changes.Freq.Drought[,2] == 3),5]
-dec2.stat <- Oxford.Changes$Changes.Freq.Drought[which(Oxford.Changes$Changes.Freq.Drought[,1] == 12 & Oxford.Changes$Changes.Freq.Drought[,2] == 2),5]
-dec4.stat <- Oxford.Changes$Changes.Freq.Drought[which(Oxford.Changes$Changes.Freq.Drought[,1] == 12 & Oxford.Changes$Changes.Freq.Drought[,2] == 4),5]
-jan1.nonstat <- Oxford.Changes$Changes.Freq.Drought[which(Oxford.Changes$Changes.Freq.Drought[,1] == 1 & Oxford.Changes$Changes.Freq.Drought[,2] == 1),6]
-jan2.nonstat <- Oxford.Changes$Changes.Freq.Drought[which(Oxford.Changes$Changes.Freq.Drought[,1] == 1 & Oxford.Changes$Changes.Freq.Drought[,2] == 2),6]
-jan3.nonstat <- Oxford.Changes$Changes.Freq.Drought[which(Oxford.Changes$Changes.Freq.Drought[,1] == 1 & Oxford.Changes$Changes.Freq.Drought[,2] == 3),6]
-jan4.nonstat <- Oxford.Changes$Changes.Freq.Drought[which(Oxford.Changes$Changes.Freq.Drought[,1] == 1 & Oxford.Changes$Changes.Freq.Drought[,2] == 4),6]
-mar2.nonstat <- Oxford.Changes$Changes.Freq.Drought[which(Oxford.Changes$Changes.Freq.Drought[,1] == 3 & Oxford.Changes$Changes.Freq.Drought[,2] == 2),6]
-mar3.nonstat <- Oxford.Changes$Changes.Freq.Drought[which(Oxford.Changes$Changes.Freq.Drought[,1] == 3 & Oxford.Changes$Changes.Freq.Drought[,2] == 3),6]
-jun4.nonstat <- Oxford.Changes$Changes.Freq.Drought[which(Oxford.Changes$Changes.Freq.Drought[,1] == 6 & Oxford.Changes$Changes.Freq.Drought[,2] == 4),6]
-jul1.nonstat <- Oxford.Changes$Changes.Freq.Drought[which(Oxford.Changes$Changes.Freq.Drought[,1] == 7 & Oxford.Changes$Changes.Freq.Drought[,2] == 1),6]
-jul2.nonstat <- Oxford.Changes$Changes.Freq.Drought[which(Oxford.Changes$Changes.Freq.Drought[,1] == 7 & Oxford.Changes$Changes.Freq.Drought[,2] == 2),6]
-jul3.nonstat <- Oxford.Changes$Changes.Freq.Drought[which(Oxford.Changes$Changes.Freq.Drought[,1] == 7 & Oxford.Changes$Changes.Freq.Drought[,2] == 3),6]
-jul4.nonstat <- Oxford.Changes$Changes.Freq.Drought[which(Oxford.Changes$Changes.Freq.Drought[,1] == 7 & Oxford.Changes$Changes.Freq.Drought[,2] == 4),6]
-sep1.nonstat <- Oxford.Changes$Changes.Freq.Drought[which(Oxford.Changes$Changes.Freq.Drought[,1] == 9 & Oxford.Changes$Changes.Freq.Drought[,2] == 1),6]
-sep3.nonstat <- Oxford.Changes$Changes.Freq.Drought[which(Oxford.Changes$Changes.Freq.Drought[,1] == 9 & Oxford.Changes$Changes.Freq.Drought[,2] == 3),6]
-dec2.nonstat <- Oxford.Changes$Changes.Freq.Drought[which(Oxford.Changes$Changes.Freq.Drought[,1] == 12 & Oxford.Changes$Changes.Freq.Drought[,2] == 2),6]
-dec4.nonstat <- Oxford.Changes$Changes.Freq.Drought[which(Oxford.Changes$Changes.Freq.Drought[,1] == 12 & Oxford.Changes$Changes.Freq.Drought[,2] == 4),6]
+eixo.x <- c(
+  "1st - Jan", "2nd - Jan", "3rd - Jan", "4th - Jan",
+  "2nd - Mar", "3rd - Mar", "4th - Jun",
+  "1st - Jul", "2nd - Jul", "3rd - Jul", "4th - Jul",
+  "1st - Sep", "3rd - Sep", "2nd - Dec", "3rd - Dec"
+)
+jan1.mod <- Oxford.Changes$Changes.Freq.Drought[which(Oxford.Changes$Changes.Freq.Drought[, 1] == 1 & Oxford.Changes$Changes.Freq.Drought[, 2] == 1), 7]
+jan2.mod <- Oxford.Changes$Changes.Freq.Drought[which(Oxford.Changes$Changes.Freq.Drought[, 1] == 1 & Oxford.Changes$Changes.Freq.Drought[, 2] == 2), 7]
+jan3.mod <- Oxford.Changes$Changes.Freq.Drought[which(Oxford.Changes$Changes.Freq.Drought[, 1] == 1 & Oxford.Changes$Changes.Freq.Drought[, 2] == 3), 7]
+jan4.mod <- Oxford.Changes$Changes.Freq.Drought[which(Oxford.Changes$Changes.Freq.Drought[, 1] == 1 & Oxford.Changes$Changes.Freq.Drought[, 2] == 4), 7]
+jul3.mod <- Oxford.Changes$Changes.Freq.Drought[which(Oxford.Changes$Changes.Freq.Drought[, 1] == 7 & Oxford.Changes$Changes.Freq.Drought[, 2] == 3), 7]
+jul4.mod <- Oxford.Changes$Changes.Freq.Drought[which(Oxford.Changes$Changes.Freq.Drought[, 1] == 7 & Oxford.Changes$Changes.Freq.Drought[, 2] == 4), 7]
+jun4.mod <- Oxford.Changes$Changes.Freq.Drought[which(Oxford.Changes$Changes.Freq.Drought[, 1] == 6 & Oxford.Changes$Changes.Freq.Drought[, 2] == 4), 7]
+jul1.mod <- Oxford.Changes$Changes.Freq.Drought[which(Oxford.Changes$Changes.Freq.Drought[, 1] == 7 & Oxford.Changes$Changes.Freq.Drought[, 2] == 1), 7]
+jul2.mod <- Oxford.Changes$Changes.Freq.Drought[which(Oxford.Changes$Changes.Freq.Drought[, 1] == 7 & Oxford.Changes$Changes.Freq.Drought[, 2] == 2), 7]
+sep3.mod <- Oxford.Changes$Changes.Freq.Drought[which(Oxford.Changes$Changes.Freq.Drought[, 1] == 9 & Oxford.Changes$Changes.Freq.Drought[, 2] == 3), 7]
+dec2.mod <- Oxford.Changes$Changes.Freq.Drought[which(Oxford.Changes$Changes.Freq.Drought[, 1] == 12 & Oxford.Changes$Changes.Freq.Drought[, 2] == 2), 7]
+mar2.mod <- Oxford.Changes$Changes.Freq.Drought[which(Oxford.Changes$Changes.Freq.Drought[, 1] == 3 & Oxford.Changes$Changes.Freq.Drought[, 2] == 2), 7]
+mar3.mod <- Oxford.Changes$Changes.Freq.Drought[which(Oxford.Changes$Changes.Freq.Drought[, 1] == 3 & Oxford.Changes$Changes.Freq.Drought[, 2] == 3), 7]
+sep1.mod <- Oxford.Changes$Changes.Freq.Drought[which(Oxford.Changes$Changes.Freq.Drought[, 1] == 9 & Oxford.Changes$Changes.Freq.Drought[, 2] == 1), 7]
+dec4.mod <- Oxford.Changes$Changes.Freq.Drought[which(Oxford.Changes$Changes.Freq.Drought[, 1] == 12 & Oxford.Changes$Changes.Freq.Drought[, 2] == 4), 7]
+jan1.sev <- Oxford.Changes$Changes.Freq.Drought[which(Oxford.Changes$Changes.Freq.Drought[, 1] == 1 & Oxford.Changes$Changes.Freq.Drought[, 2] == 1), 8]
+jan2.sev <- Oxford.Changes$Changes.Freq.Drought[which(Oxford.Changes$Changes.Freq.Drought[, 1] == 1 & Oxford.Changes$Changes.Freq.Drought[, 2] == 2), 8]
+jan3.sev <- Oxford.Changes$Changes.Freq.Drought[which(Oxford.Changes$Changes.Freq.Drought[, 1] == 1 & Oxford.Changes$Changes.Freq.Drought[, 2] == 3), 8]
+jan4.sev <- Oxford.Changes$Changes.Freq.Drought[which(Oxford.Changes$Changes.Freq.Drought[, 1] == 1 & Oxford.Changes$Changes.Freq.Drought[, 2] == 4), 8]
+jul3.sev <- Oxford.Changes$Changes.Freq.Drought[which(Oxford.Changes$Changes.Freq.Drought[, 1] == 7 & Oxford.Changes$Changes.Freq.Drought[, 2] == 3), 8]
+jul4.sev <- Oxford.Changes$Changes.Freq.Drought[which(Oxford.Changes$Changes.Freq.Drought[, 1] == 7 & Oxford.Changes$Changes.Freq.Drought[, 2] == 4), 8]
+jun4.sev <- Oxford.Changes$Changes.Freq.Drought[which(Oxford.Changes$Changes.Freq.Drought[, 1] == 6 & Oxford.Changes$Changes.Freq.Drought[, 2] == 4), 8]
+jul1.sev <- Oxford.Changes$Changes.Freq.Drought[which(Oxford.Changes$Changes.Freq.Drought[, 1] == 7 & Oxford.Changes$Changes.Freq.Drought[, 2] == 1), 8]
+jul2.sev <- Oxford.Changes$Changes.Freq.Drought[which(Oxford.Changes$Changes.Freq.Drought[, 1] == 7 & Oxford.Changes$Changes.Freq.Drought[, 2] == 2), 8]
+sep3.sev <- Oxford.Changes$Changes.Freq.Drought[which(Oxford.Changes$Changes.Freq.Drought[, 1] == 9 & Oxford.Changes$Changes.Freq.Drought[, 2] == 3), 8]
+dec2.sev <- Oxford.Changes$Changes.Freq.Drought[which(Oxford.Changes$Changes.Freq.Drought[, 1] == 12 & Oxford.Changes$Changes.Freq.Drought[, 2] == 2), 8]
+mar2.sev <- Oxford.Changes$Changes.Freq.Drought[which(Oxford.Changes$Changes.Freq.Drought[, 1] == 3 & Oxford.Changes$Changes.Freq.Drought[, 2] == 2), 8]
+mar3.sev <- Oxford.Changes$Changes.Freq.Drought[which(Oxford.Changes$Changes.Freq.Drought[, 1] == 3 & Oxford.Changes$Changes.Freq.Drought[, 2] == 3), 8]
+sep1.sev <- Oxford.Changes$Changes.Freq.Drought[which(Oxford.Changes$Changes.Freq.Drought[, 1] == 9 & Oxford.Changes$Changes.Freq.Drought[, 2] == 1), 8]
+dec4.sev <- Oxford.Changes$Changes.Freq.Drought[which(Oxford.Changes$Changes.Freq.Drought[, 1] == 12 & Oxford.Changes$Changes.Freq.Drought[, 2] == 4), 8]
+jan1.ext <- Oxford.Changes$Changes.Freq.Drought[which(Oxford.Changes$Changes.Freq.Drought[, 1] == 1 & Oxford.Changes$Changes.Freq.Drought[, 2] == 1), 9]
+jan2.ext <- Oxford.Changes$Changes.Freq.Drought[which(Oxford.Changes$Changes.Freq.Drought[, 1] == 1 & Oxford.Changes$Changes.Freq.Drought[, 2] == 2), 9]
+jan3.ext <- Oxford.Changes$Changes.Freq.Drought[which(Oxford.Changes$Changes.Freq.Drought[, 1] == 1 & Oxford.Changes$Changes.Freq.Drought[, 2] == 3), 9]
+jan4.ext <- Oxford.Changes$Changes.Freq.Drought[which(Oxford.Changes$Changes.Freq.Drought[, 1] == 1 & Oxford.Changes$Changes.Freq.Drought[, 2] == 4), 9]
+jul3.ext <- Oxford.Changes$Changes.Freq.Drought[which(Oxford.Changes$Changes.Freq.Drought[, 1] == 7 & Oxford.Changes$Changes.Freq.Drought[, 2] == 3), 9]
+jul4.ext <- Oxford.Changes$Changes.Freq.Drought[which(Oxford.Changes$Changes.Freq.Drought[, 1] == 7 & Oxford.Changes$Changes.Freq.Drought[, 2] == 4), 9]
+jun4.ext <- Oxford.Changes$Changes.Freq.Drought[which(Oxford.Changes$Changes.Freq.Drought[, 1] == 6 & Oxford.Changes$Changes.Freq.Drought[, 2] == 4), 9]
+jul1.ext <- Oxford.Changes$Changes.Freq.Drought[which(Oxford.Changes$Changes.Freq.Drought[, 1] == 7 & Oxford.Changes$Changes.Freq.Drought[, 2] == 1), 9]
+jul2.ext <- Oxford.Changes$Changes.Freq.Drought[which(Oxford.Changes$Changes.Freq.Drought[, 1] == 7 & Oxford.Changes$Changes.Freq.Drought[, 2] == 2), 9]
+sep3.ext <- Oxford.Changes$Changes.Freq.Drought[which(Oxford.Changes$Changes.Freq.Drought[, 1] == 9 & Oxford.Changes$Changes.Freq.Drought[, 2] == 3), 9]
+dec2.ext <- Oxford.Changes$Changes.Freq.Drought[which(Oxford.Changes$Changes.Freq.Drought[, 1] == 12 & Oxford.Changes$Changes.Freq.Drought[, 2] == 2), 9]
+mar2.ext <- Oxford.Changes$Changes.Freq.Drought[which(Oxford.Changes$Changes.Freq.Drought[, 1] == 3 & Oxford.Changes$Changes.Freq.Drought[, 2] == 2), 9]
+mar3.ext <- Oxford.Changes$Changes.Freq.Drought[which(Oxford.Changes$Changes.Freq.Drought[, 1] == 3 & Oxford.Changes$Changes.Freq.Drought[, 2] == 3), 9]
+sep1.ext <- Oxford.Changes$Changes.Freq.Drought[which(Oxford.Changes$Changes.Freq.Drought[, 1] == 9 & Oxford.Changes$Changes.Freq.Drought[, 2] == 1), 9]
+dec4.ext <- Oxford.Changes$Changes.Freq.Drought[which(Oxford.Changes$Changes.Freq.Drought[, 1] == 12 & Oxford.Changes$Changes.Freq.Drought[, 2] == 4), 9]
+jan1.stat <- Oxford.Changes$Changes.Freq.Drought[which(Oxford.Changes$Changes.Freq.Drought[, 1] == 1 & Oxford.Changes$Changes.Freq.Drought[, 2] == 1), 5]
+jan2.stat <- Oxford.Changes$Changes.Freq.Drought[which(Oxford.Changes$Changes.Freq.Drought[, 1] == 1 & Oxford.Changes$Changes.Freq.Drought[, 2] == 2), 5]
+jan3.stat <- Oxford.Changes$Changes.Freq.Drought[which(Oxford.Changes$Changes.Freq.Drought[, 1] == 1 & Oxford.Changes$Changes.Freq.Drought[, 2] == 3), 5]
+jan4.stat <- Oxford.Changes$Changes.Freq.Drought[which(Oxford.Changes$Changes.Freq.Drought[, 1] == 1 & Oxford.Changes$Changes.Freq.Drought[, 2] == 4), 5]
+mar2.stat <- Oxford.Changes$Changes.Freq.Drought[which(Oxford.Changes$Changes.Freq.Drought[, 1] == 3 & Oxford.Changes$Changes.Freq.Drought[, 2] == 2), 5]
+mar3.stat <- Oxford.Changes$Changes.Freq.Drought[which(Oxford.Changes$Changes.Freq.Drought[, 1] == 3 & Oxford.Changes$Changes.Freq.Drought[, 2] == 3), 5]
+jun4.stat <- Oxford.Changes$Changes.Freq.Drought[which(Oxford.Changes$Changes.Freq.Drought[, 1] == 6 & Oxford.Changes$Changes.Freq.Drought[, 2] == 4), 5]
+jul1.stat <- Oxford.Changes$Changes.Freq.Drought[which(Oxford.Changes$Changes.Freq.Drought[, 1] == 7 & Oxford.Changes$Changes.Freq.Drought[, 2] == 1), 5]
+jul2.stat <- Oxford.Changes$Changes.Freq.Drought[which(Oxford.Changes$Changes.Freq.Drought[, 1] == 7 & Oxford.Changes$Changes.Freq.Drought[, 2] == 2), 5]
+jul3.stat <- Oxford.Changes$Changes.Freq.Drought[which(Oxford.Changes$Changes.Freq.Drought[, 1] == 7 & Oxford.Changes$Changes.Freq.Drought[, 2] == 3), 5]
+jul4.stat <- Oxford.Changes$Changes.Freq.Drought[which(Oxford.Changes$Changes.Freq.Drought[, 1] == 7 & Oxford.Changes$Changes.Freq.Drought[, 2] == 4), 5]
+sep1.stat <- Oxford.Changes$Changes.Freq.Drought[which(Oxford.Changes$Changes.Freq.Drought[, 1] == 9 & Oxford.Changes$Changes.Freq.Drought[, 2] == 1), 5]
+sep3.stat <- Oxford.Changes$Changes.Freq.Drought[which(Oxford.Changes$Changes.Freq.Drought[, 1] == 9 & Oxford.Changes$Changes.Freq.Drought[, 2] == 3), 5]
+dec2.stat <- Oxford.Changes$Changes.Freq.Drought[which(Oxford.Changes$Changes.Freq.Drought[, 1] == 12 & Oxford.Changes$Changes.Freq.Drought[, 2] == 2), 5]
+dec4.stat <- Oxford.Changes$Changes.Freq.Drought[which(Oxford.Changes$Changes.Freq.Drought[, 1] == 12 & Oxford.Changes$Changes.Freq.Drought[, 2] == 4), 5]
+jan1.nonstat <- Oxford.Changes$Changes.Freq.Drought[which(Oxford.Changes$Changes.Freq.Drought[, 1] == 1 & Oxford.Changes$Changes.Freq.Drought[, 2] == 1), 6]
+jan2.nonstat <- Oxford.Changes$Changes.Freq.Drought[which(Oxford.Changes$Changes.Freq.Drought[, 1] == 1 & Oxford.Changes$Changes.Freq.Drought[, 2] == 2), 6]
+jan3.nonstat <- Oxford.Changes$Changes.Freq.Drought[which(Oxford.Changes$Changes.Freq.Drought[, 1] == 1 & Oxford.Changes$Changes.Freq.Drought[, 2] == 3), 6]
+jan4.nonstat <- Oxford.Changes$Changes.Freq.Drought[which(Oxford.Changes$Changes.Freq.Drought[, 1] == 1 & Oxford.Changes$Changes.Freq.Drought[, 2] == 4), 6]
+mar2.nonstat <- Oxford.Changes$Changes.Freq.Drought[which(Oxford.Changes$Changes.Freq.Drought[, 1] == 3 & Oxford.Changes$Changes.Freq.Drought[, 2] == 2), 6]
+mar3.nonstat <- Oxford.Changes$Changes.Freq.Drought[which(Oxford.Changes$Changes.Freq.Drought[, 1] == 3 & Oxford.Changes$Changes.Freq.Drought[, 2] == 3), 6]
+jun4.nonstat <- Oxford.Changes$Changes.Freq.Drought[which(Oxford.Changes$Changes.Freq.Drought[, 1] == 6 & Oxford.Changes$Changes.Freq.Drought[, 2] == 4), 6]
+jul1.nonstat <- Oxford.Changes$Changes.Freq.Drought[which(Oxford.Changes$Changes.Freq.Drought[, 1] == 7 & Oxford.Changes$Changes.Freq.Drought[, 2] == 1), 6]
+jul2.nonstat <- Oxford.Changes$Changes.Freq.Drought[which(Oxford.Changes$Changes.Freq.Drought[, 1] == 7 & Oxford.Changes$Changes.Freq.Drought[, 2] == 2), 6]
+jul3.nonstat <- Oxford.Changes$Changes.Freq.Drought[which(Oxford.Changes$Changes.Freq.Drought[, 1] == 7 & Oxford.Changes$Changes.Freq.Drought[, 2] == 3), 6]
+jul4.nonstat <- Oxford.Changes$Changes.Freq.Drought[which(Oxford.Changes$Changes.Freq.Drought[, 1] == 7 & Oxford.Changes$Changes.Freq.Drought[, 2] == 4), 6]
+sep1.nonstat <- Oxford.Changes$Changes.Freq.Drought[which(Oxford.Changes$Changes.Freq.Drought[, 1] == 9 & Oxford.Changes$Changes.Freq.Drought[, 2] == 1), 6]
+sep3.nonstat <- Oxford.Changes$Changes.Freq.Drought[which(Oxford.Changes$Changes.Freq.Drought[, 1] == 9 & Oxford.Changes$Changes.Freq.Drought[, 2] == 3), 6]
+dec2.nonstat <- Oxford.Changes$Changes.Freq.Drought[which(Oxford.Changes$Changes.Freq.Drought[, 1] == 12 & Oxford.Changes$Changes.Freq.Drought[, 2] == 2), 6]
+dec4.nonstat <- Oxford.Changes$Changes.Freq.Drought[which(Oxford.Changes$Changes.Freq.Drought[, 1] == 12 & Oxford.Changes$Changes.Freq.Drought[, 2] == 4), 6]
 
 df3 <- data.frame(
   x = eixo.x,
-  
-  moderate = c(jan1.mod, jan2.mod, jan3.mod, jan4.mod, 
-               mar2.mod, mar3.mod, jun4.mod, 
-               jul1.mod, jul2.mod, jul3.mod, jul4.mod, 
-               sep1.mod, sep3.mod, dec2.mod, dec4.mod),
-  
-  severe = c(jan1.sev, jan2.sev, jan3.sev, jan4.sev, 
-             mar2.sev, mar3.sev, jun4.sev, 
-             jul1.sev, jul2.sev, jul3.sev, jul4.sev, 
-             sep1.sev, sep3.sev, dec2.sev, dec4.sev),
-  
-  extreme = c(jan1.ext, jan2.ext, jan3.ext, jan4.ext, 
-              mar2.ext, mar3.ext, jun4.ext, 
-              jul1.ext, jul2.ext, jul3.ext, jul4.ext, 
-              sep1.ext, sep3.ext, dec2.ext, dec4.ext),
-  
-  stat = c(jan1.stat, jan2.stat, jan3.stat, jan4.stat, 
-           mar2.stat, mar3.stat, jun4.stat, 
-           jul1.stat, jul2.stat, jul3.stat, jul4.stat, 
-           sep1.stat, sep3.stat, dec2.stat, dec4.stat),
-  
-  nonstat = c(jan1.nonstat, jan2.nonstat, jan3.nonstat, jan4.nonstat, 
-              mar2.nonstat, mar3.nonstat, jun4.nonstat, 
-              jul1.nonstat, jul2.nonstat, jul3.nonstat, jul4.nonstat, 
-              sep1.nonstat, sep3.nonstat, dec2.nonstat, dec4.nonstat))
+  moderate = c(
+    jan1.mod, jan2.mod, jan3.mod, jan4.mod,
+    mar2.mod, mar3.mod, jun4.mod,
+    jul1.mod, jul2.mod, jul3.mod, jul4.mod,
+    sep1.mod, sep3.mod, dec2.mod, dec4.mod
+  ),
+  severe = c(
+    jan1.sev, jan2.sev, jan3.sev, jan4.sev,
+    mar2.sev, mar3.sev, jun4.sev,
+    jul1.sev, jul2.sev, jul3.sev, jul4.sev,
+    sep1.sev, sep3.sev, dec2.sev, dec4.sev
+  ),
+  extreme = c(
+    jan1.ext, jan2.ext, jan3.ext, jan4.ext,
+    mar2.ext, mar3.ext, jun4.ext,
+    jul1.ext, jul2.ext, jul3.ext, jul4.ext,
+    sep1.ext, sep3.ext, dec2.ext, dec4.ext
+  ),
+  stat = c(
+    jan1.stat, jan2.stat, jan3.stat, jan4.stat,
+    mar2.stat, mar3.stat, jun4.stat,
+    jul1.stat, jul2.stat, jul3.stat, jul4.stat,
+    sep1.stat, sep3.stat, dec2.stat, dec4.stat
+  ),
+  nonstat = c(
+    jan1.nonstat, jan2.nonstat, jan3.nonstat, jan4.nonstat,
+    mar2.nonstat, mar3.nonstat, jun4.nonstat,
+    jul1.nonstat, jul2.nonstat, jul3.nonstat, jul4.nonstat,
+    sep1.nonstat, sep3.nonstat, dec2.nonstat, dec4.nonstat
+  )
+)
 
 library(ggplot2)
 library(tidyr)
@@ -877,18 +898,20 @@ plot_3a <- ggplot(df_long_a, aes(x = x, y = value, fill = category)) +
   ) +
   theme_bw() +
   theme(
-    axis.text.x = element_blank(),  
-    axis.ticks.x = element_line( color= "black"),  
-    axis.text.y = element_text(size=10, color = "black"),  
-    axis.title.x = element_text(size=10,face = "bold", color = "black"),  
-    axis.title.y = element_text(size=9,face = "bold", color = "black"),  
+    axis.text.x = element_blank(),
+    axis.ticks.x = element_line(color = "black"),
+    axis.text.y = element_text(size = 10, color = "black"),
+    axis.title.x = element_text(size = 10, face = "bold", color = "black"),
+    axis.title.y = element_text(size = 9, face = "bold", color = "black"),
     legend.position.inside = c(0.05, 0.9),
-    legend.title = element_blank(),  
+    legend.title = element_blank(),
     legend.text = element_text(size = 10, color = "black"),
-    legend.key.width = unit(1, "cm"), 
+    legend.key.width = unit(1, "cm"),
     legend.key.size = unit(0.4, "cm"),
-    guides(fill = guide_legend(ncol = 1),
-    plot.margin = margin(15, 15, 15, 15))  
+    guides(
+      fill = guide_legend(ncol = 1),
+      plot.margin = margin(15, 15, 15, 15)
+    )
   )
 
 
@@ -901,23 +924,23 @@ plot_3b <- ggplot(df_long_b, aes(x = x, y = value, fill = category)) +
     labels = c("NonStationary Normal Rain", "Stationary Normal Rain")
   ) +
   theme_bw() +
-  labs(caption= "Figure 3.(A) Changes in the expected frequency of moderate to extreme (change moderate), \n severe to extreme (change severe) and extreme (change extreme)  drought events quantified by \n the Standardized Precipitation Index (4-quasi week time scale). (B) Precipitation amounts \n associated with a cumulative  probability of 0.5 estimated under the stationary (Stationary \n Normal Rain) and nonstationary (NonStationary Normal Rain) approaches. Precipitation series \n recordedat the Radcliffe Observatory site in Oxford-UK (January 1827 to January 2020).")+
+  labs(caption = "Figure 3.(A) Changes in the expected frequency of moderate to extreme (change moderate), \n severe to extreme (change severe) and extreme (change extreme)  drought events quantified by \n the Standardized Precipitation Index (4-quasi week time scale). (B) Precipitation amounts \n associated with a cumulative  probability of 0.5 estimated under the stationary (Stationary \n Normal Rain) and nonstationary (NonStationary Normal Rain) approaches. Precipitation series \n recordedat the Radcliffe Observatory site in Oxford-UK (January 1827 to January 2020).") +
   theme(
-    axis.text.x = element_text(size=10,angle = 45, hjust = 1, color = "black"),  
-    axis.text.y = element_text(size=10,color = "black"),  
-    axis.title.x = element_text(size=10,face = "bold", color = "black"),  
-    axis.title.y = element_text(size=10,face = "bold", color = "black"),  
+    axis.text.x = element_text(size = 10, angle = 45, hjust = 1, color = "black"),
+    axis.text.y = element_text(size = 10, color = "black"),
+    axis.title.x = element_text(size = 10, face = "bold", color = "black"),
+    axis.title.y = element_text(size = 10, face = "bold", color = "black"),
     legend.position.inside = c(0.05, 0.9),
-    legend.title = element_blank(), 
+    legend.title = element_blank(),
     legend.text = element_text(size = 10, color = "black"),
     legend.key.width = unit(1, "cm"),
     legend.key.size = unit(0.4, "cm"),
     plot.caption = element_text(hjust = 0, size = 10, color = "black", lineheight = 1.0),
     plot.margin = margin(10, 10, 10, 10),
-    guides(fill = guide_legend(ncol = 2))  
+    guides(fill = guide_legend(ncol = 2))
   )
 
-Fig3 <- plot_3a + plot_3b + plot_layout(ncol = 1,heights = c(1.5, 1.2))
+Fig3 <- plot_3a + plot_3b + plot_layout(ncol = 1, heights = c(1.5, 1.2))
 Fig3
 ```
 
@@ -929,8 +952,8 @@ This output data field allowed us to assess the impact of the changes in the par
 As an example, let's evaluate this output data field for the last year of the series (2019; Table 1).
 
 ```{r Monitoring drought in Oxford-UK, 2019}
-Table1 <- Oxford.Changes$data.week[which(Oxford.Changes$data.week[,1] == 2019),]
-#Table 1. Output data field /$data.week obtained by applying the SPIChanges package at the 4-quasi week time scale to the precipitation series recorded at the Radcliffe Observatory site in Oxford-UK (January 1827 to January 2020): rain.at.TS is the precipitation amount accumulated at the time scale specified by the users, SPI is the Standardized Precipitation Index, Exp.Acum.Prob and Actual.Acum.Prob are the expected frequency of the SPI estimates calculated under the stationary and under non-stationary approaches, respectively and, ChangeFreq is the changes in the frequency of dry events (SPI < 0). It is the difference between Actual.Acum.Prob and Exp.Acum.Prob.
+Table1 <- Oxford.Changes$data.week[which(Oxford.Changes$data.week[, 1] == 2019), ]
+# Table 1. Output data field /$data.week obtained by applying the SPIChanges package at the 4-quasi week time scale to the precipitation series recorded at the Radcliffe Observatory site in Oxford-UK (January 1827 to January 2020): rain.at.TS is the precipitation amount accumulated at the time scale specified by the users, SPI is the Standardized Precipitation Index, Exp.Acum.Prob and Actual.Acum.Prob are the expected frequency of the SPI estimates calculated under the stationary and under non-stationary approaches, respectively and, ChangeFreq is the changes in the frequency of dry events (SPI < 0). It is the difference between Actual.Acum.Prob and Exp.Acum.Prob.
 Table1
 ```
 
@@ -952,35 +975,37 @@ However, since “Oxford.Changes.linear” was calculated with the argument `onl
 As with the output data fields of the "Oxford.Changes" data frame, the outputs of “Oxford.Changes.linear” also indicate that most of the quasi-weekly periods did not exhibit significant changes in the frequency of meteorological droughts, see below.
 
 ```{r selected linear models, fig.width=8, fig.height=5}
-eixo.x.Month <- Oxford.Changes.linear$model.selection[,1]
-eixo.y.quasiWeek <- Oxford.Changes.linear$model.selection[,2]
-valores <- Oxford.Changes.linear$model.selection[,3]
-dados <- cbind(eixo.x.Month,eixo.y.quasiWeek, valores )
+eixo.x.Month <- Oxford.Changes.linear$model.selection[, 1]
+eixo.y.quasiWeek <- Oxford.Changes.linear$model.selection[, 2]
+valores <- Oxford.Changes.linear$model.selection[, 3]
+dados <- cbind(eixo.x.Month, eixo.y.quasiWeek, valores)
 df <- as.data.frame(dados)
 
 library(ggplot2)
 df$valores <- as.factor(df$valores)
-fig4 = ggplot(df) +
-  aes(x = eixo.x.Month, y = eixo.y.quasiWeek , fill = valores) +
+fig4 <- ggplot(df) +
+  aes(x = eixo.x.Month, y = eixo.y.quasiWeek, fill = valores) +
   geom_tile() +
-  scale_fill_manual(values = c("1" = "#D3D3D3",  
-                               "2" = "#ADD8E6", 
-                               "3" = "#87CEEB",  
-                               "4" = "#4682B4"
-                               ))+
+  scale_fill_manual(values = c(
+    "1" = "#D3D3D3",
+    "2" = "#ADD8E6",
+    "3" = "#87CEEB",
+    "4" = "#4682B4"
+  )) +
   theme_bw() +
-  labs(x = "Months", y = "quasi-week", fill = NULL, title = "only.linear = 'Yes'", caption = "Figure 4. Gamma-based models selected by the SPIChanges package. The plot corresponds to \n setting the `only.linear`  argument of the SPIChanges() function to `Yes`. Monthly precipitation series \n recorded at the  Radcliffe Observatory site  in Oxford-UK (January 1827 to January 2020)." ) +
+  labs(x = "Months", y = "quasi-week", fill = NULL, title = "only.linear = 'Yes'", caption = "Figure 4. Gamma-based models selected by the SPIChanges package. The plot corresponds to \n setting the `only.linear`  argument of the SPIChanges() function to `Yes`. Monthly precipitation series \n recorded at the  Radcliffe Observatory site  in Oxford-UK (January 1827 to January 2020).") +
   scale_x_continuous(breaks = 1:12, labels = c("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec")) +
   geom_text(aes(label = valores), color = "black", size = 3, fontface = "bold") +
   theme(
     strip.text = element_text(color = "black", face = "bold"),
     axis.text.x = element_text(size = 10, color = "black"),
     axis.text.y = element_text(size = 10, color = "black"),
-    axis.title.x = element_text(size = 10, face = 'bold', color = "black"),
-    axis.title.y = element_text(size = 10, face = 'bold', color = "black"),
+    axis.title.x = element_text(size = 10, face = "bold", color = "black"),
+    axis.title.y = element_text(size = 10, face = "bold", color = "black"),
     plot.title = element_text(face = "bold", size = 14, color = "black"),
     plot.caption = element_text(hjust = 0, size = 10, color = "black", lineheight = 1.0),
-    plot.margin = margin(10, 10, 20, 10))
+    plot.margin = margin(10, 10, 20, 10)
+  )
 
 fig4
 ```
@@ -989,12 +1014,12 @@ fig4
 
 This output data field indicates that **34 out of 48 quasi-weekly periods** did not exhibit significant changes in the frequency of meteorological droughts, as the stationary gamma distribution (Model 1) was the best-fitting model for these precipitation series.
 
-This data field also reveals the following:\
-- **Model 2**, which describes a linear change only in the μ parameter of the gamma-based models, was selected for:\
-- The four quasi-weeks of January\
-- The 3rd and 4th quasi-weeks of July
+This data field also reveals the following:
 
--   **Model 3**, which shows a linear change only in the δ parameter of the gamma distribution, was selected for:
+- **Model 2**, which describes a linear change only in the μ parameter of the gamma-based models, was selected for:
+  - The four quasi-weeks of January\
+  - The 3rd and 4th quasi-weeks of July
+- **Model 3**, which shows a linear change only in the δ parameter of the gamma distribution, was selected for:
     -   The 3rd quasi-week of March\
     -   The 4th quasi-week of June\
     -   The 1st and 2nd quasi-weeks of July\
@@ -1030,8 +1055,8 @@ This output data field allowed us to assess the impact of the linear changes in 
 Once again, let's evaluate this output data field for the last year of the series (2019; Table 2).
 
 ```{r Monitoring drought in Oxford-UK, 2019, only linear models}
-Table2 <- Oxford.Changes.linear$data.week[which(Oxford.Changes.linear$data.week[,1] == 2019),]
-#Table 2. Output data field /$data.week obtained by applying the SPIChanges package at the 4-quasi week time scale to the precipitation series recorded at the Radcliffe Observatory site in Oxford-UK (January 1827 to January 2020): rain.at.TS is the precipitation amount accumulated at the time scale specified by the users, SPI is the Standardized Precipitation Index, Exp.Acum.Prob and Actual.Acum.Prob are the expected frequency of the SPI estimates calculated under the stationary and under non-stationary approaches, respectively and, ChangeFreq is the changes in the frequency of dry events (SPI < 0). It is the difference between Actual.Acum.Prob and Exp.Acum.Prob.
+Table2 <- Oxford.Changes.linear$data.week[which(Oxford.Changes.linear$data.week[, 1] == 2019), ]
+# Table 2. Output data field /$data.week obtained by applying the SPIChanges package at the 4-quasi week time scale to the precipitation series recorded at the Radcliffe Observatory site in Oxford-UK (January 1827 to January 2020): rain.at.TS is the precipitation amount accumulated at the time scale specified by the users, SPI is the Standardized Precipitation Index, Exp.Acum.Prob and Actual.Acum.Prob are the expected frequency of the SPI estimates calculated under the stationary and under non-stationary approaches, respectively and, ChangeFreq is the changes in the frequency of dry events (SPI < 0). It is the difference between Actual.Acum.Prob and Exp.Acum.Prob.
 Table2
 ```
 
@@ -1049,9 +1074,7 @@ Similar results are observed in the 3rd quasi-week period of September (Table 2)
 
 ## Case Study 2 - Brazil Drought Events
 
--   In this case study we apply the SPIChanges package for entire Brazil (1980-2024)
-
-###Downloading data from CPC Global Unified Gauge-Based Analysis of Daily Precipitation data provided by the NOAA PSL, Boulder, Colorado, USA, from their website at <https://psl.noaa.gov>
+In this case study we apply the SPIChanges package for entire Brazil (1980-2024), downloading data from CPC Global Unified Gauge-Based Analysis of Daily Precipitation data provided by the NOAA PSL, Boulder, Colorado, USA, from their website at <https://psl.noaa.gov>.
 
 ```{r get-CPC-rain, eval=FALSE}
 # this chunk may take a long time to get daily precipitation data for entire Brazil (1980-2024)
@@ -1073,17 +1096,19 @@ download_and_process <- function(year, lonlat) {
   rain_file <- file.path(tempdir(), paste0("cpcdata", year, ".nc"))
   download_url <- paste0("https://psl.noaa.gov/thredds/fileServer/Datasets/cpc_global_precip/precip.", year, ".nc")
   # Download the files
-  curl::curl_download(url = download_url,
-                      destfile = rain_file,
-                      mode = "wb",
-                      quiet = FALSE,
-                      handle = h)
-  
+  curl::curl_download(
+    url = download_url,
+    destfile = rain_file,
+    mode = "wb",
+    quiet = FALSE,
+    handle = h
+  )
+
   # Open and process the netCDF file
   cep.prec <- nc_open(rain_file)
   lons <- ncvar_get(cep.prec, "lon")
   lats <- ncvar_get(cep.prec, "lat")
-  prate <- ncvar_get(cep.prec, "precip")  # mm/day
+  prate <- ncvar_get(cep.prec, "precip") # mm/day
   NN <- dim(prate)[3]
   # Flip latitude and precipitation order
   prate <- prate[, rev(seq_len(dim(prate)[2])), 1:NN]
@@ -1091,12 +1116,14 @@ download_and_process <- function(year, lonlat) {
   # Initialize matrix for the year
   pdata <- matrix(NA, NN, n)
   for (i in seq_len(n)) {
-    longitude <- lonlat[i, 1] + 360  # range 0, 360
-    latitude <- lonlat[i, 2]         # range -90, 90
-    pdata[, i] <- prate[which.min((lons - longitude)^2),
-                        which.min((lats - latitude)^2), ]
+    longitude <- lonlat[i, 1] + 360 # range 0, 360
+    latitude <- lonlat[i, 2] # range -90, 90
+    pdata[, i] <- prate[
+      which.min((lons - longitude)^2),
+      which.min((lats - latitude)^2),
+    ]
   }
-  
+
   nc_close(cep.prec)
   return(pdata)
 }
@@ -1111,33 +1138,38 @@ pdata1 <- do.call(rbind, pdata_list)
 
 ## Aggregating daily data into a specified time scale:
 
--   For this analysis, we set the 'TS' argument in the TSaggreg() function to 12, which corresponds to a moving window of three months. Shorter time scales may result in precipitation frequency distributions where the percentage of zeros exceeds 80%, particularly in Brazil's semi-arid regions.
+For this analysis, we set the 'TS' argument in the `TSaggreg()` function to 12, which corresponds to a moving window of three months.
+Shorter time scales may result in precipitation frequency distributions where the percentage of zeros exceeds 80%, particularly in Brazil's semi-arid regions.
 
 ```{r aggregate-CPC-rain, eval=FALSE}
 library(SPIChanges)
 # This chunk takes a long time to aggregate precipitation data for entire Brazil (1980-2024)
-pdata1[is.na(pdata1)] <- 0 #replacing NA by zero.
-TS12 <- TSaggreg(daily.rain=pdata1[,1],start.date="1980-01-01",TS=12)
+pdata1[is.na(pdata1)] <- 0 # replacing NA by zero.
+TS12 <- TSaggreg(daily.rain = pdata1[, 1], start.date = "1980-01-01", TS = 12)
 N <- nrow(TS12)
-rain.at.TS <- matrix(NA,n,5)
-rainTS12.bank <- matrix(NA,N,(n+3))
-rainTS12.bank[,1:4] <- as.matrix(TS12)   
-for (i in 2:n){
-TS12 <- TSaggreg(daily.rain=pdata1[,i],start.date="1980-01-01",TS=12)
-rainTS12.bank[,(i+3)] <- TS12[,4]
+rain.at.TS <- matrix(NA, n, 5)
+rainTS12.bank <- matrix(NA, N, (n + 3))
+rainTS12.bank[, 1:4] <- as.matrix(TS12)
+for (i in 2:n) {
+  TS12 <- TSaggreg(daily.rain = pdata1[, i], start.date = "1980-01-01", TS = 12)
+  rainTS12.bank[, (i + 3)] <- TS12[, 4]
 }
 ```
 
 ## Applying the SPIChanges::SPIChanges() for entire Brazil
 
--   As previously descried, we applied the `SPIChanges` package to the entire country of Brazil. At the 12-quasi-week time scale, the 4th quasi-week of February, May, August, and November correspond to precipitation data accumulated over the Austral Summer, Autumn, Winter, and Spring seasons, respectively. Regarding changes in severe to extreme drought events (SPI ≤ -1.5), the results of the chunk below are consistent with previous studies indicating that Brazil, like other regions in South America, may become a drought hotspot due to its potential to respond drastically to excessive drying and warming.
+As previously descried, we applied the `SPIChanges` package to the entire country of Brazil.
+At the 12-quasi-week time scale, the 4th quasi-week of February, May, August, and November correspond to precipitation data accumulated over the Austral Summer, Autumn, Winter, and Spring seasons, respectively.
+Regarding changes in severe to extreme drought events (SPI ≤ -1.5), the results of the chunk below are consistent with previous studies indicating that Brazil, like other regions in South America, may become a drought hotspot due to its potential to respond drastically to excessive drying and warming.
+
+Note that in this section, we use parallel processing to speed up the calculations using {foreach}, if you do not wish to use multiple cores, change `numCores <- detectCores() - 1` to just read `numCores <- 1`.
 
 ```{r SPIChanges for entire Brazil, eval=FALSE}
 # trying to speed up the things
 library(foreach)
 library(doParallel)
 library(SPIChanges)
-numCores <- detectCores() - 1  # Use one less core than the total available
+numCores <- detectCores() - 1 # Use one less core than the total available
 cl <- makeCluster(numCores)
 registerDoParallel(cl)
 ##############################
@@ -1148,27 +1180,27 @@ Map <- matrix(NA, n, 18)
 model <- matrix(NA, n, 3)
 Map[, 1:2] <- as.matrix(lonlat)
 model[, 1:2] <- as.matrix(lonlat)
-changes <- matrix(NA,1,16)
+changes <- matrix(NA, 1, 16)
 # Perform parallel processing
-results <- foreach(i = 4:final, .combine = rbind, .packages = 'SPIChanges') %dopar% {
+results <- foreach(i = 4:final, .combine = rbind, .packages = "SPIChanges") %dopar% {
   rain[, 4] <- rainTS12.bank[, i]
   Local.Changes <- SPIChanges(rain.at.TS = rain, only.linear = "no")
-  changes[1,1:3] <- Local.Changes$Changes.Freq.Drought[which(Local.Changes$Changes.Freq.Drought[, 1] == 2 &
-                                                               Local.Changes$Changes.Freq.Drought[, 2] == 4), 7:9]
-  changes[1,4] <- Local.Changes$model.selection[which(Local.Changes$model.selection[, 1] == 2 &
-                                                        Local.Changes$model.selection[, 2] == 4), 3]
-  changes[1,5:7] <- Local.Changes$Changes.Freq.Drought[which(Local.Changes$Changes.Freq.Drought[, 1] == 5 &
-                                                               Local.Changes$Changes.Freq.Drought[, 2] == 4), 7:9]
-  changes[1,8] <- Local.Changes$model.selection[which(Local.Changes$model.selection[, 1] == 5 &
-                                                        Local.Changes$model.selection[, 2] == 4), 3]
-  changes[1,9:11] <- Local.Changes$Changes.Freq.Drought[which(Local.Changes$Changes.Freq.Drought[, 1] == 8 &
-                                                                Local.Changes$Changes.Freq.Drought[, 2] == 4), 7:9]
-  changes[1,12] <- Local.Changes$model.selection[which(Local.Changes$model.selection[, 1] == 8 &
-                                                         Local.Changes$model.selection[, 2] == 4), 3]
-  changes[1,13:15] <- Local.Changes$Changes.Freq.Drought[which(Local.Changes$Changes.Freq.Drought[, 1] == 11 &
-                                                                 Local.Changes$Changes.Freq.Drought[, 2] == 4), 7:9]
-  changes[1,16] <- Local.Changes$model.selection[which(Local.Changes$model.selection[, 1] == 11 &
-                                                         Local.Changes$model.selection[, 2] == 4), 3]
+  changes[1, 1:3] <- Local.Changes$Changes.Freq.Drought[which(Local.Changes$Changes.Freq.Drought[, 1] == 2 &
+    Local.Changes$Changes.Freq.Drought[, 2] == 4), 7:9]
+  changes[1, 4] <- Local.Changes$model.selection[which(Local.Changes$model.selection[, 1] == 2 &
+    Local.Changes$model.selection[, 2] == 4), 3]
+  changes[1, 5:7] <- Local.Changes$Changes.Freq.Drought[which(Local.Changes$Changes.Freq.Drought[, 1] == 5 &
+    Local.Changes$Changes.Freq.Drought[, 2] == 4), 7:9]
+  changes[1, 8] <- Local.Changes$model.selection[which(Local.Changes$model.selection[, 1] == 5 &
+    Local.Changes$model.selection[, 2] == 4), 3]
+  changes[1, 9:11] <- Local.Changes$Changes.Freq.Drought[which(Local.Changes$Changes.Freq.Drought[, 1] == 8 &
+    Local.Changes$Changes.Freq.Drought[, 2] == 4), 7:9]
+  changes[1, 12] <- Local.Changes$model.selection[which(Local.Changes$model.selection[, 1] == 8 &
+    Local.Changes$model.selection[, 2] == 4), 3]
+  changes[1, 13:15] <- Local.Changes$Changes.Freq.Drought[which(Local.Changes$Changes.Freq.Drought[, 1] == 11 &
+    Local.Changes$Changes.Freq.Drought[, 2] == 4), 7:9]
+  changes[1, 16] <- Local.Changes$model.selection[which(Local.Changes$model.selection[, 1] == 11 &
+    Local.Changes$model.selection[, 2] == 4), 3]
   return(changes)
 }
 # Combine results into the Map matrix
@@ -1179,10 +1211,12 @@ for (i in 1:nrow(results)) {
 }
 
 # Assign column names and save the results
-colnames(Map) <- c("lon", "lat", "SummerModerate", "SummerSevere", "SummerExtreme","SummerModel",
-                                  "OutomnModerate", "OutomnSevere", "OutomnExtreme","OutomnModel",
-                                  "WinterModerate", "WinterSevere", "WinterExtreme","WinterModel",
-                                  "SpringModerate", "SpringSevere", "SpringExtreme","SpringModel")
+colnames(Map) <- c(
+  "lon", "lat", "SummerModerate", "SummerSevere", "SummerExtreme", "SummerModel",
+  "OutomnModerate", "OutomnSevere", "OutomnExtreme", "OutomnModel",
+  "WinterModerate", "WinterSevere", "WinterExtreme", "WinterModel",
+  "SpringModerate", "SpringSevere", "SpringExtreme", "SpringModel"
+)
 # Stop the cluster
 stopCluster(cl)
 head(Map)
@@ -1190,7 +1224,9 @@ head(Map)
 
 ## Assessing changes in severe to moderate drought events
 
--   This next chunk uses the file Map (from the previous chunk) to plot the changes in the expected frequency of severe to moderate drought events (SPI ≤ −1.5), calculated at 12- quasi-week (3-month) time scale in Brazil. The analysis of this map indicated that 50.8 (Summer), 45.5 (Autumn), 35.6 (Winter), and 49.2% (Spring) of Brazil experienced changes toward drier conditions between 1980 and 2024 as indicated by the red colours of the map. This change toward more severe to extreme drought events in almost half of Brazil is in line with the widespread occurrence of unprecedented drought events in the country after 2000.
+This next chunk uses the file Map (from the previous chunk) to plot the changes in the expected frequency of severe to moderate drought events (SPI ≤ −1.5), calculated at 12- quasi-week (3-month) time scale in Brazil.
+The analysis of this map indicated that 50.8 (Summer), 45.5 (Autumn), 35.6 (Winter), and 49.2% (Spring) of Brazil experienced changes toward drier conditions between 1980 and 2024 as indicated by the red colours of the map.
+This change toward more severe to extreme drought events in almost half of Brazil is in line with the widespread occurrence of unprecedented drought events in the country after 2000.
 
 ```{r map, fig.width=8, fig.height=5}
 library(ggplot2)
@@ -1201,73 +1237,87 @@ library(dplyr)
 library(archive)
 # Loading data
 url <- "https://raw.githubusercontent.com/gabrielblain/Grid_Brazil/refs/heads/main/Map.csv"
-Map <- read.csv(url,sep=",", header = TRUE)
-rar_url <- "https://github.com/gabrielblain/Grid_Brazil/raw/main/regioes_2010.rar" 
+Map <- read.csv(url, sep = ",", header = TRUE)
+rar_url <- "https://github.com/gabrielblain/Grid_Brazil/raw/main/regioes_2010.rar"
 temp_file <- tempfile(fileext = ".rar")
 temp_dir <- tempdir()
 download.file(rar_url, temp_file, mode = "wb")
 archive_extract(temp_file, dir = temp_dir)
 shp_path <- file.path(temp_dir, "regioes_2010.shp") # Adjust if files are extracted into a subdirectory
 limitere <- st_read(shp_path)
-#Tidding the data
+# Tidding the data
 df <- Map %>%
   select(lat, lon, SpringSevere, OutomnSevere, WinterSevere, SummerSevere) %>%
-  pivot_longer(cols = c(SpringSevere, OutomnSevere, WinterSevere, SummerSevere),
-               names_to = "Station", values_to = "Change")
-df_ok<- df %>%
+  pivot_longer(
+    cols = c(SpringSevere, OutomnSevere, WinterSevere, SummerSevere),
+    names_to = "Station", values_to = "Change"
+  )
+df_ok <- df %>%
   mutate(
     Station = recode(Station,
-                        "SpringSevere" = "Spring - Severe",
-                        "SummerSevere" = "Summer - Severe",
-                        "OutomnSevere"  =  "Autumm - Severe",
-                       "WinterSevere" =  "Winter - Severe"))
+      "SpringSevere" = "Spring - Severe",
+      "SummerSevere" = "Summer - Severe",
+      "OutomnSevere" = "Autumm - Severe",
+      "WinterSevere" = "Winter - Severe"
+    )
+  )
 # Turning into sf
 limitere_sf <- st_as_sf(limitere)
-dados.sf <- st_as_sf(df_ok, coords = c('lon', 'lat'), crs = 4326)
+dados.sf <- st_as_sf(df_ok, coords = c("lon", "lat"), crs = 4326)
 # Fixing possible errors
 limitere_sf <- st_make_valid(limitere_sf)
 # Finding centroides
 limitere_centroids <- st_centroid(limitere_sf)
 # Adding siglas (annacron)
 limitere_centroids$sigla <- limitere$sigla
-#Finding coordenates
+# Finding coordenates
 coords <- st_coordinates(limitere_centroids)
 limitere_centroids$lon <- coords[, 1]
 limitere_centroids$lat <- coords[, 2]
-dados.sf$Station<- factor(dados.sf$Station, levels= c('Spring - Severe','Summer - Severe','Autumm - Severe','Winter - Severe'))
+dados.sf$Station <- factor(
+  dados.sf$Station,
+  levels = c(
+    "Spring - Severe",
+    "Summer - Severe",
+    "Autumm - Severe",
+    "Winter - Severe"
+  )
+)
 cores_roxo_branco_vermelho <- colorRampPalette(c("purple", "white", "red"))(n = 100)
 cores5 <- colorRampPalette(c("purple", "white", "red"))(7)
 # The Map
 map <- ggplot() +
-  geom_sf(data = dados.sf, aes(color = Change), shape= 15,size = 3) +
+  geom_sf(data = dados.sf, aes(color = Change), shape = 15, size = 3) +
   geom_sf(data = limitere_sf, fill = NA, color = "black", size = 1) +
-  scale_colour_gradient2(low = "#6B238E", mid = "white", high = "red", 
-                         midpoint = 0, limits = c(-30, 80)) +
-  theme_light() +
-  labs(color = "Change (%)"
-       
+  scale_colour_gradient2(
+    low = "#6B238E", mid = "white", high = "red",
+    midpoint = 0, limits = c(-30, 80)
   ) +
+  theme_light() +
+  labs(color = "Change (%)") +
   facet_wrap(vars(Station)) +
   theme(
     title = element_text(size = 12, face = "bold", color = "black"),
     text = element_text(size = 12, color = "black"),
     axis.text.x = element_text(size = 9, color = "black"),
     axis.text.y = element_text(size = 9, color = "black"),
-    legend.position = "right",  
-    legend.direction = "vertical", 
+    legend.position = "right",
+    legend.direction = "vertical",
     legend.key.height = unit(.6, "cm"),
     legend.key.width = unit(0.5, "cm"),
     legend.title = element_text(size = 11, face = "bold"),
     legend.text = element_text(size = 11),
-    axis.title.x = element_blank(),  # Remove o rotulo do eixo x
-    axis.title.y = element_blank(),  # Remove o rotulo do eixo y
+    axis.title.x = element_blank(), # Remove o rotulo do eixo x
+    axis.title.y = element_blank(), # Remove o rotulo do eixo y
     strip.text = element_text(size = 11, face = "bold", color = "black")
   )
-map <- map + 
-  geom_text(data = limitere_centroids, aes(x = lon, y = lat, label = sigla), 
-            color = "black", size = 3, 
-            fontface = "bold", 
-            position = position_nudge(y = 0.01), show.legend = FALSE)
+map <- map +
+  geom_text(
+    data = limitere_centroids, aes(x = lon, y = lat, label = sigla),
+    color = "black", size = 3,
+    fontface = "bold",
+    position = position_nudge(y = 0.01), show.legend = FALSE
+  )
 
 print(map)
 ```
