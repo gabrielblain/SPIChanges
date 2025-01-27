@@ -44,7 +44,7 @@
 #' Changes.in.the.SPI <- SPIChanges(rain.at.TS=rainTS4, only.linear = "yes")
 #' @importFrom gamlss gamlss GAIC
 #' @importFrom gamlss.dist GA pGA qGA BI
-#' @importFrom stats qnorm fitted
+#' @importFrom stats qnorm fitted loess predict
 #' @importFrom spsUtil quiet
 #' @importFrom MuMIn AICc
 #' @importFrom rlang arg_match
@@ -316,8 +316,10 @@ SPIChanges <- function(rain.at.TS, only.linear = "Yes"){
 
 calc.probzero <- function(rain.week,time) {
   zero_rain <- as.integer(rain.week == 0)
-  modelo <- quiet(gamlss(zero_rain~time, family = BI))
-  prob_zero_rain <- fitted(modelo, "mu")
+  #modelo <- quiet(gamlss(zero_rain~time, family = BI))
+  loess_model <- loess(zero_rain ~ time, span = 0.8)
+  prob_zero_rain <- pmax(0, pmin(1, predict(loess_model)))
+  #prob_zero_rain <- fitted(modelo, "mu")
   return(prob_zero_rain)
 }
 
