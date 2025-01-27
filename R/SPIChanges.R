@@ -48,6 +48,8 @@
 #' @importFrom spsUtil quiet
 #' @importFrom MuMIn AICc
 #' @importFrom rlang arg_match
+#' @importFrom survival Surv is.Surv
+#' @importFrom Rmpfr pmax pmin
 #' @autoglobal
 #' @export
 
