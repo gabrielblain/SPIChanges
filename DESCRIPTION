@@ -31,6 +31,8 @@ Imports:
     rlang,
     spsUtil,
     stats,
+    survival,
+    Rmpfr,
     zoo
 Suggests: 
     archive,
