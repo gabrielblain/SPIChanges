@@ -1168,7 +1168,6 @@ library(SPIChanges)
 numCores <- detectCores() - 1 # Use one less core than the total available
 cl <- makeCluster(numCores)
 registerDoParallel(cl)
-##############################
 rain <- matrix(NA, N, 4)
 rain[, 1:3] <- as.matrix(rainTS12.bank[, 1:3])
 final <- ncol(rainTS12.bank)
