@@ -124,13 +124,13 @@ head(TSaggreg(
     ## Done. Just ensure the last quasi-week is complete.
     ##   The last day of your series is 31 and TS is 4
 
-    ##   Year Month quasiWeek rain.at.TS4
-    ## 4 1980     1         4    223.1143
-    ## 5 1980     2         1    217.4197
-    ## 6 1980     2         2    207.0196
-    ## 7 1980     2         3    203.8757
-    ## 8 1980     2         4    183.2537
-    ## 9 1980     3         1    177.9945
+    ##      Year Month quasiWeek rain.at.TS4
+    ## [1,] 1980     1         4    223.1143
+    ## [2,] 1980     2         1    217.4197
+    ## [3,] 1980     2         2    207.0196
+    ## [4,] 1980     2         3    203.8757
+    ## [5,] 1980     2         4    183.2537
+    ## [6,] 1980     3         1    177.9945
 
 ## Function `SPIChanges()`
 
@@ -194,8 +194,9 @@ rainTS4 <- TSaggreg(daily.rain = daily.rain,
 Changes.in.the.SPI <- SPIChanges(rain.at.TS = rainTS4, only.linear = "Yes")
 ```
 
-    ## Warning in SPIChanges(rain.at.TS = rainTS4, only.linear = "Yes"): rainfall series Month 9 Week 1 has more than 6.7% of zeros. In this situation
-    ##              the SPI cannot assume values lower than -1.5
+    ## Warning in SPIChanges(rain.at.TS = rainTS4, only.linear = "Yes"): rainfall
+    ## series Month 9 Week 1 has more than 6.7% of zeros. In this situation the SPI
+    ## cannot assume values lower than -1.5
 
 ``` r
 head(Changes.in.the.SPI$data.week)
@@ -282,8 +283,9 @@ rainTS4 <- TSaggreg(daily.rain = daily.rain,
 Changes.in.the.SPI <- SPIChanges(rain.at.TS = rainTS4, only.linear = "No")
 ```
 
-    ## Warning in SPIChanges(rain.at.TS = rainTS4, only.linear = "No"): rainfall series Month 9 Week 1 has more than 6.7% of zeros. In this situation
-    ##              the SPI cannot assume values lower than -1.5
+    ## Warning in SPIChanges(rain.at.TS = rainTS4, only.linear = "No"): rainfall
+    ## series Month 9 Week 1 has more than 6.7% of zeros. In this situation the SPI
+    ## cannot assume values lower than -1.5
 
 ``` r
 head(Changes.in.the.SPI$data.week)
@@ -420,12 +422,10 @@ H(x) = q + (1 - q) \* G(x \> 0, μ, σ) (1)
 
 Within the original SPI algorithm, q is often calculated from equations
 based on the ratio of zeros in the precipitation records and the sample
-size. This package uses the binomial distribution to calculate q. As
-described in studies such as Stagge et al. (2022), this single parameter
-discrete distribution can also be adapted to nonstationary cases. It was
-also fitted using GAMLSS models (packages gamlss and gamlss.dist), where
-zero rain is considered a success and positive rain values are
-considered failures.
+size. This package uses a nonstationary binomial process, estimated
+using a bias-reduced logistic regression model, to account for temporal
+variations in the probability of zero precipitation while mitigating
+small-sample bias.
 
 ## BugReports:
 

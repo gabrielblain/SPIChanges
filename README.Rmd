@@ -187,7 +187,7 @@ Precipitation frequency distributions are zero-bounded, thus a mixed function th
 
 H(x) = q + (1 - q) \* G(x \> 0, μ, σ) (1)
 
-Within the original SPI algorithm, q is often calculated from equations based on the ratio of zeros in the precipitation records and the sample size. This package uses the binomial distribution to calculate q. As described in studies such as Stagge et al. (2022), this single parameter discrete distribution can also be adapted to nonstationary cases. It was also fitted using GAMLSS models (packages gamlss and gamlss.dist), where zero rain is considered a success and positive rain values are considered failures.
+Within the original SPI algorithm, q is often calculated from equations based on the ratio of zeros in the precipitation records and the sample size. This package uses a nonstationary binomial process, estimated using a bias-reduced logistic regression model, to account for temporal variations in the probability of zero precipitation while mitigating small-sample bias.
 
 ## BugReports:
 
