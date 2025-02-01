@@ -1,12 +1,26 @@
 ---
-title: "SPIChanges Monte Carlo Experiment Case Studies"
+title: "SPIChanges package: Monte Carlo Experiments and Case Studies"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{SPIChanges Monte Carlo Experiment Case Studies}
+  %\VignetteIndexEntry{SPIChanges package: Monte Carlo Experiments and Case Studies}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
   %\VignetteDepends{curl}
-  bibliography: bibliography.bib
+  %\VignetteDepends{gamlss}
+  %\VignetteDepends{gamlsss.dist}
+  %\VignetteDepends{MuMIn}
+  %\VignetteDepends{ggplot2}
+  %\VignetteDepends{sf}
+  %\VignetteDepends{RColorBrewer}
+  %\VignetteDepends{tidyr}
+  %\VignetteDepends{dplyr}
+  %\VignetteDepends{archive}
+  %\VignetteDepends{ncdf4}
+  %\VignetteDepends{grid}
+  %\VignetteDepends{patchwork}
+  %\VignetteDepends{foreach}
+  %\VignetteDepends{doParallel}
+bibliography: bibliography.bib
 ---
 
 ```{r, include = FALSE}
@@ -18,14 +32,347 @@ knitr::opts_chunk$set(
 
 ## Introduction
 
-To validate this package, we applied the package's functions to two distinct datasets.
+To validate this package, we first evaluated its ability to select the appropriate model for modeling precipitation series.
+This evaluation was conducted using two Monte Carlo experiments.
+Subsequently, as case study applications, we applied the package's functions to two distinct datasets (Datasets 1 and 2).
+The simulation experiment and case studies are described below.
+
+## Monte Carlo Experiments
+
+Selecting the best model from the 16 candidates considered by the package is crucial for its performance.
+The chosen model must be sufficiently complex to capture significant changes in precipitation frequency distribution, yet simple enough to avoid over fitting.
+Therefore, the guiding principle in model selection is parsimony: the simplest model that explains the most variation in the data should be selected [@Coles2001].
+The SPIChanges package adheres to this principle by employing the second-order Akaike Information Criterion (AICc).
+An analysis of the AICc equations reveals that its performance is significantly influenced by the value of the penalty factor (k).
+The `SPIChanges` package determines the optimal value for k through Monte Carlo two experiments, as described below.
+
+### Monte Carlo Experiment 1 (trend-free rainfall series)
+
+In the first Monte Carlo experiment, we generated 10000 trend-free synthetic precipitation series for three different sample sizes (n=30, 60, and 90) using the stationary gamma-based model (Model 1).
+These sample sizes correspond to data records spanning 1, 2, and 3 normal periods, respectively.
+For each series, we calculated the AICc using different values for the k factor (ranging from 2 to 7 in steps of 0.2) for each of the 16 candidate models.
+In each simulation round, and for each k value, we recorded the number of times the 'correct' model (i.e., the stationary model) was selected and divided it by 10000.
+This ratio is referred to as the success rate.
+Acknowledging that the performance of AICc tends to decline as the number and complexity of candidate models increase @Xavier2019 and considering that the original four-step algorithm proposed by @Blain2022 only included stationary and linear models, we re-ran the selection process using only models 1 to 4.
+We then compared the results of these two selection processes (16 and 4 candidate models) to evaluate whether the AICc-based selection process effectively prevented over fitting.
+
+```{r monte carlo 1, message=FALSE, warning=FALSE, eval=FALSE}
+library(gamlss)
+library(gamlss.dist)
+library(MuMIn)
+library(spsUtil)
+# Designing the selection function based on the AICc
+select.model <- function(rain.week) {
+  best <- matrix(NA, 1, 2)
+  colnames(best) <- c("NonLinear", "Linear")
+  t.gam <- quiet(gamlss(
+    rain.week ~ 1,
+    family = GA,
+    mu.link = "log",
+    sigma.link = "log"
+  ))
+  t.gam.ns10 <- quiet(gamlss(
+    rain.week ~ time,
+    family = GA,
+    mu.link = "log",
+    sigma.link = "log"
+  ))
+  t.gam.ns01 <- quiet(gamlss(
+    rain.week ~ 1,
+    sigma.formula = ~time,
+    family = GA,
+    mu.link = "log",
+    sigma.link = "log"
+  ))
+  t.gam.ns11 <- quiet(gamlss(
+    rain.week ~ time,
+    sigma.formula = ~time,
+    family = GA,
+    mu.link = "log",
+    sigma.link = "log"
+  ))
+  t.gam.ns20 <- quiet(gamlss(
+    rain.week ~ time + I(time^2),
+    family = GA,
+    mu.link = "log",
+    sigma.link = "log"
+  ))
+  t.gam.ns02 <- quiet(gamlss(
+    rain.week ~ 1,
+    family = GA,
+    mu.link = "log",
+    sigma.formula = ~ time +
+      I(time^2),
+    sigma.link = "log"
+  ))
+  t.gam.ns21 <- quiet(gamlss(
+    rain.week ~ time + I(time^2),
+    sigma.formula = ~time,
+    family = GA,
+    mu.link = "log",
+    sigma.link = "log"
+  ))
+  t.gam.ns12 <- quiet(gamlss(
+    rain.week ~ time,
+    sigma.formula = ~ time + I(time^2),
+    family = GA,
+    mu.link = "log",
+    sigma.link = "log"
+  ))
+  t.gam.ns22 <- quiet(gamlss(
+    rain.week ~ time + I(time^2),
+    sigma.formula = ~ time + I(time^2),
+    family = GA,
+    mu.link = "log",
+    sigma.link = "log"
+  ))
+  t.gam.ns30 <- quiet(gamlss(
+    rain.week ~ time +
+      I(time^2) +
+      I(time^3),
+    family = GA,
+    mu.link = "log",
+    sigma.link = "log"
+  ))
+  t.gam.ns03 <- quiet(gamlss(
+    rain.week ~ 1,
+    family = GA,
+    mu.link = "log",
+    sigma.formula = ~ time +
+      I(time^2) +
+      I(time^3),
+    sigma.link = "log"
+  ))
+  t.gam.ns31 <- quiet(gamlss(
+    rain.week ~ time +
+      I(time^2) +
+      I(time^3),
+    sigma.formula = ~time,
+    family = GA,
+    mu.link = "log",
+    sigma.link = "log"
+  ))
+  t.gam.ns13 <- quiet(gamlss(
+    rain.week ~ time,
+    sigma.formula = ~ time +
+      I(time^2) +
+      I(time^3),
+    family = GA,
+    mu.link = "log",
+    sigma.link = "log"
+  ))
+  t.gam.ns32 <- quiet(gamlss(
+    rain.week ~ time +
+      I(time^2) +
+      I(time^3),
+    sigma.formula = ~ time +
+      I(time^2),
+    family = GA,
+    mu.link = "log",
+    sigma.link = "log"
+  ))
+  t.gam.ns23 <- quiet(gamlss(
+    rain.week ~ time +
+      I(time^2),
+    sigma.formula = ~ time +
+      I(time^2) +
+      I(time^3),
+    family = GA,
+    mu.link = "log",
+    sigma.link = "log"
+  ))
+  t.gam.ns33 <- quiet(gamlss(
+    rain.week ~ time +
+      I(time^2) +
+      I(time^3),
+    sigma.formula = ~ time +
+      I(time^2) +
+      I(time^3),
+    family = GA,
+    mu.link = "log",
+    sigma.link = "log"
+  ))
+  # Selection among all 16 models
+  best[1, 1] <- which.min(list(
+    MuMIn::AICc(t.gam, k = k),
+    MuMIn::AICc(t.gam.ns10, k = k),
+    MuMIn::AICc(t.gam.ns01, k = k),
+    MuMIn::AICc(t.gam.ns11, k = k),
+    MuMIn::AICc(t.gam.ns20, k = k),
+    MuMIn::AICc(t.gam.ns02, k = k),
+    MuMIn::AICc(t.gam.ns21, k = k),
+    MuMIn::AICc(t.gam.ns12, k = k),
+    MuMIn::AICc(t.gam.ns22, k = k),
+    MuMIn::AICc(t.gam.ns30, k = k),
+    MuMIn::AICc(t.gam.ns03, k = k),
+    MuMIn::AICc(t.gam.ns31, k = k),
+    MuMIn::AICc(t.gam.ns13, k = k),
+    MuMIn::AICc(t.gam.ns32, k = k),
+    MuMIn::AICc(t.gam.ns23, k = k),
+    MuMIn::AICc(t.gam.ns33, k = k)
+  ))
+  # Selection among the stationary and linear models (models 1 to 4)
+  best[1, 2] <- which.min(list(
+    MuMIn::AICc(t.gam, k = k),
+    MuMIn::AICc(t.gam.ns10, k = k),
+    MuMIn::AICc(t.gam.ns01, k = k),
+    MuMIn::AICc(t.gam.ns11, k = k)
+  ))
+
+  return(best)
+}
+library(gamlss)
+library(gamlss.dist)
+library(MuMIn)
+library(spsUtil)
+# Monte Carlo Simulation with three Sample Sizes
+sample_sizes <- c(30, 60, 90) # Define the sample sizes
+ns <- 10000 # Number of simulations
+k.seq <- seq(from = 2, to = 7, by = 0.2)
+penalty <- length(k.seq)
+
+results_list <- list()
+selected_nonlinear_list <- list()
+selected_linear_list <- list()
+
+for (n in sample_sizes) {
+  time <- 1L:n
+  rain.week <- matrix(NA, nrow = n, ncol = ns)
+
+  sigma0 <- 0.22
+  mu0 <- 809
+  slope.mu <- 0 # trend-free
+  slope.sigma <- 0 # trend-free
+  sigma <- sigma0 + slope.sigma * time
+  mu <- mu0 + slope.mu * time
+
+  # Simulating precipitation data
+  rain.week <- replicate(ns, sapply(1:n, function(t) rGA(1, mu = mu[t], sigma = sigma[t])))
+
+  result <- matrix(NA, nrow = ns, ncol = 2 * penalty)
+  selected.nonlinear <- matrix(NA, 16, penalty)
+  selected.linear <- matrix(NA, 4, penalty)
+
+  # Calculating loop for each k
+  for (j in seq_along(k.seq)) {
+    k <- k.seq[j]
+    result1 <- apply(rain.week, 2, select.model)
+    result[, (2 * j - 1):(2 * j)] <- t(result1)
+
+    for (model in 1:16) {
+      selected.nonlinear[model, j] <- 100 * (sum(result[, 2 * j - 1] == model) / ns)
+      if (model <= 4) {
+        selected.linear[model, j] <- 100 * (sum(result[, 2 * j] == model) / ns)
+      }
+    }
+  }
+  rownames(selected.nonlinear) <- paste0("Model", 1:16)
+  rownames(selected.linear) <- paste0("Model", 1:4)
+  colnames(selected.nonlinear) <- as.character(k.seq)
+  colnames(selected.linear) <- as.character(k.seq)
+
+  results_list[[as.character(n)]] <- result
+  selected_nonlinear_list[[as.character(n)]] <- selected.nonlinear
+  selected_linear_list[[as.character(n)]] <- selected.linear
+}
+
+for (n in sample_sizes) {
+  cat("\nSample Size:", n, "\n")
+  cat("\nSelected Nonlinear Models:\n")
+  print(selected_nonlinear_list[[as.character(n)]])
+  cat("\nSelected Linear Models:\n")
+  print(selected_linear_list[[as.character(n)]])
+}
+```
+
+For the three sample sizes and two selection processes (16 and four candidate models) considered in the above Monte Carlo experiment, the AICc calculated with values of the k factor equal to or greater than 4.0 resulted in success rates of 90% or higher.
+By analogy, we can state that whenever the k factor was set to values equal to or greater than 4.0, the selection criteria adopted by the SPIChanges package failed to reject the null hypothesis that there was no change in precipitation patterns at rates smaller than 10%.
+This rate of failures is comparable to those found in formal hypothesis tests performed at the 10% significance level, where the probability of falsely rejecting a true null hypothesis is 10%.
+Particularly for k \> 4, the success rates obtained when the selection process considered all 16 candidate models were almost as high as those obtained when only models 1 to 4 were considered.
+This suggests that the AICc (k \> 4) avoided over fitting even when a relatively high number of candidate models (16) was considered by the SPIChanges function.
+At this point it is worth mentioning that the selection process that considered all 16 candidate models corresponds to `only.linear = No` in the SPIChanges() function.
+The selection process that considered only models 1 to 4 corresponds to `only.linear = Yes`.
+
+### Monte Carlo Experiment 2 (super-imposed trend)
+
+The second Monte Carlo experiment followed a similar approach to that outlined in experiment 1, but it consisted of four distinct simulation rounds, where we imposed different trend slopes on the parameters of the gamma-based models.
+Specifically, in round 1, we imposed a linear trend on the μ parameter given by the following equation: μ=809-3.2time.
+The δ parameter remained constant at 0.22.
+In round 2, we imposed a linear trend on the δ parameter given by the equation: δ=0.22+0.0044time, while the μ parameter remained constant at 410.
+In Round 3, we imposed linear trends on both μ and δ parameters: μ=695-2.8time and δ=0.22+0.0036time.
+In round 4, we imposed a non-linear trend on the μ parameter and a linear trend on the δ parameter, according to the following equations: μ=0.0104(time^3)-1.3206(time^2)+38.314time+758.58 and δ=0.22+0.0036time.
+The sample size for all four simulation rounds was set to 90, with time varying from 1 to 90.
+The 'correct models' for each round were Model 2, Model 3, Model 4, and Model 12, respectively.
+In round 4, we applied only the selection process based on 16 models, as the synthetic series, by construction, had a non-linear trend.
+As in the first experiment, the rates at which the correct model was selected were referred to as success rates.
+The chunk below exemplifies this experiment considering round 1.
+The other rounds can be easily replicated by changing the **slope.mu** parameter.
+Note that this chunk (monte carlo 2) requires the packages and the `select.model()` function loaded/defined in monte carlo 1.
+
+```{r monte carlo 2, message=FALSE, warning=FALSE, eval=FALSE}
+## Monte Carlo Simulation
+n <- 90
+ns <- 10000
+time <- 1L:n
+
+rain.week <- matrix(NA, nrow = n, ncol = ns)
+sigma0 <- 0.22
+mu0 <- 809
+slope.mu <- (-0.004 * mu0) # super-imposed trend
+slope.sigma <- 0 # trend-free
+sigma <- sigma0 + slope.sigma * time
+mu <- mu0 + slope.mu * time
+k.seq <- seq(from = 2, to = 7, by = 0.2)
+penalty <- length(k.seq)
+
+result <- matrix(NA, nrow = ns, ncol = 2 * penalty)
+selected.nonlinear <- matrix(NA, 16, penalty)
+selected.linear <- matrix(NA, 4, penalty)
+# simulating again
+rain.week <- replicate(ns, sapply(1:n, function(t) rGA(1, mu = mu[t], sigma = sigma[t])))
+
+for (j in seq_along(k.seq)) {
+  k <- k.seq[j]
+  result1 <- apply(rain.week, 2, select.model)
+  result[, (2 * j - 1):(2 * j)] <- t(result1)
+
+  for (model in 1:16) {
+    selected.nonlinear[model, j] <- 100 * (sum(result[, 2 * j - 1] == model) / ns)
+    if (model <= 4) {
+      selected.linear[model, j] <- 100 * (sum(result[, 2 * j] == model) / ns)
+    }
+  }
+}
+
+rownames(selected.nonlinear) <- paste0("Model", 1:16)
+rownames(selected.linear) <- paste0("Model", 1:4)
+colnames(selected.nonlinear) <- as.character(k.seq)
+colnames(selected.linear) <- as.character(k.seq)
+
+print(selected.nonlinear)
+print(selected.linear)
+```
+
+As observed in the first Monte Carlo experiment, the success rates obtained when the selection process of this second experiment considered all 16 candidate models were only slightly lower than those found when it considered models 1 to 4.
+For both selection processes, the success rates for all simulation rounds remained close to 90% for k values greater than 4.
+As in the first experiment, this suggests that the AICc (k \> 4) avoided over fitting.
+The results of the two Monte Carlo experiments led us to select 4.4 as the optimal penalty factor for calculating the AICc within the SPIChanges() function.
+
+## Case Studies Applications
+
+To further validate this package, we also applied the package's functions to two distinct datasets.
 The first (Dataset 1) is from a long-running weather station in the UK, located at 51.7608°N and 1.2639°W (Radcliffe Observatory site in Oxford, covering the period from January 1827 to January 2020) [Burt2019].
-These invaluable precipitation records are available at  <https://doi.org/10.6084/m9.figshare.11956239.v1> [@Burt2020] under a Creative Commons 4.0 License via FigShare.
+These invaluable precipitation records are available at <https://doi.org/10.6084/m9.figshare.11956239.v1> [@Burt2020] under a Creative Commons 4.0 License via FigShare.
 The percentage of missing data is less than 1%.
 Following the approach of @Wu2006, we replaced all gaps in the series with zero, as this is the most probable value for a single day.
-We used this dataset to provide detailed information on the package’s outputs.
+We used this dataset to provide detailed information on the package's outputs.
+
+The second dataset (Dataset 2) comprises data from the CPC Global Unified Gauge-Based Analysis of Daily Precipitation (CPC data; NOAA/PSL) <https://psl.noaa.gov/data/gridded/data.cpc.globalprecip.html> for the entire country of Brazil.
+Brazil, the largest tropical country in the world, features a wide range of climates, from arid regions in the Northeast to equatorial climates, such as the Amazon Rainforest.
 
 ## Case Study 1 -- Oxford Rainfall
+
+## Uploading required packages
 
 ### Fetch the Oxford Data
 
@@ -41,19 +388,25 @@ handle_setopt(h, timeout = 360L)
 
 rain_file <- file.path(tempdir(), "oxford_rain.csv")
 
-curl::curl_download(url = "https://figshare.com/ndownloader/files/21950895",
-              destfile = rain_file,
-              mode = "wb",
-              quiet = FALSE,
-              handle = h)
-Oxford <- read.csv(rain_file)
+curl::curl_download(
+  url = "https://figshare.com/ndownloader/files/21950895",
+  destfile = rain_file,
+  mode = "wb",
+  quiet = FALSE,
+  handle = h
+)
+Oxford.1815 <- read.csv(rain_file)
+Oxford <- Oxford.1815[which(Oxford.1815$YYY >= 1827), ] # Rainfall records, including traces (NA), started in 1827
 summary(Oxford)
 ```
 
 Replace all the gaps with "0" in the `Rainfall.mm.1.dpl.no.traces` column.
 This column is defined in the README as follows:
 
-  >Rainfall mm 1 dpl no traces - daily precipitation total, mm and tenths: any 'trace' entries set to zero. Includes melted snowfall, at least from 1853. For statistical operations it is advisable to use this column (i.e. excluding traces), as text entries can result in errors in statistical operations performed on the data. First record 1 Jan 1827
+> Rainfall mm 1 dpl no traces - daily precipitation total, mm and tenths: any 'trace' entries set to zero.
+> Includes melted snowfall, at least from 1853.
+> For statistical operations it is advisable to use this column (i.e. excluding traces), as text entries can result in errors in statistical operations performed on the data.
+> First record 1 Jan 1827
 
 ```{r replace-gaps}
 # create a new vector of rain to work with
@@ -70,89 +423,720 @@ summary(OxfordRain)
 
 Apply the {SPIChanges} package's `SPIChanges()` to daily precipitation data (`OxfordRain`) derived from @Burt2020.
 
-
-```{r apply-spichanges-oxford}
+```{r Case Study 1 }
 library(SPIChanges)
+rainTS4 <- TSaggreg(daily.rain = OxfordRain, start.date = "1827-01-01", TS = 4)
 
-rainTS4 <- TSaggreg(daily.rain = OxfordRain,
-                    start.date = "1827-01-01",
-                    TS = 4)
-```
+### Fit All Models: Stationary, Linear and Nonlinear
 
-### Fit All Models, Linear and Nonlinear
-
-```{r fit-all-models}
 Oxford.Changes <- SPIChanges(rain.at.TS = rainTS4, only.linear = "No")
-```
 
-### Check All Model Fits
+### Fit Only the Stationary and Linear Models
 
-```{r model-selection}
-Oxford.Changes$model.selection
-```
-
-<!--- @gabrielblaine, can you please add details here about how to interpret these outputs?
-What are you looking for as a user of the package to evaluate these values from the models in this section, here?
---->
-
-```{r evaluate-model-fits, eval=FALSE}
-# note that this chunk is not run due to long outputs
-Oxford.Changes$data.week
-
-Oxford.Changes$Statistics
-
-Oxford.Changes$Changes.Freq.Drought
-```
-
-<!--- @gabrielblaine, can you please add details here about how to interpret these outputs?
-What are you looking for as a user of the package to evaluate these values from the models in this section, here?
-
-Can we somehow shorten the outputs to highlight what's important for users to understand how to use the package?
---->
-
-### Refit With Only Linear Models
-
-```{r only-linear}
 Oxford.Changes.linear <- SPIChanges(rain.at.TS = rainTS4, only.linear = "Yes")
 ```
 
-### Check Linear Model Fits
+## Interpreting the Output Data Fields from the “Oxford.Changes”
 
-```{r check-linear-models}
-Oxford.Changes.linear$model.selection
+We calculated the data frame object "Oxford.Changes" with the argument only.linear set to "No".
+In this case, the SPIChanges() function considers 16 gamma-based models to describe potential changes in precipitation patterns in Oxford, UK. The function uses the second-order Akaike Information Criterion to select the best model among the 16 candidates and indicate whether, and how, the frequency of droughts has changed over time in Oxford, UK. Below we describe the four output data fields of the “Oxford.Changes” data frame object.
+
+### \$model.selection
+
+The *\$model.selection* output field identifies the gamma-based models selected for each quasi-weekly period in Oxford, UK. This analysis reveals the following insights:
+
+-   **Stationary Models:**\
+    For 33 out of 48 quasi-weekly periods, the stationary gamma distribution (Model 1) was the best fitting model.
+    This suggests that the probability of SPI values remained constant between 1827 and 2020 for these periods.
+
+-   **Non-Stationary Models:**
+
+    -   **Model 2:** Selected for six quasi-weekly periods (January and July). This model describes a linear change in the μ parameter, corresponding to the mean of the precipitation frequency distribution.\
+    -   **Model 3:** Selected for five quasi-weekly periods (June, July, September, and December). This model indicates a linear change in the δ parameter, representing the coefficient of variation, which suggests changes in dispersion while the mean remained constant.\
+    -   **Model 4:** Selected for the 4th quasi-week of December. This model shows linear changes in both μ and δ.
+
+-   **Nonlinear Models:**
+
+    -   **Model 6:** Selected for the 1st quasi-week of September, indicating a quadratic change in the δ parameter.\
+    -   **Model 11:** Selected for the 2nd and 3rd quasi-weeks of March, indicating a cubic change in the δ parameter.
+
+In summary, the *\$model.selection* output highlights the prevalence of stationary models while also capturing specific periods with notable changes in mean or dispersion of the rainfall frequency distributions.
+Figure 1 depicts the selected models for each quasi-week period.
+
+```{r selected models, fig.width=8, fig.height=5}
+eixo.x.Month <- Oxford.Changes$model.selection[, 1]
+eixo.y.quasiWeek <- Oxford.Changes$model.selection[, 2]
+valores <- Oxford.Changes$model.selection[, 3]
+dados <- cbind(eixo.x.Month, eixo.y.quasiWeek, valores)
+df <- as.data.frame(dados)
+
+library(ggplot2)
+df$valores <- as.factor(df$valores)
+fig1 <- ggplot(df) +
+  aes(x = eixo.x.Month, y = eixo.y.quasiWeek, fill = valores) +
+  geom_tile() +
+  scale_fill_manual(values = c(
+    "1" = "#D3D3D3",
+    "2" = "#ADD8E6",
+    "3" = "#87CEEB",
+    "4" = "#4682B4",
+    "6" = "#FA8072",
+    "11" = "#FF8C00"
+  )) +
+  theme_bw() +
+  labs(x = "Months", y = "quasi-week", fill = NULL, title = "only.linear = 'No'", caption = ("Figure 1. Gamma-based models selected by the SPIChanges package. The plot corresponds to setting \n the `only.linear`  argument of the SPIChanges() function to `No`. Monthly precipitation series recorded \n at the Radcliffe Observatory site  in Oxford-UK (January 1827 to January 2020).")) +
+  scale_x_continuous(breaks = 1:12, labels = c("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec")) +
+  geom_text(aes(label = valores), color = "black", size = 3, fontface = "bold") +
+  theme(
+    strip.text = element_text(color = "black", face = "bold"),
+    axis.text.x = element_text(size = 10, color = "black"),
+    axis.text.y = element_text(size = 10, color = "black"),
+    axis.title.x = element_text(size = 10, face = "bold", color = "black"),
+    axis.title.y = element_text(size = 10, face = "bold", color = "black"),
+    plot.title = element_text(face = "bold", size = 14, color = "black"),
+    plot.caption = element_text(hjust = 0, size = 10, color = "black", lineheight = 1.0),
+    plot.margin = margin(10, 10, 20, 10)
+  )
+
+fig1
 ```
 
-```{r evaulate-linear-model-fits, eval=FALSE}
-# note that this chunk is not run due to long outputs
-Oxford.Changes.linear$data.week
+### \$Statistics
 
-Oxford.Changes.linear$Statistics
+While *\$model.selection* identifies the quasi-weekly periods where the SPIChanges() function selected non-stationary models, the *\$Statistics* output field provides detailed insights into how the parameters of the gamma-based models changed from 1827 to 2020.
+Specifically, *\$Statistics* illustrates the year-to-year changes in the magnitude of these parameters (Figure 2).
+
+#### Key Observations:
+
+1.  **Quasi-Weekly Periods with Model 2:**
+    -   The four quasi-weekly periods in **January** (Winter season) exhibited changes toward rainier conditions, as reflected by an increase in the μ parameter.\
+    -   Conversely, the 3rd and 4th quasi-weeks of **July** (Summer season) demonstrated changes toward drier conditions, with a decrease in the μ parameter.
+2.  **Quasi-Weekly Periods with Model 3:**
+    -   The 4th quasi-week of **June**, the 1st and 2nd quasi-weeks of **July**, and the 3rd quasi-week of **September** showed increasing δ parameter values. This indicates that the dispersion of these precipitation distributions expanded over time, while their mean values remained constant.\
+    -   In contrast, the 2nd quasi-week of **December** exhibited a decrease in the δ parameter, signifying a reduction in dispersion over time.
+3.  **Quasi-Weekly Periods with Model 6:**
+    -   In the 1st quasi-week of **September**, the δ parameter increased from 1827 to the mid-1940s, followed by a slower decrease until 2019. Overall, the δ parameter showed an upward trend over the 193-year period.
+4.  **Quasi-Weekly Periods with Model 11:**
+    -   For the 2nd and 3rd quasi-weeks of **March**, the δ parameter displayed a complex trajectory:
+        -   **1827 to \~1885:** Decreased.\
+        -   **1885 to Late 1960s:** Increased.\
+        -   **Late 1960s to 2019:** Decreased again.\
+    -   Over the entire series (1827–2019), the δ parameter experienced an overall decline, particularly from the middle of the series (approximately 1923) to 2019.
+
+```{r year-to-year changes, fig.width=10, fig.height=5}
+library(dplyr)
+library(ggplot2)
+library(patchwork)
+library(purrr)
+
+# Define constants
+eixo.x.years <- 1827L:2019L
+
+# Define conditions
+conditions <- list(
+  jan1 = list(Month = 1, quasiWeek = 1, col = 4),
+  jan2 = list(Month = 1, quasiWeek = 2, col = 4),
+  jan3 = list(Month = 1, quasiWeek = 3, col = 4),
+  jan4 = list(Month = 1, quasiWeek = 4, col = 4),
+  jul3 = list(Month = 7, quasiWeek = 3, col = 4),
+  jul4 = list(Month = 7, quasiWeek = 4, col = 4),
+  dec4mu = list(Month = 12, quasiWeek = 4, col = 4),
+  jun4 = list(Month = 6, quasiWeek = 4, col = 5),
+  jul1 = list(Month = 7, quasiWeek = 1, col = 5),
+  jul2 = list(Month = 7, quasiWeek = 2, col = 5),
+  sep3 = list(Month = 9, quasiWeek = 3, col = 5),
+  dec2 = list(Month = 12, quasiWeek = 2, col = 5),
+  dec4 = list(Month = 12, quasiWeek = 4, col = 5),
+  mar2 = list(Month = 3, quasiWeek = 2, col = 5),
+  mar3 = list(Month = 3, quasiWeek = 3, col = 5),
+  sep1 = list(Month = 9, quasiWeek = 1, col = 5)
+)
+
+# Extract data using purrr::map
+results <- map(names(conditions), ~ {
+  cond <- conditions[[.x]]
+  Oxford.Changes$Statistics %>%
+    filter(Month == cond$Month, quasiWeek == cond$quasiWeek) %>%
+    pull(cond$col)
+}) %>% set_names(names(conditions))
+
+# Assign results to variables
+list2env(results, envir = .GlobalEnv)
+
+# Adjust jan4
+jan4 <- head(jan4, -1)
+
+# Combine data into a single dataframe
+df2 <- data.frame(
+  ano = rep(eixo.x.years, length.out = length(unlist(results))),
+  valores = unlist(results),
+  line = rep(names(results), lengths(results)),
+  letra = rep(c("a", "b", "c"), times = c(
+    sum(lengths(results[1:7])),
+    sum(lengths(results[8:13])),
+    sum(lengths(results[14:16]))
+  ))
+)
+
+# Recode `line` for better readability
+df2 <- df2 %>%
+  mutate(line = recode(line,
+    "jan1" = "Jan (1st quasi-week)",
+    "jan2" = "Jan (2nd quasi-week)",
+    "jan3" = "Jan (3rd quasi-week)",
+    "jan4" = "Jan (4th quasi-week)",
+    "jul1" = "Jul (1st quasi-week)",
+    "jul2" = "Jul (2nd quasi-week)",
+    "jul3" = "Jul (3rd quasi-week)",
+    "jul4" = "Jul (4th quasi-week)",
+    "jun4" = "Jun (4th quasi-week)",
+    "sep1" = "Sep (1st quasi-week)",
+    "sep3" = "Sep (3rd quasi-week)",
+    "dec2" = "Dec (2nd quasi-week)",
+    "dec4" = "Dec (4th quasi-week)",
+    "mar2" = "Mar (2nd quasi-week)",
+    "mar3" = "Mar (3rd quasi-week)"
+  ))
+
+# Define colors
+cores <- c(
+  "Jan (1st quasi-week)" = "blue",
+  "Jan (2nd quasi-week)" = "gold",
+  "Jan (3rd quasi-week)" = "firebrick",
+  "Jan (4th quasi-week)" = "black",
+  "Jul (3rd quasi-week)" = "cyan",
+  "Jul (4th quasi-week)" = "red",
+  "Dec (4th quasi-week)" = "#1f77b4",
+  "Jun (4th quasi-week)" = "#7f7f7f",
+  "Jul (1st quasi-week)" = "#008080",
+  "Jul (2nd quasi-week)" = "#8B4513",
+  "Sep (3rd quasi-week)" = "#4B0082",
+  "Dec (2nd quasi-week)" = "#ffbb78",
+  "Mar (2nd quasi-week)" = "#9467bd",
+  "Mar (3rd quasi-week)" = "#bcbd22",
+  "Sep (1st quasi-week)" = "#c49c94"
+)
+
+# Function to create plots (updated with legend.position.inside)
+create_plot <- function(data, y_limits, y_breaks, y_lab, title) {
+  ggplot(data) +
+    aes(x = ano, y = valores, colour = line) +
+    geom_line(linewidth = 1.0) +
+    scale_color_manual(values = cores) +
+    theme_bw() +
+    theme(
+      legend.position.inside = c(0.9, 0.3),  # Updated here
+      legend.title = element_blank(),
+      legend.key.size = unit(0.1, "cm"),
+      legend.box.spacing = unit(0.1, "cm"),
+      legend.direction = "horizontal",
+      legend.box = "horizontal",
+      legend.background = element_blank(),
+      legend.text = element_text(size = 9),
+      legend.key.width = unit(1, "cm"),
+      axis.title.y = element_text(size = 9, face = "bold"),
+      strip.text = element_text(face = "bold", size = 12),
+      plot.margin = margin(3, 3, 3, 3),
+      axis.title.x = element_blank(),
+      axis.text.x = element_blank()
+    ) +
+    scale_x_continuous(breaks = seq(1827, 2019, by = 25)) +
+    scale_y_continuous(limits = y_limits, breaks = y_breaks) +
+    ylab(y_lab) +
+    ggtitle(title) +
+    guides(colour = guide_legend(ncol = 2))
+}
+
+# Create plots
+plot_a <- create_plot(df2 %>% filter(letra == "a"), c(0, 100), seq(0, 100, by = 20), "mean parameter \n (μ) GAMLSS", "A")
+plot_b <- create_plot(df2 %>% filter(letra == "b"), c(0, 1), seq(0, 1, by = 0.2), "dispersion parameter \n (δ) GAMLSS", "B")
+plot_c <- create_plot(df2 %>% filter(letra == "c"), c(0, 2), seq(0, 2, by = 0.4), "dispersion parameter \n (δ) GAMLSS", "C") +
+  labs(caption = "Figure 2. Year-to-year changes in the dispersion parameter of gamma-based models estimated from monthly precipitation records of the Radcliffe Observatory site in Oxford-UK. (A) linear changes in the μ parameter, (B) linear changes in the δ parameter, and (C) nonlinear changes in the δ parameter.") +
+  theme(axis.title.x = element_text(size = 10, face = "bold"), plot.caption = element_text(hjust = 0, size = 10, color = "black", lineheight = 1.0))
+
+# Combine plots
+fig2 <- plot_a + plot_b + plot_c + plot_layout(ncol = 1, heights = c(1.3, 1.3, 1))
+fig2
 ```
 
-<!--- @gabrielblaine, can you please add details here about how to interpret these outputs?
-What are you looking for as a user of the package to evaluate these values from the models in this section, here?
+### \$Changes.Freq.Drought
 
-Can we somehow shorten the outputs to highlight what's important for users to understand how to use the package?
---->
+The *\$Changes.Freq.Drought* output field evaluates how temporal changes in the parameters of the GAMLSS models impacted the probability of drought occurrence in Oxford (Figure 3).
 
-### Results
+#### Key Observations:
 
-Changes in Drought Frequency
+1.  **Periods with Changes Toward Rainier Conditions:**
+    -   Quasi-weekly periods showing decreases in the expected frequency of drought events include:
+        -   The four quasi-weeks of **January**.\
+        -   The 2nd and 3rd quasi-weeks of **March**.\
+        -   The 1st quasi-week of **September**.\
+        -   The 2nd and 4th quasi-weeks of **December**.\
+    -   These decreases in the expected frequency of moderate to extreme, severe to extreme, and extreme drought events are captured in the columns *ChangeMod*, *ChangeSev*, and *ChangeExt* of the output field.\
+    -   Consequently, the precipitation amounts obtained from the stationary approach for a cumulative probability of 0.5 (*StatNormalRain*) are lower than those derived from the nonstationary approach (*NonStatNormalRain*). This indicates that climatological expected precipitation for these nine quasi-week periods increased over time, reflecting a trend toward rainier conditions.
+2.  **Periods with Changes Toward Drier Conditions:**
+    -   Quasi-weekly periods showing increases in the expected frequency of drought events include:
+        -   The 4th quasi-week of **June**.\
+        -   The four quasi-weeks of **July**.\
+        -   The 3rd quasi-week of **September**.\
+    -   These increases in the expected frequency of moderate to extreme, severe to extreme, and extreme drought events are captured in the columns *ChangeMod*, *ChangeSev*, and *ChangeExt* of the output field.\
+    -   As a result, the precipitation amounts obtained from the stationary approach for a cumulative probability of 0.5 (*StatNormalRain*) are higher than those derived from the nonstationary approach (*NonStatNormalRain*). This indicates that the climatological expected precipitation for these six quasi-week periods decreased over time, reflecting a trend toward drier conditions.
 
-```{r changes-in-drought}
-Oxford.Changes.linear$Changes.Freq.Drought
+#### Summary:
+
+The *\$Changes.Freq.Drought* field provides valuable insights into the temporal dynamics of drought probabilities in Oxford.
+It highlights specific quasi-weekly periods with notable changes toward either rainier or drier conditions, emphasizing the importance of adopting nonstationary approaches for understanding change changes impacts over drought frequency.
+
+```{r  changes in drought frequency, fig.width=8, fig.height=5}
+library(ggplot2)
+library(tidyr)
+library(dplyr)
+library(patchwork)
+Oxford.Changes$Changes.Freq.Drought <- as.data.frame(Oxford.Changes$Changes.Freq.Drought)
+# Define quasi-weeks and labels
+quasi_weeks <- list(
+  "1st - Jan" = c(1,1), "2nd - Jan" = c(1,2), "3rd - Jan" = c(1,3), "4th - Jan" = c(1,4),
+  "2nd - Mar" = c(3,2), "3rd - Mar" = c(3,3), "4th - Jun" = c(6,4),
+  "1st - Jul" = c(7,1), "2nd - Jul" = c(7,2), "3rd - Jul" = c(7,3), "4th - Jul" = c(7,4),
+  "1st - Sep" = c(9,1), "3rd - Sep" = c(9,3), "2nd - Dec" = c(12,2), "3rd - Dec" = c(12,4)
+)
+
+# Function to extract data
+drought_data <- function(index) {
+  sapply(quasi_weeks, function(qw) {
+    Oxford.Changes$Changes.Freq.Drought %>% 
+      filter(Month == qw[1], quasiWeek == qw[2]) %>%
+      pull(index)
+  })
+}
+
+# Create data frame
+df3 <- data.frame(
+  x = names(quasi_weeks),
+  moderate = drought_data(7),
+  severe = drought_data(8),
+  extreme = drought_data(9),
+  stat = drought_data(5),
+  nonstat = drought_data(6)
+) %>% pivot_longer(-x, names_to = "category", values_to = "value")
+
+# Define colors
+color_map <- c(
+  "moderate" = "#00243F", "severe" = "#517C9D", "extreme" = "#36A7C1", 
+  "stat" = "#1c340a", "nonstat" = "#3ba551"
+)
+
+# Generate plot function
+generate_plot <- function(data, y_label, title, limits, colors, legend_labels) {
+  ggplot(data, aes(x = x, y = value, fill = category)) +
+    geom_bar(stat = "identity", position = "dodge") +
+    scale_fill_manual(values = colors, labels = legend_labels) +
+    scale_y_continuous(limits = limits) +
+    labs(title = title, x = NULL, y = y_label) +
+    theme_bw() +
+    theme(
+      axis.text.x = element_text(size = 10, angle = 45, hjust = 1, color = "black"),
+      axis.text.y = element_text(size = 10, color = "black"),
+      axis.title.x = element_text(size = 10, face = "bold", color = "black"),
+      axis.title.y = element_text(size = 9, face = "bold", color = "black"),
+      legend.position = "top", legend.title = element_blank(),
+      legend.text = element_text(size = 10, color = "black"),
+      legend.key.width = unit(1, "cm"), legend.key.size = unit(0.4, "cm"),
+      plot.margin = margin(10, 10, 10, 10)
+    )
+}
+
+# Create plots
+plot_3a <- generate_plot(
+  df3 %>% filter(category %in% c("moderate", "severe", "extreme")),
+  "Percentual change (%)", "A", c(-20, 20), 
+  color_map[c("moderate", "severe", "extreme")],
+  c("Change Moderate", "Change Severe", "Change Extreme")
+)
+
+plot_3b <- generate_plot(
+  df3 %>% filter(category %in% c("stat", "nonstat")),
+  "mm", "B", c(0, 100), 
+  color_map[c("stat", "nonstat")],
+  c("Stationary Normal Rain", "NonStationary Normal Rain")
+)
+
+# Combine plots
+Fig3 <- plot_3a + plot_3b + plot_layout(ncol = 1, heights = c(1.5, 1.2))
+Fig3
 ```
 
-<!--- @gabrielblaine, can you please add details here about how to interpret these outputs? --->
+**\$data.week**
 
-<!--- @gabrielblaine, can you please add the code for the figures, 5, 6, 7 and Table 6 from the paper here?
---->
+Finally, the output data field *\$data.week* contains the precipitation amounts (rain.at.TS), SPI values, expected frequencies of the SPI estimates calculated under both the stationary approach (Exp.Acum.Prob) and the non-stationary approach (Actual.Acum.Prob), as well as the changes in the frequency of dry events (SPI \< 0) caused by the changes in the precipitation patterns (ChangeDryFreq; in percentage).
+This output data field allowed us to assess the impact of the changes in the parameters of the gamma-based models (as demontrated by *\$Statistics*) on the expected frequency of dry events over the entire data record (1827–2020).
 
-### Case Study 2 - Brazil Drought Events
+As an example, let's evaluate this output data field for the last year of the series (2019; Table 1).
 
-<!--- @gabrielblaine, can you please add the code for the Brazil case study model fits and figure 8 here?
+```{r Monitoring drought in Oxford-UK, 2019}
+Table1 <- Oxford.Changes$data.week[which(Oxford.Changes$data.week[, 1] == 2019), ]
+# Table 1. Output data field /$data.week obtained by applying the SPIChanges package at the 4-quasi week time scale to the precipitation series recorded at the Radcliffe Observatory site in Oxford-UK (January 1827 to January 2020): rain.at.TS is the precipitation amount accumulated at the time scale specified by the users, SPI is the Standardized Precipitation Index, Exp.Acum.Prob and Actual.Acum.Prob are the expected frequency of the SPI estimates calculated under the stationary and under non-stationary approaches, respectively and, ChangeFreq is the changes in the frequency of dry events (SPI < 0). It is the difference between Actual.Acum.Prob and Exp.Acum.Prob.
+Table1
+```
 
-We'll need to fetch the data, assuming it's freely available? 
---->
+For the 33 quasi-week periods where the stationary model was selected as the best fitting model (see *\$model.selection*), the values for Exp.Acum.Prob and Actual.Acum.Prob are identical, and ChangeFreq is zero (Table 1).
+However, for the quasi-week periods where the SPIChanges package selected a nonstationary model (see *\$model.selection*), Exp.Acum.Prob and Actual.Acum.Prob differed, indicating that the expected frequency of dry events in 2019 was influenced by changes in precipitation patterns.
+To better understand this, recall that the four quasi-weeks of January exhibited changes toward rainier conditions between 1827 and 2020 (*\$Changes.Freq.Drought*).
+Therefore, the expected frequency of dry events in the later years of the series (e.g., January 2019; Table 1) was lower than in the earlier years.
+Specifically, the *\$data.week* data field indicated that the expected frequency of the four dry events observed in January 2019, when estimated from the best-fitting model, was 13%, 11.5%, 2.8%, and 5.5% lower than those calculated using the stationary approach of the original SPI method.
+Similar results were found for the 1st quasi-week period in September (Table 1).
+
+In contrast, July experienced changes toward drier conditions from 1827 to 2020 (*\$Changes.Freq.Drought*).
+Accordingly, the *\$data.week* data field indicated that the expected frequency of the three dry events observed in July 2019, when estimated from the best-fitting model, was 5.7%, 7.3%, and 10.6% higher than those calculated using the stationary approach of the original SPI.
+Similar results were seen in the 3rd quasi-week period of September (Table 1).
+
+## Interpreting the Output Data Fields from the “Oxford.Changes.linear”
+
+The interpretation of the output data fields **\$model.selection**, **\$Statistics**, **\$Changes.Freq.Drought**, and **\$data.week** from the “Oxford.Changes.linear” data frame is similar to those from the “Oxford.Changes” data frame, described in Figure 1.
+However, since “Oxford.Changes.linear” was calculated with the argument `only.linear` of the `SPIChanges()` function set to `"Yes"`, only 4 models (a stationary and three linear gamma-based models) were considered to describe changes in the rainfall patterns in Oxford (Figure 4), UK.
+As with the output data fields of the "Oxford.Changes" data frame, the outputs of “Oxford.Changes.linear” also indicate that most of the quasi-weekly periods did not exhibit significant changes in the frequency of meteorological droughts, see below.
+
+```{r selected linear models, fig.width=8, fig.height=5}
+eixo.x.Month <- Oxford.Changes.linear$model.selection[, 1]
+eixo.y.quasiWeek <- Oxford.Changes.linear$model.selection[, 2]
+valores <- Oxford.Changes.linear$model.selection[, 3]
+dados <- cbind(eixo.x.Month, eixo.y.quasiWeek, valores)
+df <- as.data.frame(dados)
+
+library(ggplot2)
+df$valores <- as.factor(df$valores)
+fig4 <- ggplot(df) +
+  aes(x = eixo.x.Month, y = eixo.y.quasiWeek, fill = valores) +
+  geom_tile() +
+  scale_fill_manual(values = c(
+    "1" = "#D3D3D3",
+    "2" = "#ADD8E6",
+    "3" = "#87CEEB",
+    "4" = "#4682B4"
+  )) +
+  theme_bw() +
+  labs(x = "Months", y = "quasi-week", fill = NULL, title = "only.linear = 'Yes'", caption = "Figure 4. Gamma-based models selected by the SPIChanges package. The plot corresponds to \n setting the `only.linear`  argument of the SPIChanges() function to `Yes`. Monthly precipitation series \n recorded at the  Radcliffe Observatory site  in Oxford-UK (January 1827 to January 2020).") +
+  scale_x_continuous(breaks = 1:12, labels = c("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec")) +
+  geom_text(aes(label = valores), color = "black", size = 3, fontface = "bold") +
+  theme(
+    strip.text = element_text(color = "black", face = "bold"),
+    axis.text.x = element_text(size = 10, color = "black"),
+    axis.text.y = element_text(size = 10, color = "black"),
+    axis.title.x = element_text(size = 10, face = "bold", color = "black"),
+    axis.title.y = element_text(size = 10, face = "bold", color = "black"),
+    plot.title = element_text(face = "bold", size = 14, color = "black"),
+    plot.caption = element_text(hjust = 0, size = 10, color = "black", lineheight = 1.0),
+    plot.margin = margin(10, 10, 20, 10)
+  )
+
+fig4
+```
+
+### **\$model.selection**
+
+This output data field indicates that **34 out of 48 quasi-weekly periods** did not exhibit significant changes in the frequency of meteorological droughts, as the stationary gamma distribution (Model 1) was the best-fitting model for these precipitation series.
+
+This data field also reveals the following:
+
+- **Model 2**, which describes a linear change only in the μ parameter of the gamma-based models, was selected for:
+  - The four quasi-weeks of January\
+  - The 3rd and 4th quasi-weeks of July
+- **Model 3**, which shows a linear change only in the δ parameter of the gamma distribution, was selected for:
+    -   The 3rd quasi-week of March\
+    -   The 4th quasi-week of June\
+    -   The 1st and 2nd quasi-weeks of July\
+    -   The 1st and 3rd quasi-weeks of September\
+    -   The 2nd quasi-week of December
+-   **Model 4**, which describes a linear change in both the μ and δ parameters of the gamma-based models, was selected for:
+    -   The 4th quasi-week of December
+
+These findings indicate that while many periods were stationary, significant linear changes in rainfall patterns were observed in specific quasi-weekly periods.
+
+### **\$Statistics** and **\$Changes.Freq.Drought**
+
+As one might have anticipated, the only quasi-weeks where these output data fields show different results from those of the “Oxford.Changes” data frame object are those where the `SPIChanges()` function with `only.linear = No` selected nonstationary models.
+In other words, different nonstationary models were selected for the 3rd quasi-week of March and the 1st quasi-week of September.
+
+-   When `only.linear = No`, models 11 and 6 were chosen for these periods, respectively.
+-   When `only.linear = Yes`, model 3 was selected for both periods.
+
+It is important to note that these three models (11, 6, and 3) all assume that only the δ parameter changes over time.
+However, setting `only.linear = No` provided a more complete (non-linear) description of how the dispersion of the precipitation frequency distributions changed from 1827 to 2019.
+
+The major difference between using `only.linear = No` and `only.linear = Yes` is observed in the 2nd quasi-week of March.
+With `only.linear = No`, the `SPIChanges()` function selected model 11, indicating changes toward drier conditions.
+In contrast, with `only.linear = Yes`, model 1 was selected, suggesting no changes in precipitation patterns.
+
+This discrepancy highlights that when only stationary and linear models are considered, the `SPIChanges()` function may fail to capture and describe complex changes in the dispersion parameter of the gamma-based model.
+
+**\$data.week**
+
+As described above, the output data field, *\$data.week* contains the precipitation amounts (rain.at.TS), SPI values, expected frequencies of the SPI estimates calculated under both the stationary approach (Exp.Acum.Prob) and the non-stationary approach (Actual.Acum.Prob), as well as the changes in the frequency of dry events (SPI \< 0) caused by the changes in the precipitation patterns (ChangeDryFreq; in percentage).
+This output data field allowed us to assess the impact of the linear changes in the parameters of the gamma-based models (as demonstrated by *\$Statistics*) on the expected frequency of dry events over the entire data record (1827–2020).
+
+Once again, let's evaluate this output data field for the last year of the series (2019; Table 2).
+
+```{r Monitoring drought in Oxford-UK, 2019, only linear models}
+Table2 <- Oxford.Changes.linear$data.week[which(Oxford.Changes.linear$data.week[, 1] == 2019), ]
+# Table 2. Output data field /$data.week obtained by applying the SPIChanges package at the 4-quasi week time scale to the precipitation series recorded at the Radcliffe Observatory site in Oxford-UK (January 1827 to January 2020): rain.at.TS is the precipitation amount accumulated at the time scale specified by the users, SPI is the Standardized Precipitation Index, Exp.Acum.Prob and Actual.Acum.Prob are the expected frequency of the SPI estimates calculated under the stationary and under non-stationary approaches, respectively and, ChangeFreq is the changes in the frequency of dry events (SPI < 0). It is the difference between Actual.Acum.Prob and Exp.Acum.Prob.
+Table2
+```
+
+For the 34 quasi-week periods where the stationary model was selected as the best fitting model (see **\$model.selection**), the values for Exp.Acum.Prob and Actual.Acum.Prob are identical, and ChangeFreq is zero (Table 2).
+However, for the quasi-week periods where the SPIChanges package selected linear nonstationary models (see **\$model.selection**), Exp.Acum.Prob and Actual.Acum.Prob differed, indicating that the expected frequency of dry events in 2019 was influenced by changes in precipitation patterns.
+
+To better understand this, recall that the four quasi-weeks of January exhibited changes toward rainier conditions between 1827 and 2020 (**\$Changes.Freq.Drought**).
+Therefore, the expected frequency of dry events in the later years of the series (e.g., January 2019; Table 2) was lower than in the earlier years.
+Specifically, the **\$data.week** data field indicated that the expected frequency of the four dry events observed in January 2019, when estimated from the best-fitting model, was 13%, 11.5%, 2.8%, and 5.5% lower than those calculated using the stationary approach of the original SPI method.
+Similar results were found for the 1st quasi-week period in September (Table 2).
+
+In contrast, the 2nd, 3rd, and 4th quasi-weeks of July experienced changes toward drier conditions from 1827 to 2020 (**\$Changes.Freq.Drought**).
+Accordingly, the **\$data.week** data field indicated that the expected frequency of the three dry events observed in July 2019, when estimated from the best-fitting model, was 5.7%, 7.3%, and 10.7% higher than those calculated using the stationary approach of the original SPI.
+Similar results are observed in the 3rd quasi-week period of September (Table 2).
+
+## Case Study 2 - Brazil Drought Events
+
+In this case study we apply the SPIChanges package for entire Brazil (1980-2024), downloading data from CPC Global Unified Gauge-Based Analysis of Daily Precipitation data provided by the NOAA PSL, Boulder, Colorado, USA, from their website at <https://psl.noaa.gov>.
+
+```{r get-CPC-rain, eval=FALSE}
+# this chunk may take a long time to get daily precipitation data for entire Brazil (1980-2024)
+# Load necessary libraries
+library(ncdf4)
+library(curl)
+library(SPIChanges)
+
+n <- nrow(lonlat)
+# Configure curl with a longer timeout
+h <- new_handle()
+handle_setopt(h, timeout = 10800L)
+
+download_and_process <- function(year, lonlat) {
+  # Define file paths and URLs
+  rain_file <- file.path(tempdir(), paste0("cpcdata", year, ".nc"))
+  download_url <- paste0("https://psl.noaa.gov/thredds/fileServer/Datasets/cpc_global_precip/precip.", year, ".nc")
+  # Download the files
+  curl::curl_download(
+    url = download_url,
+    destfile = rain_file,
+    mode = "wb",
+    quiet = FALSE,
+    handle = h
+  )
+
+  # Open and process the netCDF file
+  cep.prec <- nc_open(rain_file)
+  lons <- ncvar_get(cep.prec, "lon")
+  lats <- ncvar_get(cep.prec, "lat")
+  prate <- ncvar_get(cep.prec, "precip") # mm/day
+  NN <- dim(prate)[3]
+  # Flip latitude and precipitation order
+  prate <- prate[, rev(seq_len(dim(prate)[2])), 1:NN]
+  lats <- rev(lats)
+  # Initialize matrix for the year
+  pdata <- matrix(NA, NN, n)
+  for (i in seq_len(n)) {
+    longitude <- lonlat[i, 1] + 360 # range 0, 360
+    latitude <- lonlat[i, 2] # range -90, 90
+    pdata[, i] <- prate[
+      which.min((lons - longitude)^2),
+      which.min((lats - latitude)^2),
+    ]
+  }
+
+  nc_close(cep.prec)
+  return(pdata)
+}
+
+# Process data for multiple years
+years <- 1980:2024
+pdata_list <- lapply(years, download_and_process, lonlat = lonlat)
+
+# Combine all years' data
+pdata1 <- do.call(rbind, pdata_list)
+```
+
+## Aggregating daily data into a specified time scale:
+
+For this analysis, we set the 'TS' argument in the `TSaggreg()` function to 12, which corresponds to a moving window of three months.
+Shorter time scales may result in precipitation frequency distributions where the percentage of zeros exceeds 80%, particularly in Brazil's semi-arid regions.
+
+```{r aggregate-CPC-rain, eval=FALSE}
+library(SPIChanges)
+# This chunk takes a long time to aggregate precipitation data for entire Brazil (1980-2024)
+pdata1[is.na(pdata1)] <- 0 # replacing NA by zero.
+TS12 <- TSaggreg(daily.rain = pdata1[, 1], start.date = "1980-01-01", TS = 12)
+N <- nrow(TS12)
+rain.at.TS <- matrix(NA, n, 5)
+rainTS12.bank <- matrix(NA, N, (n + 3))
+rainTS12.bank[, 1:4] <- as.matrix(TS12)
+for (i in 2:n) {
+  TS12 <- TSaggreg(daily.rain = pdata1[, i], start.date = "1980-01-01", TS = 12)
+  rainTS12.bank[, (i + 3)] <- TS12[, 4]
+}
+```
+
+## Applying the SPIChanges::SPIChanges() for entire Brazil
+
+As previously descried, we applied the `SPIChanges` package to the entire country of Brazil.
+At the 12-quasi-week time scale, the 4th quasi-week of February, May, August, and November correspond to precipitation data accumulated over the Austral Summer, Autumn, Winter, and Spring seasons, respectively.
+Regarding changes in severe to extreme drought events (SPI ≤ -1.5), the results of the chunk below are consistent with previous studies indicating that Brazil, like other regions in South America, may become a drought hotspot due to its potential to respond drastically to excessive drying and warming.
+
+Note that in this section, we use parallel processing to speed up the calculations using {foreach}, if you do not wish to use multiple cores, change `numCores <- detectCores() - 1` to just read `numCores <- 1`.
+
+```{r SPIChanges for entire Brazil, eval=FALSE}
+# trying to speed up the things
+library(foreach)
+library(doParallel)
+library(SPIChanges)
+numCores <- detectCores() - 1 # Use one less core than the total available
+cl <- makeCluster(numCores)
+registerDoParallel(cl)
+rain <- matrix(NA, N, 4)
+rain[, 1:3] <- as.matrix(rainTS12.bank[, 1:3])
+final <- ncol(rainTS12.bank)
+n <- nrow(lonlat)
+Map <- matrix(NA, n, 18)
+model <- matrix(NA, n, 3)
+Map[, 1:2] <- as.matrix(lonlat)
+model[, 1:2] <- as.matrix(lonlat)
+changes <- matrix(NA, 1, 16)
+# Perform parallel processing
+results <- foreach(i = 4:final, .combine = rbind, .packages = "SPIChanges") %dopar% {
+  rain[, 4] <- rainTS12.bank[, i]
+  Local.Changes <- SPIChanges(rain.at.TS = rain, only.linear = "no")
+  changes[1, 1:3] <- Local.Changes$Changes.Freq.Drought[which(Local.Changes$Changes.Freq.Drought[, 1] == 2 &
+    Local.Changes$Changes.Freq.Drought[, 2] == 4), 7:9]
+  changes[1, 4] <- Local.Changes$model.selection[which(Local.Changes$model.selection[, 1] == 2 &
+    Local.Changes$model.selection[, 2] == 4), 3]
+  changes[1, 5:7] <- Local.Changes$Changes.Freq.Drought[which(Local.Changes$Changes.Freq.Drought[, 1] == 5 &
+    Local.Changes$Changes.Freq.Drought[, 2] == 4), 7:9]
+  changes[1, 8] <- Local.Changes$model.selection[which(Local.Changes$model.selection[, 1] == 5 &
+    Local.Changes$model.selection[, 2] == 4), 3]
+  changes[1, 9:11] <- Local.Changes$Changes.Freq.Drought[which(Local.Changes$Changes.Freq.Drought[, 1] == 8 &
+    Local.Changes$Changes.Freq.Drought[, 2] == 4), 7:9]
+  changes[1, 12] <- Local.Changes$model.selection[which(Local.Changes$model.selection[, 1] == 8 &
+    Local.Changes$model.selection[, 2] == 4), 3]
+  changes[1, 13:15] <- Local.Changes$Changes.Freq.Drought[which(Local.Changes$Changes.Freq.Drought[, 1] == 11 &
+    Local.Changes$Changes.Freq.Drought[, 2] == 4), 7:9]
+  changes[1, 16] <- Local.Changes$model.selection[which(Local.Changes$model.selection[, 1] == 11 &
+    Local.Changes$model.selection[, 2] == 4), 3]
+  return(changes)
+}
+# Combine results into the Map matrix
+a <- 1
+for (i in 1:nrow(results)) {
+  Map[a, 3:18] <- results[i, ]
+  a <- a + 1
+}
+
+# Assign column names and save the results
+colnames(Map) <- c(
+  "lon", "lat", "SummerModerate", "SummerSevere", "SummerExtreme", "SummerModel",
+  "OutomnModerate", "OutomnSevere", "OutomnExtreme", "OutomnModel",
+  "WinterModerate", "WinterSevere", "WinterExtreme", "WinterModel",
+  "SpringModerate", "SpringSevere", "SpringExtreme", "SpringModel"
+)
+# Stop the cluster
+stopCluster(cl)
+head(Map)
+```
+
+## Assessing changes in severe to moderate drought events
+
+This next chunk uses the file Map (from the previous chunk) to plot the changes in the expected frequency of severe to moderate drought events (SPI ≤ −1.5), calculated at 12- quasi-week (3-month) time scale in Brazil.
+The analysis of this map indicated that 50.8 (Summer), 45.5 (Autumn), 35.6 (Winter), and 49.2% (Spring) of Brazil experienced changes toward drier conditions between 1980 and 2024 as indicated by the red colours of the map.
+This change toward more severe to extreme drought events in almost half of Brazil is in line with the widespread occurrence of unprecedented drought events in the country after 2000.
+
+```{r map, fig.width=8, fig.height=5}
+library(ggplot2)
+library(sf)
+library(RColorBrewer)
+library(tidyr)
+library(dplyr)
+library(archive)
+library(SPIChanges)
+# Loading data
+rar_url <- "https://github.com/gabrielblain/Grid_Brazil/raw/main/regioes_2010.rar"
+temp_file <- tempfile(fileext = ".rar")
+temp_dir <- tempdir()
+download.file(rar_url, temp_file, mode = "wb")
+archive_extract(temp_file, dir = temp_dir)
+shp_path <- file.path(temp_dir, "regioes_2010.shp") # Adjust if files are extracted into a subdirectory
+limitere <- st_read(shp_path)
+# Tidying the data
+df <- Map %>%
+  select(lat, lon, SpringSevere, AutomnSevere, WinterSevere, SummerSevere) %>%
+  pivot_longer(
+    cols = c(SpringSevere, AutomnSevere, WinterSevere, SummerSevere),
+    names_to = "Station", values_to = "Change"
+  )
+df_ok <- df %>%
+  mutate(
+    Station = recode(Station,
+      "SpringSevere" = "Spring - Severe",
+      "SummerSevere" = "Summer - Severe",
+      "AutomnSevere" = "Autumm - Severe",
+      "WinterSevere" = "Winter - Severe"
+    )
+  )
+# Turning into sf
+limitere_sf <- st_as_sf(limitere)
+dados.sf <- st_as_sf(df_ok, coords = c("lon", "lat"), crs = 4326)
+# Fixing possible errors
+limitere_sf <- st_make_valid(limitere_sf)
+# Finding centroids
+limitere_centroids <- st_centroid(limitere_sf)
+# Adding siglas (annacron)
+limitere_centroids$sigla <- limitere$sigla
+# Finding coordinates
+coords <- st_coordinates(limitere_centroids)
+limitere_centroids$lon <- coords[, 1]
+limitere_centroids$lat <- coords[, 2]
+dados.sf$Station <- factor(
+  dados.sf$Station,
+  levels = c(
+    "Spring - Severe",
+    "Summer - Severe",
+    "Autumm - Severe",
+    "Winter - Severe"
+  )
+)
+cores_roxo_branco_vermelho <- colorRampPalette(c("purple", "white", "red"))(n = 100)
+cores5 <- colorRampPalette(c("purple", "white", "red"))(7)
+# The Map
+map <- ggplot() +
+  geom_sf(data = dados.sf, aes(color = Change), shape = 15, size = 3) +
+  geom_sf(data = limitere_sf, fill = NA, color = "black", size = 1) +
+  scale_colour_gradient2(
+    low = "#6B238E", mid = "white", high = "red",
+    midpoint = 0, limits = c(-30, 80)
+  ) +
+  theme_light() +
+  labs(color = "Change (%)") +
+  facet_wrap(vars(Station)) +
+  theme(
+    title = element_text(size = 12, face = "bold", color = "black"),
+    text = element_text(size = 12, color = "black"),
+    axis.text.x = element_text(size = 9, color = "black"),
+    axis.text.y = element_text(size = 9, color = "black"),
+    legend.position = "right",
+    legend.direction = "vertical",
+    legend.key.height = unit(.6, "cm"),
+    legend.key.width = unit(0.5, "cm"),
+    legend.title = element_text(size = 11, face = "bold"),
+    legend.text = element_text(size = 11),
+    axis.title.x = element_blank(), # Remove o rotulo do eixo x
+    axis.title.y = element_blank(), # Remove o rotulo do eixo y
+    strip.text = element_text(size = 11, face = "bold", color = "black")
+  )
+map <- map +
+  geom_text(
+    data = limitere_centroids, aes(x = lon, y = lat, label = sigla),
+    color = "black", size = 3,
+    fontface = "bold",
+    position = position_nudge(y = 0.01), show.legend = FALSE
+  )
+
+print(map)
+```
 
 ## References

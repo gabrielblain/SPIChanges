@@ -31,15 +31,30 @@ Imports:
     rlang,
     spsUtil,
     stats,
+    brglm2,
     zoo
 Suggests: 
+    archive,
     curl,
+    doParallel,
+    dplyr,
+    foreach,
+    ggplot2,
+    grid,
     knitr,
+    ncdf4,
+    patchwork,
+    RColorBrewer,
     rmarkdown,
     roxyglobals,
-    testthat (>= 3.0.0)
+    sf,
+    purrr,
+    testthat (>= 3.0.0),
+    tidyr
 VignetteBuilder: 
     knitr
+Config/roxyglobals/filename: globals.R
+Config/roxyglobals/unique: FALSE
 Config/testthat/edition: 3
 Encoding: UTF-8
 Language: en-US
@@ -47,5 +62,3 @@ LazyData: true
 Roxygen: list(markdown = TRUE, roclets = c("collate", "namespace", "rd",
     "roxyglobals::global_roclet"))
 RoxygenNote: 7.3.2
-Config/roxyglobals/filename: globals.R
-Config/roxyglobals/unique: FALSE

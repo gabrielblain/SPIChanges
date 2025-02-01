@@ -1,0 +1,32 @@
+#' Changes in Drought Events in Brazil (1980-2024)
+#'
+#' This dataset provides the changes (in percentage) in Moderate to Extreme, Severe to Extreme, and Extreme Drought events across Brazil
+#' for the four seasons (Summer, Autumn, Winter, and Spring) over the period 1980–2024.
+#' The data were generated using the `SPIChanges()` function applied to rainfall data from NOAA PSL.
+#'
+#' @format ## `Map`
+#' A matrix with 2841 rows and 18 columns:
+#' \describe{
+#'   \item{lon}{Longitude in decimal degrees}
+#'   \item{lat}{Latitude in decimal degrees}
+#'   \item{SummerModerate}{Percentage change in moderate drought events in Summer}
+#'   \item{SummerSevere}{Percentage change in severe drought events in Summer}
+#'   \item{SummerExtreme}{Percentage change in extreme drought events in Summer}
+#'   \item{SummerModel}{The selected gamma-based model in Summer}
+#'   \item{AutumnModerate}{Percentage change in moderate drought events in Autumn}
+#'   \item{AutumnSevere}{Percentage change in severe drought events in Autumn}
+#'   \item{AutumnExtreme}{Percentage change in extreme drought events in Autumn}
+#'   \item{AutumnModel}{The selected gamma-based model in Autumn}
+#'   \item{WinterModerate}{Percentage change in moderate drought events in Winter}
+#'   \item{WinterSevere}{Percentage change in severe drought events in Winter}
+#'   \item{WinterExtreme}{Percentage change in extreme drought events in Winter}
+#'   \item{WinterModel}{The selected gamma-based model in Winter}
+#'   \item{SpringModerate}{Percentage change in moderate drought events in Spring}
+#'   \item{SpringSevere}{Percentage change in severe drought events in Spring}
+#'   \item{SpringExtreme}{Percentage change in extreme drought events in Spring}
+#'   \item{SpringModel}{The selected gamma-based model in Spring}
+#'  ...
+#' }
+#'
+#' @source Generated using the `SPIChanges()` function applied to rainfall data obtained from NOAA PSL (<https://psl.noaa.gov/>).
+"Map"
