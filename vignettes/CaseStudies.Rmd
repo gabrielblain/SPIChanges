@@ -1031,7 +1031,7 @@ for (i in 1:nrow(results)) {
 # Assign column names and save the results
 colnames(Map) <- c(
   "lon", "lat", "SummerModerate", "SummerSevere", "SummerExtreme", "SummerModel",
-  "OutomnModerate", "OutomnSevere", "OutomnExtreme", "OutomnModel",
+  "AutomnModerate", "AutomnSevere", "AutomnExtreme", "AutomnModel",
   "WinterModerate", "WinterSevere", "WinterExtreme", "WinterModel",
   "SpringModerate", "SpringSevere", "SpringExtreme", "SpringModel"
 )
