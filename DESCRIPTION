@@ -13,10 +13,10 @@ Authors@R: c(
            comment = c(ORCID = "0000-0002-0061-8359"))
   )
 Description: Improves the interpretation of the Standardized Precipitation
-    Index under changing climate conditions.  The package uses the
+    Index under changing climate conditions. The package uses the
     nonstationary approach proposed in Blain et al. (2022)
     <doi:10.1002/joc.7550> to detect trends in rainfall quantities and to
-    quantify the effect of such trends on the probability of a SPI value
+    quantify the effect of such trends on the probability of a drought event
     occurring.
 License: MIT + file LICENSE
 URL: https://github.com/gabrielblain/SPIChanges
