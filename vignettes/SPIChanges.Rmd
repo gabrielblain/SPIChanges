@@ -94,7 +94,7 @@ Aggregating daily rainfall values at 4-quasiWeek time scale, which corresponds t
 library(SPIChanges)
 daily.rain <- CampinasRain[, 2]
 RainTS4 <- TSaggreg(daily.rain = daily.rain, start.date = "1980-01-01", TS = 4)
-plot(RainTS4[, 1], RainTS4[, 4])
+head(RainTS4)
 ```
 
 ## Function `SPIChanges()`
@@ -192,11 +192,11 @@ The packages `gamlss` and `gamlss.dist` are used for such estimations.
 library(SPIChanges)
 daily.rain <- CampinasRain[, 2]
 rainTS4 <- TSaggreg(daily.rain = daily.rain, start.date = "1980-01-01", TS = 4)
-Changes.in.the.SPI <- SPIChanges(rain.at.TS = rainTS4, only.linear = "Yes")
-head(Changes.in.the.SPI$data.week)
-head(Changes.in.the.SPI$Statistics)
-head(Changes.in.the.SPI$model.selection)
-head(Changes.in.the.SPI$Changes.Freq.Drought)
+Changes_SPI <- SPIChanges(rain.at.TS = rainTS4, only.linear = "Yes")
+head(Changes_SPI$data.week)
+head(Changes_SPI$Statistics)
+head(Changes_SPI$model.selection)
+head(Changes_SPI$Changes.Freq.Drought)
 ```
 
 ## Example 3
@@ -209,9 +209,9 @@ The packages `gamlss` and `gamlss.dist` are used for such estimations.
 library(SPIChanges)
 daily.rain <- CampinasRain[, 2]
 rainTS4 <- TSaggreg(daily.rain = daily.rain, start.date = "1980-01-01", TS = 4)
-Changes.in.the.SPI <- SPIChanges(rain.at.TS = rainTS4, only.linear = "No")
-head(Changes.in.the.SPI$data.week)
-head(Changes.in.the.SPI$Statistics)
-head(Changes.in.the.SPI$model.selection)
-head(Changes.in.the.SPI$Changes.Freq.Drought)
+Changes_SPI <- SPIChanges(rain.at.TS = rainTS4, only.linear = "No")
+head(Changes_SPI$data.week)
+head(Changes_SPI$Statistics)
+head(Changes_SPI$model.selection)
+head(Changes_SPI$Changes.Freq.Drought)
 ```
