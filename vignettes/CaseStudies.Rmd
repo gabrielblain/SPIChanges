@@ -651,7 +651,11 @@ create_plot <- function(data, y_limits, y_breaks, y_lab, title) {
 plot_a <- create_plot(df2 %>% filter(letra == "a"), c(0, 100), seq(0, 100, by = 20), "mean parameter \n (μ) GAMLSS", "A")
 plot_b <- create_plot(df2 %>% filter(letra == "b"), c(0, 1), seq(0, 1, by = 0.2), "dispersion parameter \n (δ) GAMLSS", "B")
 plot_c <- create_plot(df2 %>% filter(letra == "c"), c(0, 2), seq(0, 2, by = 0.4), "dispersion parameter \n (δ) GAMLSS", "C") +
-  labs(caption = "Figure 2. Year-to-year changes in the dispersion parameter of gamma-based models estimated from monthly precipitation records of the Radcliffe Observatory site in Oxford-UK. (A) linear changes in the μ parameter, (B) linear changes in the δ parameter, and (C) nonlinear changes in the δ parameter.") +
+  labs(caption  = "Figure 2. Year-to-year changes in the dispersion parameter of gamma-based models estimated from
+       monthly precipitation records of the Radcliffe Observatory site in Oxford-UK.
+       (A) linear changes in the μ parameter
+       (B) linear changes in the δ parameter
+       (C) nonlinear changes in the δ parameter") +
   theme(axis.title.x = element_text(size = 10, face = "bold"), plot.caption = element_text(hjust = 0, size = 10, color = "black", lineheight = 1.0))
 
 # Combine plots
@@ -686,7 +690,7 @@ The *\$Changes.Freq.Drought* output field evaluates how temporal changes in the 
 The *\$Changes.Freq.Drought* field provides valuable insights into the temporal dynamics of drought probabilities in Oxford.
 It highlights specific quasi-weekly periods with notable changes toward either rainier or drier conditions, emphasizing the importance of adopting nonstationary approaches for understanding change changes impacts over drought frequency.
 
-```{r  changes in drought frequency, fig.width=8, fig.height=5}
+```{r  changes in drought frequency, fig.width=8, fig.height=7}
 library(ggplot2)
 library(tidyr)
 library(dplyr)
@@ -758,7 +762,12 @@ plot_3b <- generate_plot(
   "mm", "B", c(0, 100), 
   color_map[c("stat", "nonstat")],
   c("Stationary Normal Rain", "NonStationary Normal Rain")
-)
+) +
+  labs(caption = "Figure 3. Year-to-year changes in drought frequency estimated from 
+       quasi-weekly precipitation records of the Radcliffe Observatory site in Oxford-UK. 
+       (A) Percentual changes in the frequency of moderate, severe, and extreme droughts.
+       (B) Changes in the normal precipitation amount for stationary and nonstationary normality assumptions.") +
+  theme(axis.title.x = element_text(size = 10, face = "bold"), plot.caption = element_text(hjust = 0, size = 10, color = "black", lineheight = 1.0))
 
 # Combine plots
 Fig3 <- plot_3a + plot_3b + plot_layout(ncol = 1, heights = c(1.5, 1.2))
@@ -837,10 +846,10 @@ This output data field indicates that **34 out of 48 quasi-weekly periods** did 
 
 This data field also reveals the following:
 
-- **Model 2**, which describes a linear change only in the μ parameter of the gamma-based models, was selected for:
-  - The four quasi-weeks of January\
-  - The 3rd and 4th quasi-weeks of July
-- **Model 3**, which shows a linear change only in the δ parameter of the gamma distribution, was selected for:
+-   **Model 2**, which describes a linear change only in the μ parameter of the gamma-based models, was selected for:
+    -   The four quasi-weeks of January\
+    -   The 3rd and 4th quasi-weeks of July
+-   **Model 3**, which shows a linear change only in the δ parameter of the gamma distribution, was selected for:
     -   The 3rd quasi-week of March\
     -   The 4th quasi-week of June\
     -   The 1st and 2nd quasi-weeks of July\
