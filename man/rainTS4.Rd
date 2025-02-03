@@ -7,7 +7,7 @@
 \format{
 \subsection{\code{rainTS4}}{
 
-A matrix with 4 columns and 2109 rows:
+A matrix with 4 columns and 576 rows:
 \describe{
 \item{Year}{Year}
 \item{Month}{Month}
