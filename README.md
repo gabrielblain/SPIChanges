@@ -191,7 +191,7 @@ rainTS4 <- TSaggreg(daily.rain = daily.rain,
     ##   The last day of your series is 31 and TS is 4
 
 ``` r
-Changes.in.the.SPI <- SPIChanges(rain.at.TS = rainTS4, only.linear = "Yes")
+Change_SPI <- SPIChanges(rain.at.TS = rainTS4, only.linear = "Yes")
 ```
 
     ## Warning in SPIChanges(rain.at.TS = rainTS4, only.linear = "Yes"): rainfall
@@ -199,7 +199,7 @@ Changes.in.the.SPI <- SPIChanges(rain.at.TS = rainTS4, only.linear = "Yes")
     ## cannot assume values lower than -1.5
 
 ``` r
-head(Changes.in.the.SPI$data.week)
+head(Change_SPI$data.week)
 ```
 
     ##   Year Month quasiWeek rain.at.TS    SPI Exp.Acum.Prob Actual.Acum.Prob
@@ -218,7 +218,7 @@ head(Changes.in.the.SPI$data.week)
     ## 6     NoDrought
 
 ``` r
-head(Changes.in.the.SPI$Statistics)
+head(Change_SPI$Statistics)
 ```
 
     ##   Month quasiWeek ProbZero      mu sigma
@@ -230,7 +230,7 @@ head(Changes.in.the.SPI$Statistics)
     ## 6     1         1        0 218.182 0.326
 
 ``` r
-head(Changes.in.the.SPI$model.selection)
+head(Change_SPI$model.selection)
 ```
 
     ##      Month quasiWeek model
@@ -242,7 +242,7 @@ head(Changes.in.the.SPI$model.selection)
     ## [6,]     2         2     1
 
 ``` r
-head(Changes.in.the.SPI$Changes.Freq.Drought)
+head(Change_SPI$Changes.Freq.Drought)
 ```
 
     ##      Month quasiWeek StatProbZero NonStatProbZero StatNormalRain
@@ -280,7 +280,7 @@ rainTS4 <- TSaggreg(daily.rain = daily.rain,
     ##   The last day of your series is 31 and TS is 4
 
 ``` r
-Changes.in.the.SPI <- SPIChanges(rain.at.TS = rainTS4, only.linear = "No")
+Change_SPI <- SPIChanges(rain.at.TS = rainTS4, only.linear = "No")
 ```
 
     ## Warning in SPIChanges(rain.at.TS = rainTS4, only.linear = "No"): rainfall
@@ -288,7 +288,7 @@ Changes.in.the.SPI <- SPIChanges(rain.at.TS = rainTS4, only.linear = "No")
     ## cannot assume values lower than -1.5
 
 ``` r
-head(Changes.in.the.SPI$data.week)
+head(Change_SPI$data.week)
 ```
 
     ##   Year Month quasiWeek rain.at.TS    SPI Exp.Acum.Prob Actual.Acum.Prob
@@ -307,7 +307,7 @@ head(Changes.in.the.SPI$data.week)
     ## 6     NoDrought
 
 ``` r
-head(Changes.in.the.SPI$Statistics)
+head(Change_SPI$Statistics)
 ```
 
     ##   Month quasiWeek ProbZero      mu sigma
@@ -319,7 +319,7 @@ head(Changes.in.the.SPI$Statistics)
     ## 6     1         1        0 218.182 0.326
 
 ``` r
-head(Changes.in.the.SPI$model.selection)
+head(Change_SPI$model.selection)
 ```
 
     ##      Month quasiWeek model
@@ -331,7 +331,7 @@ head(Changes.in.the.SPI$model.selection)
     ## [6,]     2         2     1
 
 ``` r
-head(Changes.in.the.SPI$Changes.Freq.Drought)
+head(Change_SPI$Changes.Freq.Drought)
 ```
 
     ##      Month quasiWeek StatProbZero NonStatProbZero StatNormalRain
