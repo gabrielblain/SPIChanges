@@ -54,5 +54,5 @@ Detect trends and quantify their effect on the probability of SPI values occurri
 \examples{
 
 rainTS4 <- rainTS4
-Changes.in.the.SPI <- SPIChanges(rain.at.TS=rainTS4, only.linear = "yes")
+Changes_SPI <- SPIChanges(rain.at.TS=rainTS4, only.linear = "yes")
 }
