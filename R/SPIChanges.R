@@ -41,7 +41,7 @@
 #' @examples
 #'
 #' rainTS4 <- rainTS4
-#' Changes.in.the.SPI <- SPIChanges(rain.at.TS=rainTS4, only.linear = "yes")
+#' Changes_SPI <- SPIChanges(rain.at.TS=rainTS4, only.linear = "yes")
 #' @importFrom gamlss gamlss GAIC
 #' @importFrom gamlss.dist GA pGA qGA BI
 #' @importFrom stats qnorm fitted glm predict binomial
