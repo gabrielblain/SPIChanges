@@ -9,7 +9,7 @@
 #' @param TS
 #' Time scale on the quasiWeek basis (integer values between 1 and 96).
 #'   Default is 4, which corresponds to the monthly time scale.
-#' @return
+#' @returns
 #' A matrix with rainfall amounts aggregated at the time scale selected by
 #' the user
 #' @examples

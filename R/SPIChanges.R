@@ -10,7 +10,7 @@
 #' A character string value (`Yes` or `No`) defining if the function must
 #' consider only linear models (`Yes`) or linear and non-linear models (`No`).
 #' Default is `Yes`.
-#' @return
+#' @returns
 #' A `list` object with:
 #' \describe{
 #'   \item{data.week}{The Rainfall amounts, SPI, cumulative probability of the SPI values under the stationary
