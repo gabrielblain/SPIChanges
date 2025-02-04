@@ -4,4 +4,4 @@
 
 * This is a new release.
 
-* The words 'Blain', 'nonstationary', 'al', and 'et' in the DESCRIPTION file are not misspelled
+* The words 'Blain', 'nonstationary', 'al', and 'et' in the DESCRIPTION file are not misspelled.
