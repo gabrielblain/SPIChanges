@@ -21,7 +21,7 @@ and dispersion of the SPI frequency distributions.
 
 The package depends on R (\>= 2.10) and imports the following packages:
 {lubridate}, {zoo}, {gamlss}, {gamlss.dist}, {stats}, {spsUtil},
-{rlang}, and {MuMIn}.
+{rlang}, {brglm2}, and {MuMIn}.
 
 ## Installation
 
