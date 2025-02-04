@@ -454,7 +454,7 @@ Blain G C, Sobierajski G R, Weight E, Martins L L, Xavier A C F 2022.
 Improving the interpretation of standardized precipitation index
 estimates to capture drought characteristics in changing climate
 conditions. International Journal of Climatology, 42, 5586-5608.
-<https://doi.org/10.1002/joc.7550>
+<https://rmets.onlinelibrary.wiley.com/doi/abs/10.1002/joc.7550>
 
 McCullagh, P. and Nelder, J. A. 1989. Generalized Linear Models. London
 New York Chapman and Hall. ISBN 9780412317606
@@ -485,4 +485,5 @@ Management, 34:2081-2095. <https://doi.org/10.1007/s11269-020-02548-x>
 
 Stagge J H and Sung K 2022 A Nonstationary Standardized Precipitation
 Index (NSPI) using Bayesian splines. Journal of Applied Meteorology and
-Climatology, 61, 761-779. <https://doi.org/10.1175/JAMC-D-21-0244.1>
+Climatology, 61, 761-779.
+<https://journals.ametsoc.org/view/journals/apme/61/7/JAMC-D-21-0244.1.xml>
