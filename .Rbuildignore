@@ -9,3 +9,5 @@
 
 # flint files
 ^flint$
+^CRAN-SUBMISSION$
+^revdep$
