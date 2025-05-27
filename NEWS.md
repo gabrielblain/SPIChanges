@@ -2,7 +2,7 @@
 
 ## Pach Change
 
--   Improve functions instructions.
+-   Improves functions instructions.
 
 # SPIChanges 0.1.0
 
