@@ -51,6 +51,19 @@ moderate, severe and extreme drought events.}
 \description{
 Detect trends and quantify their effect on the probability of SPI values occurring
 }
+\details{
+This function employs a nonstationary parametric approach to detect changes
+in precipitation patterns and quantify their effect on the expected frequency
+of SPI estimates. It comprises 16 time-varying gamma-based candidate models,
+which allow for a wide range of linear and nonlinear changes on the mean and
+dispersion of the precipitation distributions. The second-order Akaike Information
+Criteria is then used select the best candidate model, which calculates the
+cumulative probability of each precipitation amount under climate change conditions.
+This probability is compared to that obtained from the original SPI algorithm
+(stationary approach), indicating whether the frequency of drought events have
+increased or decreased over time. See Details in the README file for further
+information about the gamma-based models and the selection process.
+}
 \examples{
 
 rainTS4 <- rainTS4

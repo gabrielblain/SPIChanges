@@ -23,6 +23,15 @@ the user
 \description{
 Aggregates daily rainfall totals at quasi-week time scales
 }
+\details{
+In this package, we adopt a quasi-weekly basic time step, which divides each
+month into four periods: days 1–7, 8–14, 15–21, and 22 to the end of the
+month. This time step allows for 48 SPI estimates per year, regardless of the
+selected aggregation time scale (TS). For example, if the user sets TS = 4
+(a backward-looking window of one month), this function will generate
+cumulative precipitation values aggregated over a backward-looking window of
+four quasi-weekly periods for each 48 quasi-week periods of each year.
+}
 \examples{
 
 daily.rain <- CampinasRain[,2]
