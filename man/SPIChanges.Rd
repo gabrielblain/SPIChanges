@@ -52,17 +52,20 @@ moderate, severe and extreme drought events.}
 Detect trends and quantify their effect on the probability of SPI values occurring
 }
 \details{
-This function employs a nonstationary parametric approach to detect changes
-in precipitation patterns and quantify their effect on the expected frequency
-of SPI estimates. It comprises 16 time-varying gamma-based candidate models,
-which allow for a wide range of linear and nonlinear changes on the mean and
-dispersion of the precipitation distributions. The second-order Akaike Information
-Criteria is then used select the best candidate model, which calculates the
-cumulative probability of each precipitation amount under climate change conditions.
-This probability is compared to that obtained from the original SPI algorithm
-(stationary approach), indicating whether the frequency of drought events have
-increased or decreased over time. See Details in the README file for further
-information about the gamma-based models and the selection process.
+The \code{SPIChanges()} function implements a nonstationary parametric approach to detect
+changes in precipitation patterns and assess their impact on the expected frequency
+of Standardized Precipitation Index (SPI) values. It evaluates 16 candidate models
+based on time-varying gamma distributions, which account for a broad range of linear
+and nonlinear changes in both the mean and dispersion of the precipitation series.
+
+Model selection is performed using the second-order Akaike Information Criterion (AICc),
+and the selected model is used to compute the cumulative probability of each
+precipitation amount under changing climate conditions. These nonstationary probabilities
+are then compared with those from the original, stationary SPI algorithm to identify
+whether the frequency of drought events has increased or decreased over time.
+
+For detailed explanations of the gamma-based models and the model selection procedure,
+please refer to the README and Vignettes included in the package.
 }
 \examples{
 
