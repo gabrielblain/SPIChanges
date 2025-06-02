@@ -10,23 +10,23 @@
 |collate  |Portuguese_Brazil.utf8                                                                                                                                                                       |
 |ctype    |Portuguese_Brazil.utf8                                                                                                                                                                       |
 |tz       |America/Sao_Paulo                                                                                                                                                                            |
-|date     |2025-05-26                                                                                                                                                                                   |
+|date     |2025-06-02                                                                                                                                                                                   |
 |rstudio  |2025.05.0+496 Mariposa Orchid (desktop)                                                                                                                                                      |
 |pandoc   |NA                                                                                                                                                                                           |
-|quarto   |ERROR: Unknown command "TMPDIR=C:/Users/Gabriel/AppData/Local/Temp/RtmpScmwVq/file17981c531046". Did you mean command "create"? @ C:\PROGRA~1\RStudio\RESOUR~1\app\bin\quarto\bin\quarto.exe |
+|quarto   |ERROR: Unknown command "TMPDIR=C:/Users/Gabriel/AppData/Local/Temp/RtmpUhaO67/file2c20267b7a4a". Did you mean command "create"? @ C:\PROGRA~1\RStudio\RESOUR~1\app\bin\quarto\bin\quarto.exe |
 
 # Dependencies
 
 |package     |old        |new        |Δ  |
 |:-----------|:----------|:----------|:--|
-|SPIChanges  |0.1.0      |0.1.0.9000 |*  |
+|SPIChanges  |0.1.0      |0.1.1      |*  |
 |askpass     |1.2.1      |1.2.1      |   |
 |assertthat  |0.2.1      |0.2.1      |   |
 |brglm2      |0.9.2      |0.9.2      |   |
 |cli         |3.6.5      |3.6.5      |   |
 |cpp11       |0.5.2      |0.5.2      |   |
 |crayon      |1.5.3      |1.5.3      |   |
-|curl        |6.2.2      |6.2.2      |   |
+|curl        |6.2.3      |6.2.3      |   |
 |enrichwith  |0.3.1      |0.3.1      |   |
 |gamlss      |5.4-22     |5.4-22     |   |
 |gamlss.data |6.0-6      |6.0-6      |   |
@@ -42,7 +42,7 @@
 |mime        |0.13       |0.13       |   |
 |MuMIn       |1.48.11    |1.48.11    |   |
 |numDeriv    |2016.8-1.1 |2016.8-1.1 |   |
-|openssl     |2.3.2      |2.3.2      |   |
+|openssl     |2.3.3      |2.3.3      |   |
 |R6          |2.6.1      |2.6.1      |   |
 |rlang       |1.1.6      |1.1.6      |   |
 |spsUtil     |0.2.2      |0.2.2      |   |
