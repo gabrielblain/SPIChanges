@@ -1,8 +1,10 @@
-# SPIChanges 0.1.1
+# SPIChanges 0.2.0
 
-## Pach Change
+## Minor Changes
 
 -   Improves functions instructions.
+-   Add internal data file
+-   update Vignette
 
 # SPIChanges 0.1.0
 
