@@ -372,59 +372,13 @@ Brazil, the largest tropical country in the world, features a wide range of clim
 
 ## Case Study 1 -- Oxford Rainfall
 
-## Uploading required packages
-
-### Fetch the Oxford Data
-
-To use them in this case study, we will use `curl::curl_download()` to download the data to our R sessions temporary directory, `tempdir()` and read the CSV file from there.
-This allows us to gracefully handle issues with connection timeouts and other instability when downloading this large dataset.
-
-```{r get-oxford-rain}
-# The {curl} library is used to handle possible download issues with timeouts
-library(curl)
-
-h <- new_handle()
-handle_setopt(h, timeout = 360L)
-
-rain_file <- file.path(tempdir(), "oxford_rain.csv")
-
-curl::curl_download(
-  url = "https://figshare.com/ndownloader/files/21950895",
-  destfile = rain_file,
-  mode = "wb",
-  quiet = FALSE,
-  handle = h
-)
-Oxford.1815 <- read.csv(rain_file)
-Oxford <- Oxford.1815[which(Oxford.1815$YYY >= 1827), ] # Rainfall records, including traces (NA), started in 1827
-summary(Oxford)
-```
-
-Replace all the gaps with "0" in the `Rainfall.mm.1.dpl.no.traces` column.
-This column is defined in the README as follows:
-
-> Rainfall mm 1 dpl no traces - daily precipitation total, mm and tenths: any 'trace' entries set to zero.
-> Includes melted snowfall, at least from 1853.
-> For statistical operations it is advisable to use this column (i.e. excluding traces), as text entries can result in errors in statistical operations performed on the data.
-> First record 1 Jan 1827
-
-```{r replace-gaps}
-# create a new vector of rain to work with
-OxfordRain <- Oxford$Rainfall.mm.1.dpl.no.traces
-
-# set to 0
-OxfordRain[is.na(OxfordRain)] <- 0
-
-# ensure no NAs
-summary(OxfordRain)
-```
-
 ## Analyse Data Looking for Changes
 
 Apply the {SPIChanges} package's `SPIChanges()` to daily precipitation data (`OxfordRain`) derived from @Burt2020.
 
 ```{r Case Study 1 }
 library(SPIChanges)
+data(OxfordRain)
 rainTS4 <- TSaggreg(daily.rain = OxfordRain, start.date = "1827-01-01", TS = 4)
 
 ### Fit All Models: Stationary, Linear and Nonlinear
