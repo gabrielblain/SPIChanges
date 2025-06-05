@@ -11,3 +11,5 @@
 ^flint$
 ^CRAN-SUBMISSION$
 ^revdep$
+^doc$
+^Meta$
