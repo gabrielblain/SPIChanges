@@ -453,8 +453,8 @@ appreciate this initiative.
 Blain G C, Sobierajski G R, Weight E, Martins L L, Xavier A C F 2022.
 Improving the interpretation of standardized precipitation index
 estimates to capture drought characteristics in changing climate
-conditions. International Journal of Climatology, 42, 5586-5608.
-<https://doi.org/10.1002/joc.7550>
+conditions. International Journal of Climatology, 42, 5586-5608. DOI:
+10.1002/joc.7550
 
 McCullagh, P. and Nelder, J. A. 1989. Generalized Linear Models. London
 New York Chapman and Hall. ISBN 9780412317606
@@ -473,16 +473,16 @@ Package ‘gamlss.dist’, Version 6.1-1, Author Stasinopoulos Mikis et al.,
 Park, J., Sung, J.H., Lim, Y-J, Kang, H-S. 2018. Introduction and
 application of nonstationary standardized precipitation index
 considering probability distribution function and return period.
-Theoretical and Applied Climatology, 136:529-542.
-<https://doi.org/10.1007/s00704-018-2500-y>
+Theoretical and Applied Climatology, 136:529-542. DOI:
+10.1007/s00704-018-2500-y
 
 Rigby, R.A, Stasinopoulos, D.M. 2005. Generalized additive models for
 location, scale and shape. Appl Stat 54(3):507–554
 
 Shiau, J-T. 2020. Effects of Gamma-Distribution Variations on SPI-Based
 Stationary and nonstationary Drought Analyses. Water Resources
-Management, 34:2081-2095. <https://doi.org/10.1007/s11269-020-02548-x>
+Management, 34:2081-2095. DOI: 10.1007/s11269-020-02548-x
 
 Stagge J H and Sung K 2022 A Nonstationary Standardized Precipitation
 Index (NSPI) using Bayesian splines. Journal of Applied Meteorology and
-Climatology, 61, 761-779. <https://doi.org/10.1175/JAMC-D-21-0244.1>
+Climatology, 61, 761-779. DOI: 10.1175/JAMC-D-21-0244.1
