@@ -1,7 +1,7 @@
 Package: SPIChanges
 Title: Improves the Interpretation of the Standardized Precipitation Index
     Under Changing Climate Conditions
-Version: 0.1.0
+Version: 0.1.1
 Authors@R: c(
     person("Gabriel Constantino", "Blain", , "gabriel.blain@sp.gov.br", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0001-8832-7734")),
