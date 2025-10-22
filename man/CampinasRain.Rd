@@ -22,6 +22,6 @@ A dataframe with 2 columns and 16071 rows:
 CampinasRain
 }
 \description{
-Daily rainfall amounts recorded in millimetre in Campinas state of Sao Paulo, Brazil.
+Daily rainfall amounts recorded in millimetres in Campinas state of Sao Paulo, Brazil.
 }
 \keyword{datasets}

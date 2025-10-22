@@ -2,18 +2,24 @@
   "@context": "https://doi.org/10.5063/schema/codemeta-2.0",
   "@type": "SoftwareSourceCode",
   "identifier": "SPIChanges",
-  "description": "Improves the interpretation of the Standardized Precipitation Index (SPI) under changing climate conditions. The package uses the nonstationary approach proposed in Blain et al. (2022) <doi:10.1002/joc.7550> to detect trends in rainfall quantities and to quantify the effect of such trends on the probability of a SPI value occurring.",
+  "description": "Improves the interpretation of the Standardized Precipitation Index under changing climate conditions. The package uses the nonstationary approach proposed in Blain et al. (2022) <doi:10.1002/joc.7550> to detect trends in rainfall quantities and to quantify the effect of such trends on the probability of a drought event occurring.",
   "name": "SPIChanges: Improves the Interpretation of the Standardized Precipitation Index\n    Under Changing Climate Conditions",
   "codeRepository": "https://github.com/gabrielblain/SPIChanges",
   "issueTracker": "https://github.com/gabrielblain/SPIChanges/issues",
   "license": "https://spdx.org/licenses/MIT",
-  "version": "0.0.0.9000",
+  "version": "0.2.1",
   "programmingLanguage": {
     "@type": "ComputerLanguage",
     "name": "R",
     "url": "https://r-project.org"
   },
-  "runtimePlatform": "R version 4.4.2 (2024-10-31)",
+  "runtimePlatform": "R version 4.5.1 (2025-06-13)",
+  "provider": {
+    "@id": "https://cran.r-project.org",
+    "@type": "Organization",
+    "name": "Comprehensive R Archive Network (CRAN)",
+    "url": "https://cran.r-project.org"
+  },
   "author": [
     {
       "@type": "Person",
@@ -54,6 +60,18 @@
   "softwareSuggestions": [
     {
       "@type": "SoftwareApplication",
+      "identifier": "archive",
+      "name": "archive",
+      "provider": {
+        "@id": "https://cran.r-project.org",
+        "@type": "Organization",
+        "name": "Comprehensive R Archive Network (CRAN)",
+        "url": "https://cran.r-project.org"
+      },
+      "sameAs": "https://CRAN.R-project.org/package=archive"
+    },
+    {
+      "@type": "SoftwareApplication",
       "identifier": "curl",
       "name": "curl",
       "provider": {
@@ -66,6 +84,59 @@
     },
     {
       "@type": "SoftwareApplication",
+      "identifier": "doParallel",
+      "name": "doParallel",
+      "provider": {
+        "@id": "https://cran.r-project.org",
+        "@type": "Organization",
+        "name": "Comprehensive R Archive Network (CRAN)",
+        "url": "https://cran.r-project.org"
+      },
+      "sameAs": "https://CRAN.R-project.org/package=doParallel"
+    },
+    {
+      "@type": "SoftwareApplication",
+      "identifier": "dplyr",
+      "name": "dplyr",
+      "provider": {
+        "@id": "https://cran.r-project.org",
+        "@type": "Organization",
+        "name": "Comprehensive R Archive Network (CRAN)",
+        "url": "https://cran.r-project.org"
+      },
+      "sameAs": "https://CRAN.R-project.org/package=dplyr"
+    },
+    {
+      "@type": "SoftwareApplication",
+      "identifier": "foreach",
+      "name": "foreach",
+      "provider": {
+        "@id": "https://cran.r-project.org",
+        "@type": "Organization",
+        "name": "Comprehensive R Archive Network (CRAN)",
+        "url": "https://cran.r-project.org"
+      },
+      "sameAs": "https://CRAN.R-project.org/package=foreach"
+    },
+    {
+      "@type": "SoftwareApplication",
+      "identifier": "ggplot2",
+      "name": "ggplot2",
+      "provider": {
+        "@id": "https://cran.r-project.org",
+        "@type": "Organization",
+        "name": "Comprehensive R Archive Network (CRAN)",
+        "url": "https://cran.r-project.org"
+      },
+      "sameAs": "https://CRAN.R-project.org/package=ggplot2"
+    },
+    {
+      "@type": "SoftwareApplication",
+      "identifier": "grid",
+      "name": "grid"
+    },
+    {
+      "@type": "SoftwareApplication",
       "identifier": "knitr",
       "name": "knitr",
       "provider": {
@@ -75,6 +146,42 @@
         "url": "https://cran.r-project.org"
       },
       "sameAs": "https://CRAN.R-project.org/package=knitr"
+    },
+    {
+      "@type": "SoftwareApplication",
+      "identifier": "ncdf4",
+      "name": "ncdf4",
+      "provider": {
+        "@id": "https://cran.r-project.org",
+        "@type": "Organization",
+        "name": "Comprehensive R Archive Network (CRAN)",
+        "url": "https://cran.r-project.org"
+      },
+      "sameAs": "https://CRAN.R-project.org/package=ncdf4"
+    },
+    {
+      "@type": "SoftwareApplication",
+      "identifier": "patchwork",
+      "name": "patchwork",
+      "provider": {
+        "@id": "https://cran.r-project.org",
+        "@type": "Organization",
+        "name": "Comprehensive R Archive Network (CRAN)",
+        "url": "https://cran.r-project.org"
+      },
+      "sameAs": "https://CRAN.R-project.org/package=patchwork"
+    },
+    {
+      "@type": "SoftwareApplication",
+      "identifier": "RColorBrewer",
+      "name": "RColorBrewer",
+      "provider": {
+        "@id": "https://cran.r-project.org",
+        "@type": "Organization",
+        "name": "Comprehensive R Archive Network (CRAN)",
+        "url": "https://cran.r-project.org"
+      },
+      "sameAs": "https://CRAN.R-project.org/package=RColorBrewer"
     },
     {
       "@type": "SoftwareApplication",
@@ -102,6 +209,30 @@
     },
     {
       "@type": "SoftwareApplication",
+      "identifier": "sf",
+      "name": "sf",
+      "provider": {
+        "@id": "https://cran.r-project.org",
+        "@type": "Organization",
+        "name": "Comprehensive R Archive Network (CRAN)",
+        "url": "https://cran.r-project.org"
+      },
+      "sameAs": "https://CRAN.R-project.org/package=sf"
+    },
+    {
+      "@type": "SoftwareApplication",
+      "identifier": "purrr",
+      "name": "purrr",
+      "provider": {
+        "@id": "https://cran.r-project.org",
+        "@type": "Organization",
+        "name": "Comprehensive R Archive Network (CRAN)",
+        "url": "https://cran.r-project.org"
+      },
+      "sameAs": "https://CRAN.R-project.org/package=purrr"
+    },
+    {
+      "@type": "SoftwareApplication",
       "identifier": "testthat",
       "name": "testthat",
       "version": ">= 3.0.0",
@@ -112,6 +243,18 @@
         "url": "https://cran.r-project.org"
       },
       "sameAs": "https://CRAN.R-project.org/package=testthat"
+    },
+    {
+      "@type": "SoftwareApplication",
+      "identifier": "tidyr",
+      "name": "tidyr",
+      "provider": {
+        "@id": "https://cran.r-project.org",
+        "@type": "Organization",
+        "name": "Comprehensive R Archive Network (CRAN)",
+        "url": "https://cran.r-project.org"
+      },
+      "sameAs": "https://CRAN.R-project.org/package=tidyr"
     }
   ],
   "softwareRequirements": {
@@ -119,7 +262,7 @@
       "@type": "SoftwareApplication",
       "identifier": "R",
       "name": "R",
-      "version": ">= 2.10"
+      "version": ">= 3.5"
     },
     "2": {
       "@type": "SoftwareApplication",
@@ -200,6 +343,18 @@
     },
     "9": {
       "@type": "SoftwareApplication",
+      "identifier": "brglm2",
+      "name": "brglm2",
+      "provider": {
+        "@id": "https://cran.r-project.org",
+        "@type": "Organization",
+        "name": "Comprehensive R Archive Network (CRAN)",
+        "url": "https://cran.r-project.org"
+      },
+      "sameAs": "https://CRAN.R-project.org/package=brglm2"
+    },
+    "10": {
+      "@type": "SoftwareApplication",
       "identifier": "zoo",
       "name": "zoo",
       "provider": {
@@ -212,8 +367,8 @@
     },
     "SystemRequirements": null
   },
-  "fileSize": "195.691KB",
-  "releaseNotes": "https://github.com/gabrielblain/SPIChanges/blob/master/NEWS.md",
+  "fileSize": "332.121KB",
+  "releaseNotes": "https://github.com/gabrielblain/SPIChanges/blob/main/NEWS.md",
   "readme": "https://github.com/gabrielblain/SPIChanges/blob/master/README.md",
   "contIntegration": "https://github.com/gabrielblain/SPIChanges/actions/workflows/R-CMD-check.yaml"
 }
