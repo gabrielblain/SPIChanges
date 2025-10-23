@@ -2,12 +2,12 @@
 
 ## Patch Changes
 
--   improve `TSAggreg()` so that it can be computed before the end of the month.
+-   improved `TSAggreg()` so that it can be computed before the end of the month.
 
 ## Test environments
 
--   local Microsoft Windows, Platform: x86_64-w64-mingw32 (64-bit), R 4.5.0
--   win-builder, R Under development (unstable) (2025-10-17 r88928 ucrt)
+-   local Microsoft Windows, Platform: x86_64-w64-mingw32 (64-bit), R 4.5.1
+-   win-builder, R Under development (unstable) (2025-10-22 r88967 ucr)
 
 ## R CMD check results
 
