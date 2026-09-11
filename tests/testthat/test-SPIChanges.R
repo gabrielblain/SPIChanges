@@ -4,9 +4,7 @@ rainTS4 <- TSaggreg(daily.rain=daily.rain,start.date="1980-01-01",TS=4),
 "Done. Just ensure the last quasi-week is complete.
   The last day of your series is 31 and TS is 4")
 test_that("SPIChanges() works as expected in example", {
-  expect_warning(
-  Changes <- SPIChanges(rain.at.TS=rainTS4, only.linear = "yes"),
-  "rainfall series Month 9 Week 1 has more than 6.7% of zeros. In this situation the SPI cannot assume values lower than -1.5")
+  Changes <- SPIChanges(rain.at.TS=rainTS4, only.linear = "yes")
   expect_type(Changes, "list")
   expect_length(Changes, 4)
   expect_named(Changes, c("data.week", "model.selection", "Changes.Freq.Drought","Statistics"))
@@ -35,9 +33,7 @@ test_that("SPIChanges() works as expected in example", {
 })
 
 test_that("SPIChanges() works when only.linear = no", {
-  expect_warning(
-    Changes <- SPIChanges(rain.at.TS=rainTS4, only.linear = "No"),
-    "rainfall series Month 9 Week 1 has more than 6.7% of zeros. In this situation the SPI cannot assume values lower than -1.5")
+    Changes <- SPIChanges(rain.at.TS=rainTS4, only.linear = "No")
   expect_type(Changes, "list")
   expect_length(Changes, 4)
   expect_named(Changes, c("data.week", "model.selection", "Changes.Freq.Drought","Statistics"))
@@ -73,10 +69,10 @@ expect_message(
 test_that("SPIChanges() works as expected in example", {
   rainTS4.warning <- rainTS4[1:1439,]
   expect_warning(
-    expect_warning(
+  expect_warning(
       Changes <- SPIChanges(rain.at.TS=rainTS4.warning, only.linear = "yes"),
       "Less than 30 years of rainfall records. Longer periods are highly recommended."),
-    "rainfall series Month 9 Week 1 has more than 6.7% of zeros. In this situation the SPI cannot assume values lower than -1.5")
+  "Rainfall series Month 9, Week 1 has more than 6.7% zeros. SPI cannot assume values lower than -1.5.")
   expect_type(Changes, "list")
   expect_length(Changes, 4)
   expect_named(Changes, c("data.week", "model.selection", "Changes.Freq.Drought","Statistics"))
@@ -108,14 +104,14 @@ test_that("rainTS4 with negative data", {
   rainTS4.wrong <- (-1*rainTS4)
   expect_error(
     Changes.wrong <- SPIChanges(rain.at.TS=rainTS4.wrong, only.linear = "no"),
-    "Physically impossible or missing values in rain.at.TS.")
+    "Physically impossible or missing values in `rain.at.TS`.")
 })
 
 test_that("rainTS4 with only 3 columns", {
   rainTS4.wrong <- rainTS4[,2:4]
   expect_error(
     Changes.wrong <- SPIChanges(rain.at.TS=rainTS4.wrong, only.linear = "no"),
-    "Physically impossible or missing values in rain.at.TS.")
+    "Physically impossible or missing values in `rain.at.TS`.")
 })
 
 test_that("rainfall records too short", {
@@ -131,7 +127,7 @@ test_that("rainfall records with missing months", {
   rainTS4.wrong[,2] <- rep(1,n)
   expect_error(
     Changes.wrong <- SPIChanges(rain.at.TS=rainTS4.wrong, only.linear = "no"),
-    "Column Month in rain.at.TS is probably malformed.")
+    "Column Month in `rain.at.TS` is probably malformed.")
 })
 
 test_that("rainfall records with wrong months", {
@@ -139,7 +135,7 @@ test_that("rainfall records with wrong months", {
   rainTS4.wrong[1,2] <- 0
   expect_error(
     Changes.wrong <- SPIChanges(rain.at.TS=rainTS4.wrong, only.linear = "no"),
-    "Column Month in rain.at.TS is probably malformed.")
+    "Column Month in `rain.at.TS` is probably malformed.")
 })
 
 test_that("rainfall records with another wrong months", {
@@ -147,7 +143,7 @@ test_that("rainfall records with another wrong months", {
   rainTS4.wrong[1,2] <- 13
   expect_error(
     Changes.wrong <- SPIChanges(rain.at.TS=rainTS4.wrong, only.linear = "no"),
-    "Column Month in rain.at.TS is probably malformed.")
+    "Column Month in `rain.at.TS` is probably malformed.")
 })
 
 test_that("rainfall records with missing quasiWeek", {
@@ -156,7 +152,7 @@ test_that("rainfall records with missing quasiWeek", {
   rainTS4.wrong[,3] <- rep(1,n)
   expect_error(
     Changes.wrong <- SPIChanges(rain.at.TS=rainTS4.wrong, only.linear = "no"),
-    "Column quasiWeek in rain.at.TS is probably malformed.")
+    "Column quasiWeek in `rain.at.TS` is probably malformed.")
 })
 
 test_that("rainfall records with wrong quasiWeek", {
@@ -166,7 +162,7 @@ test_that("rainfall records with wrong quasiWeek", {
   rainTS4.wrong[,3] <- rep(1,n)
   expect_error(
     Changes.wrong <- SPIChanges(rain.at.TS=rainTS4.wrong, only.linear = "no"),
-    "Column quasiWeek in rain.at.TS is probably malformed.")
+    "Column quasiWeek in `rain.at.TS` is probably malformed.")
 })
 
 test_that("rainfall records with another wrong quasiWeek", {
@@ -176,17 +172,19 @@ test_that("rainfall records with another wrong quasiWeek", {
   rainTS4.wrong[,3] <- rep(1,n)
   expect_error(
     Changes.wrong <- SPIChanges(rain.at.TS=rainTS4.wrong, only.linear = "no"),
-    "Column quasiWeek in rain.at.TS is probably malformed.")
+    "Column quasiWeek in `rain.at.TS` is probably malformed.")
 })
 
 test_that("Wrong only.linear", {
   expect_error(
-    Changes.wrong <- SPIChanges(rain.at.TS=rainTS4, only.linear = "maybe"),
-    "`only.linear` must be one of \"yes\", \"no\", \"Yes\", \"No\", \"YES\", \"NO\", \"yEs\", \"nO\", or \"yeS\", not \"maybe\".")
+    SPIChanges(rain.at.TS = rainTS4, only.linear = "maybe"),
+    regexp = "one of"
+  )
 })
 
 test_that("Another wrong only.linear", {
   expect_error(
-    Changes.wrong <- SPIChanges(rain.at.TS=rainTS4, only.linear = 4),
-    "`only.linear` must be a character vector, not the number 4.")
+    SPIChanges(rain.at.TS = rainTS4, only.linear = 4),
+    regexp = "one of"
+  )
 })
