@@ -24,12 +24,9 @@ BugReports: https://github.com/gabrielblain/SPIChanges/issues
 Depends: 
     R (>= 3.5)
 Imports:
-    gamlss,
-    gamlss.dist,
+    dglm,
     lubridate,
-    MuMIn,
     rlang,
-    spsUtil,
     stats,
     brglm2,
     zoo
@@ -60,4 +57,4 @@ Encoding: UTF-8
 Language: en-US
 LazyData: true
 Roxygen: list(markdown = TRUE, roclets = c("collate", "namespace", "rd", "roxyglobals::global_roclet"))
-RoxygenNote: 7.3.3
+Config/roxygen2/version: 8.1.0

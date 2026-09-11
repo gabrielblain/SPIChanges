@@ -2,24 +2,27 @@
 
 export(SPIChanges)
 export(TSaggreg)
-importFrom(MuMIn,AICc)
-importFrom(brglm2,brglmFit)
-importFrom(gamlss,GAIC)
-importFrom(gamlss,gamlss)
-importFrom(gamlss.dist,BI)
-importFrom(gamlss.dist,GA)
-importFrom(gamlss.dist,pGA)
-importFrom(gamlss.dist,qGA)
-importFrom(lubridate,day)
-importFrom(lubridate,month)
-importFrom(lubridate,parse_date_time)
-importFrom(lubridate,year)
+importFrom(brglm2,
+  brglmControl,
+  brglmFit
+)
+importFrom(dglm,dglm)
+importFrom(lubridate,
+  day,
+  month,
+  parse_date_time,
+  year
+)
 importFrom(rlang,arg_match)
-importFrom(spsUtil,quiet)
-importFrom(stats,binomial)
-importFrom(stats,fitted)
-importFrom(stats,glm)
-importFrom(stats,na.omit)
-importFrom(stats,predict)
-importFrom(stats,qnorm)
+importFrom(stats,
+  Gamma,
+  binomial,
+  fitted,
+  glm,
+  na.omit,
+  pgamma,
+  predict,
+  qgamma,
+  qnorm
+)
 importFrom(zoo,rollsum)

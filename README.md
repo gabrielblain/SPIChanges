@@ -20,8 +20,7 @@ designed to isolate the effect of such changes on the central tendency
 and dispersion of the SPI frequency distributions.
 
 The package depends on R (\>= 2.10) and imports the following packages:
-{lubridate}, {zoo}, {gamlss}, {gamlss.dist}, {stats}, {spsUtil},
-{rlang}, {brglm2}, and {MuMIn}.
+{lubridate}, {zoo}, {dglm}, {stats}, {spsUtil}, {rlang}, and {brglm2}.
 
 ## Installation
 
@@ -192,13 +191,6 @@ rainTS4 <- TSaggreg(daily.rain = daily.rain,
 
 ``` r
 Change_SPI <- SPIChanges(rain.at.TS = rainTS4, only.linear = "Yes")
-```
-
-    ## Warning in SPIChanges(rain.at.TS = rainTS4, only.linear = "Yes"): rainfall
-    ## series Month 9 Week 1 has more than 6.7% of zeros. In this situation the SPI
-    ## cannot assume values lower than -1.5
-
-``` r
 head(Change_SPI$data.week)
 ```
 
@@ -281,13 +273,6 @@ rainTS4 <- TSaggreg(daily.rain = daily.rain,
 
 ``` r
 Change_SPI <- SPIChanges(rain.at.TS = rainTS4, only.linear = "No")
-```
-
-    ## Warning in SPIChanges(rain.at.TS = rainTS4, only.linear = "No"): rainfall
-    ## series Month 9 Week 1 has more than 6.7% of zeros. In this situation the SPI
-    ## cannot assume values lower than -1.5
-
-``` r
 head(Change_SPI$data.week)
 ```
 
@@ -416,7 +401,7 @@ including Blain et al (2022).
 Precipitation frequency distributions are zero-bounded, thus a mixed
 function that combines the probabilities of no rainfall events (q) and
 the probability given by the parametric distribution G(x\>0,mu,sigma)
-must be employed to calculate the SPI (equation 1).  
+must be employed to calculate the SPI (equation 1).\
 
 H(x) = q + (1 - q) \* G(x \> 0, μ, σ) (1)
 
@@ -464,11 +449,8 @@ drought frequency and duration to time scales. In: 8th Conference on
 Applied Climatology. Boston, MA: American Meteorological Society,
 179–184.
 
-Package ‘gamlss’, Version 5.4-22, Author Stasinopoulos Mikis et al.,
+Package ‘dglm’, Version 1.8.6, Author Stasinopoulos Mikis et al.,
 <https://CRAN.R-project.org/package=gamlss>
-
-Package ‘gamlss.dist’, Version 6.1-1, Author Stasinopoulos Mikis et al.,
-<https://CRAN.R-project.org/package=gamlss.dist>
 
 Park, J., Sung, J.H., Lim, Y-J, Kang, H-S. 2018. Introduction and
 application of nonstationary standardized precipitation index
