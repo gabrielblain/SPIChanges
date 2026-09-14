@@ -1,3 +1,19 @@
+# SPIChanges v0.3.0
+
+## Minor Changes
+
+-   Replaced the `gamlss` and `gamlss.dist` dependencies with `dglm`.
+-   Implemented  Gamma models using double generalized linear models.
+-   Replaced GAMLSS Gamma distribution calculations with base R Gamma functions.
+
+## Test environments
+
+- local macOS Tahoe 26.6.2, R 4.5.2
+- win-builder, R-devel (2026-09-10 r90519), x86_64-w64-mingw32
+
+## R CMD check results
+
+0 errors | 0 warnings | 0 note
 # SPIChanges v0.2.1
 
 ## Patch Changes

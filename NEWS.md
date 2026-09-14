@@ -1,3 +1,11 @@
+# SPIChanges v0.3.0
+
+## Minor Changes
+
+-   Replaced the `gamlss` and `gamlss.dist` dependencies with `dglm`.
+-   Implemented  Gamma models using double generalized linear models.
+-   Replaced GAMLSS Gamma distribution calculations with base R Gamma functions.
+
 # SPIChanges v0.2.1
 
 ## Patch Changes
