@@ -29,7 +29,7 @@ You can install the development version of {SPIChanges} from
 
 ``` r
 # install.packages("devtools")
-devtools::install_github("gabrielblain/SPIChanges")
+pak::pak("gabrielblain/SPIChanges")
 ```
 
 ## Theoretical Background

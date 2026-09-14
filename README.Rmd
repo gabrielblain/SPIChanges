@@ -24,7 +24,7 @@ You can install the development version of {SPIChanges} from [GitHub](https://gi
 
 ``` r
 # install.packages("devtools")
-devtools::install_github("gabrielblain/SPIChanges")
+pak::pak("gabrielblain/SPIChanges")
 ```
 
 ## Theoretical Background
