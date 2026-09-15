@@ -14,6 +14,7 @@
 ## R CMD check results
 
 0 errors | 0 warnings | 0 note
+
 # SPIChanges v0.2.1
 
 ## Patch Changes
