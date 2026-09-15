@@ -1,5 +1,3 @@
-# SPIChanges 0.3.0
-
 # SPIChanges v0.3.0
 
 ## Minor Changes
